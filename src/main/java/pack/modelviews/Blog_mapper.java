@@ -9,6 +9,7 @@ import pack.models.Blog;
 import pack.utils.Views;
 
 public class Blog_mapper implements RowMapper<Blog> {
+	@Override
 	public Blog mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Blog item = new Blog();
 		item.setId(rs.getInt(Views.COL_BLOG_ID));

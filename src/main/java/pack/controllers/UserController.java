@@ -160,20 +160,20 @@ public class UserController {
 	}
 
 	@PostMapping("/getOtp")
-	public String get_otp(@RequestParam("phone") String phoneNum, Model model, HttpServletRequest req) {
+	public String get_otp(String email, Model model, HttpServletRequest req) {
 		try {
-			if (!phoneNum.matches("\\d{10,11}")) {
-				model.addAttribute("pageError", "Invalid phone number.");
+			if (!email.contains("@")) {
+				model.addAttribute("pageError", "Invalid email.");
 				return Views.USER_FORGOT_PASSWORD;
 			}
-			User user = rep.checkPhoneNumberExists(phoneNum);
+			User user = rep.checkEmailExists(email);
 			if (user == null) {
-				model.addAttribute("pageError", "Invalid phone number.");
+				model.addAttribute("pageError", "Email is not registered, yet.");
 				return Views.USER_FORGOT_PASSWORD;
 			}
-			otpService.generateOTP(phoneNum);
-			req.getSession().setAttribute("phoneNum", user.getPhone());
-			return "redirect:/user/validate_otp";
+			otpService.generateOTP(email);
+			req.getSession().setAttribute("email", user.getEmail());
+			return "redirect:/user/validateOtp";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -186,17 +186,18 @@ public class UserController {
 
 	@PostMapping("/verification")
 	public String verify(@RequestParam String otp, HttpServletRequest req, Model model) {
-		String phoneNumber = req.getSession().getAttribute("phoneNumber").toString();
-		User user = rep.checkPhoneNumberExists(phoneNumber);
-		if (!otpService.validateOtp(phoneNumber, otp)) {
+		String email = req.getSession().getAttribute("email").toString();
+		User user = rep.checkEmailExists(email);
+		if (!otpService.validateOtp(email, otp)) {
 			model.addAttribute("error", "Invalid otp");
 			return Views.USER_VALIDATE;
-		} else if (otpService.isOtpExpired(phoneNumber)) {
+		} else if (otpService.isOtpExpired(email)) {
 			model.addAttribute("error", "OTP is expired.");
 			return Views.USER_VALIDATE;
 		}
 
 		req.getSession().setAttribute("usrId", user.getId());
+		req.getSession().setAttribute("username", user.getUsername());
 		return "redirect:/user/accounts";
 	}
 

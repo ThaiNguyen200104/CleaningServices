@@ -9,6 +9,7 @@ import pack.models.OrderDetail;
 import pack.utils.Views;
 
 public class Detail_mapper implements RowMapper<OrderDetail> {
+	@Override
 	public OrderDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
 		OrderDetail item = new OrderDetail();
 		item.setId(rs.getInt(Views.COL_ORDER_DETAIL_ID));

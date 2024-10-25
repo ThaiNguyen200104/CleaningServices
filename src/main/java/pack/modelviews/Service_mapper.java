@@ -9,6 +9,7 @@ import pack.models.Service;
 import pack.utils.Views;
 
 public class Service_mapper implements RowMapper<Service> {
+	@Override
 	public Service mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Service item = new Service();
 		item.setId(rs.getInt(Views.COL_SERVICES_ID));

@@ -3,8 +3,8 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" description="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" description="ie=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
 	<title>Cleanex - Service Management</title>
 
@@ -14,7 +14,6 @@
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
-
 </head>
 
 <body>
@@ -27,35 +26,34 @@
 
 	<div class="overlay"></div>
 	<main class="main-wrapper">
-
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
 		<div class="mx-5 mt-5">
 			<div class="d-flex">
-				<h2 class="flex-grow-1">Create service</h2>
-				<a class="btn btn-primary" th:href="@{/admin/services/list}">Return to service list</a>
+				<h2 class="flex-grow-1">Create Service</h2>
+				<a class="btn btn-primary" th:href="@{/admin/services/list}">Return to Service List</a>
 			</div>
 			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
 			<form th:action="@{/admin/services/createService}" method="post" th:object="${new_item}"
 				enctype="multipart/form-data">
 				<div class="mb-3">
 					<label class="form-label" for="serName">Service Name <span style="color: red;">(*)</span></label>
-					<input class="form-control" type="text" id="serName" name="serName" required />
+					<input class="form-control" type="text" id="serName" th:field="*{serName}" required />
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="description">Description</label>
-					<textarea class="form-control" rows="3" cols="50" id="description" name="description"></textarea>
+					<textarea class="form-control" rows="3" cols="50" id="description" th:field="*{description}"></textarea>
 				</div>
 				<div class="mb-3 row">
 					<div class="col-6">
 						<label class="form-label" for="basePrice">Base Price <span
 								style="color: red;">(*)</span></label>
-						<input class="form-control" type="number" id="basePrice" name="basePrice" required />
+						<input class="form-control" type="number" id="basePrice" th:field="*{basePrice}" required />
 					</div>
 					<div class="col-6">
 						<label class="form-label" for="duration">Duration <span style="color: red;">(*)</span></label>
-						<input class="form-control" type="number" id="duration" name="duration" required />
+						<input class="form-control" type="number" id="duration" th:field="*{duration}" required />
 					</div>
 				</div>
 				<div class="mb-3">

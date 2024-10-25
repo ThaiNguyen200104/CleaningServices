@@ -1,5 +1,6 @@
 package pack.repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import pack.modelviews.Blog_mapper;
 import pack.modelviews.Order_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.Staff_mapper;
+import pack.utils.SecurityUtility;
 import pack.utils.Views;
 
 @Repository
@@ -23,12 +25,7 @@ public class AdminRepository {
 	@Autowired
 	JdbcTemplate db;
 
-	/***
-	 * get specific admin from table staffs by username
-	 * 
-	 * @return specific admin
-	 */
-
+	//Admin Region
 	public Admin getAdminByUsername(String username) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
@@ -38,12 +35,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get specific admin from table staffs by ID
-	 * 
-	 * @return specific admin
-	 */
-
 	public Admin getAdminById(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_ID);
@@ -52,13 +43,19 @@ public class AdminRepository {
 			return null;
 		}
 	}
+	
+	public String newAdmin(String username, String password) {
+		try {
+			String str_query = String.format("insert into %s (username, password) values(?,?)", Views.TBL_ADMIN);
+			int rowaccept = db.update(str_query, new Object[] {username, SecurityUtility.encryptBcrypt(password)});
+			return rowaccept == 1 ? "success": "failed";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
 
-	/***
-	 * get all data from table sers
-	 * 
-	 * @return list of ser
-	 */
-
+	
+	//Service region
 	public List<Service> getServices() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
@@ -68,11 +65,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get data from table ser by id
-	 * 
-	 * @return a ser
-	 */
 
 	public Service getServiceById(int id) {
 		try {
@@ -85,15 +77,37 @@ public class AdminRepository {
 
 	public String newService(Service ser) {
 		try {
-			String str_query = String.format("insert into %s values (?,?,?,?,?)", Views.TBL_SERVICES);
-			int rowaccept = db.update(str_query, new Object[] { ser.getSerName(), ser.getDescription(),
-					ser.getBasePrice(), ser.getDuration(), ser.getImage() });
-			if (rowaccept == 1) {
-				return "success";
+			StringBuilder queryBuilder = new StringBuilder("insert into ");
+			queryBuilder.append(Views.TBL_SERVICES).append(" (service_name, base_price, duration");
+
+			StringBuilder valuesBuilder = new StringBuilder(" values (?, ?, ?");
+			List<Object> params = new ArrayList<>();
+
+			params.add(ser.getSerName());
+			params.add(ser.getBasePrice());
+			params.add(ser.getDuration());
+
+			if (ser.getDescription() != null) {
+				queryBuilder.append(", description");
+				valuesBuilder.append(", ?");
+				params.add(ser.getDescription());
 			}
-			return "failed";
+
+			if (ser.getImage() != null && !ser.getImage().isEmpty()) {
+				queryBuilder.append(", image");
+				valuesBuilder.append(", ?");
+				params.add(ser.getImage());
+			}
+
+			queryBuilder.append(")");
+			valuesBuilder.append(")");
+
+			queryBuilder.append(valuesBuilder);
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
 		} catch (Exception e) {
-			return e.getMessage();
+			return "Error: " + e.getMessage();
 		}
 	}
 
@@ -126,12 +140,7 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get all data from table blog
-	 * 
-	 * @return list of blog
-	 */
-
+	//Blog region
 	public List<Blog> getBlogs() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_BLOG);
@@ -141,11 +150,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get data from table blog by id
-	 * 
-	 * @return a blog
-	 */
 
 	public Blog getBlogById(int id) {
 		try {
@@ -156,11 +160,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * create new blog
-	 * 
-	 * @return new blog
-	 */
 
 	public String newBlog(Blog blog) {
 		try {
@@ -175,11 +174,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * edit a blog
-	 * 
-	 * @return edited blog
-	 */
 
 	public String editBlog(Blog blog) {
 		try {
@@ -196,11 +190,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * delete a blog
-	 * 
-	 * @return deleted blog
-	 */
 
 	public String deleteBlog(int id) {
 		try {
@@ -215,12 +204,7 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get data from table staffs
-	 * 
-	 * @return list of staff
-	 */
-
+	//Staff region
 	public List<Staff> getStaffs() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_STAFFS);
@@ -230,11 +214,6 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get specific staff from table staffs by ID
-	 * 
-	 * @return specific staff
-	 */
 
 	public Staff getStaffById(int id) {
 		try {
@@ -245,12 +224,8 @@ public class AdminRepository {
 		}
 	}
 
-	/***
-	 * get all data from table orders
-	 * 
-	 * @return list of order
-	 */
-
+	
+	//Order region
 	public List<Order> getOrders() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
