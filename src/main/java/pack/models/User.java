@@ -9,23 +9,26 @@ public class User {
 	private String email;
 	private String phone;
 	private String address;
-	private String images;
+	private String image;
 	private Date createDate;
-	
-	public User() {}
+	private String confirmPassword;
+	private String fullname;
 
-	public User(int id, String username, String password, String email, String phone, String address, String images,
-	Date createDate) {
-		super();
-		this.id = id;
+	public User(int id, String username, String password, String email, String phone, String address, String image,
+			Date createDate, String confirmPassword, String fullname) {
+    this.id = id;
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.phone = phone;
 		this.address = address;
-		this.images = images;
+		this.image = image;
 		this.createDate = createDate;
-	}
+		this.confirmPassword = confirmPassword;
+		this.fullname = fullname;
+  }
+	
+	public User() {}
 
 	public int getId() {
 		return id;
@@ -75,12 +78,12 @@ public class User {
 		this.address = address;
 	}
 
-	public String getImages() {
-		return images;
+	public String getImage() {
+		return image;
 	}
 
-	public void setImages(String images) {
-		this.images = images;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public Date getCreateDate() {
@@ -89,5 +92,21 @@ public class User {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 }

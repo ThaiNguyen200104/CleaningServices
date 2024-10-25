@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="shortcut icon" href="../back/images/favicon.svg" type="image/x-icon" />
+
+	<title>Cleanex - Admin Dashboard</title>
+
+	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../back/css/main.css" />
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+
+		<section class="section">
+			<div class="container-fluid">
+				<div class="title-wrapper pt-30">
+					<div class=" align-items-center">
+						<div class="title">
+							<h2>Dashboard</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<script src="../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../back/js/Chart.min.js"></script>
+	<script src="../back/js/dynamic-pie-chart.js"></script>
+	<script src="../back/js/moment.min.js"></script>
+	<script src="../back/js/fullcalendar.js"></script>
+	<script src="../back/js/jvectormap.min.js"></script>
+	<script src="../back/js/world-merc.js"></script>
+	<script src="../back/js/polyfill.js"></script>
+	<script src="../back/js/main.js"></script>
+</body>
+
+</html>

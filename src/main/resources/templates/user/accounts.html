@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
+	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Account</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+
+	<style>
+		.acc-container {
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			padding: 30px;
+		}
+
+		h2 {
+			color: #000;
+			border-bottom: 2px solid #007bff;
+			padding-bottom: 10px;
+		}
+
+		.btn-primary {
+			transition: all 0.3s ease;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+		}
+
+		.table {
+			animation: fadeIn 0.5s ease-out;
+		}
+
+		.badge {
+			font-size: 0.8rem;
+			padding: 0.4em 0.6em;
+		}
+
+		.table-responsive {
+			max-height: 400px;
+			overflow-y: auto;
+		}
+
+		@media (max-width : 768px) {
+			.col-md-3 {
+				margin-bottom: 30px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Header -->
+	<div th:replace="~{user/fragments/header::userHeader}"></div>
+
+	<div class="wrapper">
+		<div class="acc-container mt-5">
+			<div class="row">
+				<div class="col-3 text-center">
+					<img th:if="${user.image == null}" src="../front/img/none-user.png"
+						class="img-fluid rounded-circle mb-3" width="150" height="150" />
+					<img th:if="${user.image != null}" th:src="'/upload/' + ${user.image}"
+						class="img-fluid rounded-circle mb-3" width="150" height="150" />
+					<h4 th:text="${user.fullname}"></h4>
+					<a class="btn btn-primary mt-3" th:href="@{/user/editProfile}">Edit Profile</a>
+				</div>
+				<div class="col-9">
+					<h2 class="mb-4">Your profile</h2>
+					<dl class="row">
+						<dt class="col-3">Username:</dt>
+						<dd class="col-9" th:text="${user.username}"></dd>
+						<dt class="col-3">Email:</dt>
+						<dd class="col-9" th:text="${user.email}"></dd>
+						<dt class="col-3">Phone:</dt>
+						<dd class="col-9" th:text="${user.phone}"></dd>
+						<dt class="col-3">Address:</dt>
+						<dd class="col-9" th:text="${user.address}"></dd>
+					</dl>
+				</div>
+			</div>
+			<div class="row mt-5">
+				<div class="col-12">
+					<h2 class="mb-4">Service Booking History</h2>
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th scope="col">No.</th>
+									<th scope="col">Price</th>
+									<th scope="col">Start Date</th>
+									<th scope="col">Status</th>
+									<th scope="col">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item: ${orders}" th:if="${item != null}">
+									<td th:text="${item.id}"></td>
+									<td th:text="${item.price}"></td>
+									<td th:text="${item.startDate}"></td>
+									<td th:text="${item.status}"></td>
+									<a th:href="/user/bookingHistory" class="btn btn-info"
+										style="margin-left:38vw">Browse More</a>
+								</tr>
+								<tr th:if="${item == null}">
+									<td colspan="6" style="text-align: center; font-weight: 700;">
+										You have not booked any service yet.
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../front/lib/easing/easing.min.js"></script>
+	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../front/js/main.js"></script>
+</body>
+
+</html>

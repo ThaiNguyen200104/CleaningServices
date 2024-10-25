@@ -8,8 +8,9 @@ import org.springframework.jdbc.core.RowMapper;
 import pack.models.Admin;
 import pack.utils.Views;
 
-public class Admin_mapper implements RowMapper<Admin>{
-	public Admin mapRow(ResultSet rs, int rowNum) throws SQLException{
+public class Admin_mapper implements RowMapper<Admin> {
+  @Override
+	public Admin mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Admin item = new Admin();
 		item.setId(rs.getInt(Views.COL_ADMIN_ID));
 		item.setUsername(rs.getString(Views.COL_ADMIN_USERNAME));

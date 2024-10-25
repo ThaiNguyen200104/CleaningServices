@@ -1,38 +1,25 @@
 package pack.interceptors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import pack.repositories.UserRepository;
+import org.springframework.stereotype.Component;
 
 @Component
-public class UserInterceptor implements HandlerInterceptor{
-	@Autowired
-	UserRepository rep;
-	
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
-		Object username = request.getSession().getAttribute("username");
-		Object password = request.getSession().getAttribute("password");
-		
-		if(username == null && password == null) {
-			request.getSession().setAttribute("loginError", "Please enter your username and password.");
-			response.sendRedirect("user/login");
-			return false;
-		}
-		
-		if(rep.ExistsUserCheck(String.valueOf(username), String.valueOf(password))) {
+public class UserInterceptor implements HandlerInterceptor {
+	 @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		Object userId = request.getSession().getAttribute("usrId");
+		if (userId != null) {
 			return true;
 		}
-		
-		request.getSession().setAttribute("loginError", "Invalid username or password.");
 		response.sendRedirect("/user/login");
 		return false;
 	}
-	
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {

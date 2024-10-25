@@ -9,11 +9,11 @@ public class Schedule {
 	private Date startDate;
 	private Date endDate;
 	private String status;
-	
-	public Schedule() {}
+
+	public Schedule() {
+	}
 
 	public Schedule(int id, int staffId, int detailId, Date startDate, Date endDate, String status) {
-		super();
 		this.id = id;
 		this.staffId = staffId;
 		this.detailId = detailId;
@@ -69,6 +69,5 @@ public class Schedule {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
 }

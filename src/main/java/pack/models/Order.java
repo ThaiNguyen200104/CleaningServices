@@ -7,18 +7,16 @@ public class Order {
 	private int usrId;
 	private double price;
 	private Date startDate;
-	private Date createDate;
 	private String status;
-	
-	public Order() {}
 
-	public Order(int id, int usrId, double price, Date startDate, Date createDate, String status) {
-		super();
+	public Order() {
+	}
+
+	public Order(int id, int usrId, double price, Date startDate, String status) {
 		this.id = id;
 		this.usrId = usrId;
 		this.price = price;
 		this.startDate = startDate;
-		this.createDate = createDate;
 		this.status = status;
 	}
 
@@ -54,14 +52,6 @@ public class Order {
 		this.startDate = startDate;
 	}
 
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -69,6 +59,5 @@ public class Order {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
 }

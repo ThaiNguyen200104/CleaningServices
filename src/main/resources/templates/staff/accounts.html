@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Staff Account</title>
+
+	<link rel="stylesheet" href="../back/vendors/mdi/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../back/vendors/css/vendor.bundle.base.css" />
+	<link rel="stylesheet" href="../back/vendors/flag-icon-css/css/flag-icon.min.css" />
+	<link rel="stylesheet" href="../back/vendors/jvectormap/jquery-jvectormap.css" />
+	<link rel="stylesheet" href="../back/css/demo/style.css" />
+
+	<style>
+		.acc-container {
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			padding: 30px;
+		}
+
+		h2 {
+			color: #000;
+			border-bottom: 2px solid #007bff;
+			padding-bottom: 10px;
+		}
+
+		.btn-primary {
+			transition: all 0.3s ease;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+		}
+
+		.table {
+			animation: fadeIn 0.5s ease-out;
+		}
+
+		.badge {
+			font-size: 0.8rem;
+			padding: 0.4em 0.6em;
+		}
+
+		.table-responsive {
+			max-height: 400px;
+			overflow-y: auto;
+		}
+
+		@media (max-width : 768px) {
+			.col-md-3 {
+				margin-bottom: 30px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<script src="../back/js/preloader.js"></script>
+	<div class="body-wrapper">
+		<div class="main-wrapper mdc-drawer-app-content">
+
+			<!-- Header -->
+			<div th:replace="~{admin/fragment/header::adminHeader}"></div>
+
+			<div class="acc-container mt-5">
+				<div class="row">
+					<div class="col-3 text-center">
+						<img src="../front/img/none-user.png" class="img-fluid rounded-circle mb-3" width="150"
+							height="150" />
+						<h4 th:text="${user.fullname}"></h4>
+						<button class="btn btn-primary mt-3" aria-label="Edit Information">Edit Profile</button>
+					</div>
+					<div class="col-9">
+						<h2 class="mb-4">Your Information:</h2>
+						<dl class="row">
+							<dt class="col-3">Username:</dt>
+							<dd class="col-9" th:text="${staff.username}"></dd>
+							<dt class="col-3">Email:</dt>
+							<dd class="col-6" th:text="${staff.email}"></dd>
+							<dt class="col-3">Phone:</dt>
+							<dd class="col-6" th:text="${staff.phone}"></dd>
+							<dt class="col-3">Status:</dt>
+							<dd class="col-6" th:text="${staff.status}"></dd>
+						</dl>
+					</div>
+				</div>
+				<div class="row mt-5">
+					<div class="col-12">
+						<h2 class="mb-4">Assigned Jobs</h2>
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th scope="col">No.</th>
+										<th scope="col">Service</th>
+										<th scope="col">Price</th>
+										<th scope="col">Start Date</th>
+										<th scope="col">End Date</th>
+										<th scope="col">Status</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>123123</td>
+										<td>456456</td>
+										<td>789789</td>
+										<td>1111</td>
+										<td>2222</td>
+										<td>12123</td>
+										<td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
+									</tr>
+
+									<!--<tr th:each="item : ${details}">
+											<td th:text="${item.id}"></td>
+											<td th:text="${item.service}"></td>
+											<td th:text="${item.price}"></td>
+											<td th:text="${item.startDate}"></td>
+											<td th:text="${item.endDate}"></td>
+											<td th:text="${item.status}"></td>
+											<td th:href="${user/details}">See details</td>
+									</tr>-->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../back/vendors/js/vendor.bundle.base.js"></script>
+	<script src="../back/vendors/chartjs/Chart.min.js"></script>
+	<script src="../back/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+	<script src="../back/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+	<script src="../back/js/material.js"></script>
+	<script src="../back/js/misc.js"></script>
+	<script src="../back/js/dashboard.js"></script>
+</body>
+
+</html>

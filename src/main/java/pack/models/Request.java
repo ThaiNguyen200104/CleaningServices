@@ -10,12 +10,12 @@ public class Request {
 	private String reason;
 	private String dateStatus;
 	private String priceStatus;
-	
-	public Request() {}
+
+	public Request() {
+	}
 
 	public Request(int id, int scheduleId, Date dateAdjust, double priceAdjust, String reason, String dateStatus,
 			String priceStatus) {
-		super();
 		this.id = id;
 		this.scheduleId = scheduleId;
 		this.dateAdjust = dateAdjust;
@@ -80,6 +80,5 @@ public class Request {
 	public void setPriceStatus(String priceStatus) {
 		this.priceStatus = priceStatus;
 	}
-	
-	
+
 }

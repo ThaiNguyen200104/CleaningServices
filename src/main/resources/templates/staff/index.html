@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Cleanex - Dashboard</title>
+
+	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../back/css/main.css" />
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
+
+		<section class="section">
+			<div class="container-fluid">
+				<div class="title-wrapper pt-30">
+					<div class="row align-items-center">
+						<div class="col-md-6">
+							<div class="title">
+								<h2>Dashboard</h2>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="breadcrumb-wrapper">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">
+											<a href="#0">Dashboard</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">
+											Page
+										</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<script src="../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../back/js/Chart.min.js"></script>
+	<script src="../back/js/dynamic-pie-chart.js"></script>
+	<script src="../back/js/moment.min.js"></script>
+	<script src="../back/js/fullcalendar.js"></script>
+	<script src="../back/js/jvectormap.min.js"></script>
+	<script src="../back/js/world-merc.js"></script>
+	<script src="../back/js/polyfill.js"></script>
+	<script src="../back/js/main.js"></script>
+</body>
+
+</html>

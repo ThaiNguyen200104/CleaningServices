@@ -8,11 +8,11 @@ public class Payment {
 	private int orderId;
 	private double amount;
 	private Date paidDate;
-	
-	public Payment() {}
+
+	public Payment() {
+	}
 
 	public Payment(int id, int payAccId, int orderId, double amount, Date paidDate) {
-		super();
 		this.id = id;
 		this.payAccId = payAccId;
 		this.orderId = orderId;
@@ -59,6 +59,5 @@ public class Payment {
 	public void setPaidDate(Date paidDate) {
 		this.paidDate = paidDate;
 	}
-	
-	
+
 }

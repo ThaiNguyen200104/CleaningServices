@@ -1,0 +1,104 @@
+<aside class="sidebar-nav-wrapper" th:fragment="adminAside">
+	<div class="navbar-logo">
+		<a href="index.html">
+			<h2>Cleanex</h2>
+		</a>
+	</div>
+	<nav class="sidebar-nav">
+		<ul>
+			<li class="nav-item">
+				<a th:href="@{/admin}">
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+							fill="#e8eaed">
+							<path
+								d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
+						</svg>
+					</span>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li class="nav-item nav-item-has-children">
+				<a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_1"
+					aria-controls="ddmenu_1" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+							fill="#e8eaed">
+							<path
+								d="M288-288h288v-72H288v72Zm0-156h384v-72H288v72Zm0-156h384v-72H288v72Zm-72 456q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h528q29.7 0 50.85 21.15Q816-773.7 816-744v528q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm0-72h528v-528H216v528Zm0-528v528-528Z" />
+						</svg>
+					</span>
+					<span class="text">Order Management</span>
+				</a>
+				<ul id="ddmenu_1" class="collapse show dropdown-nav">
+					<li>
+						<a th:href="@{/admin/orders/list}"> List of order </a>
+					</li>
+				</ul>
+			</li>
+			<li class="nav-item nav-item-has-children">
+				<a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_2"
+					aria-controls="ddmenu_2" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+							fill="#e8eaed">
+							<path
+								d="M288-288h288v-72H288v72Zm0-156h384v-72H288v72Zm0-156h384v-72H288v72Zm-72 456q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h528q29.7 0 50.85 21.15Q816-773.7 816-744v528q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm0-72h528v-528H216v528Zm0-528v528-528Z" />
+						</svg>
+					</span>
+					<span class="text">Blog Management</span>
+				</a>
+				<ul id="ddmenu_2" class="collapse show dropdown-nav">
+					<li>
+						<a th:href="@{/admin/blogs/list}"> List of blog </a>
+					</li>
+					<li>
+						<a th:href="@{/admin/blogs/create}"> Create new blog </a>
+					</li>
+				</ul>
+			</li>
+			<li class="nav-item nav-item-has-children">
+				<a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_3"
+					aria-controls="ddmenu_3" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+							fill="#e8eaed">
+							<path
+								d="M120-40v-280q0-83 58.5-141.5T320-520h40v-320q0-33 23.5-56.5T440-920h80q33 0 56.5 23.5T600-840v320h40q83 0 141.5 58.5T840-320v280H120Zm80-80h80v-120q0-17 11.5-28.5T320-280q17 0 28.5 11.5T360-240v120h80v-120q0-17 11.5-28.5T480-280q17 0 28.5 11.5T520-240v120h80v-120q0-17 11.5-28.5T640-280q17 0 28.5 11.5T680-240v120h80v-200q0-50-35-85t-85-35H320q-50 0-85 35t-35 85v200Zm320-400v-320h-80v320h80Zm0 0h-80 80Z" />
+						</svg>
+					</span>
+					<span class="text">Service Management</span>
+				</a>
+				<ul id="ddmenu_3" class="collapse show dropdown-nav">
+					<li>
+						<a th:href="@{/admin/services/list}"> List of service </a>
+					</li>
+					<li>
+						<a th:href="@{/admin/services/create}"> Create new service </a>
+					</li>
+				</ul>
+			</li>
+			<li class="nav-item nav-item-has-children">
+				<a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_4"
+					aria-controls="ddmenu_4" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+							fill="#e8eaed">
+							<path
+								d="M480-480q-60 0-102-42t-42-102q0-60 42-102t102-42q60 0 102 42t42 102q0 60-42 102t-102 42ZM192-192v-96q0-24.29 13-44.64Q218-353 239-366q55-32 116.21-49 61.21-17 124.79-17 63.58 0 124.79 17Q666-398 721-366q21 12 34 33t13 45v96H192Zm288.21-360Q510-552 531-573.21t21-51Q552-654 530.79-675t-51-21Q450-696 429-674.79t-21 51Q408-594 429.21-573t51 21ZM624-334v70h72v-24q0-5.31-3-9.66-3-4.34-8-6.34-14-9.14-29.5-16.57T624-334Zm-216-19.84V-312h144v-42q-18-3-36-4.5t-36-1.5q-18 0-36 1.5t-36 4.66ZM264-264h72v-70q-16 6-31.5 13.43T275-304q-5 3-8 7.03-3 4.04-3 8.97v24Zm360 0H336h288ZM480-624Z" />
+						</svg>
+					</span>
+					<span class="text">Staff Management</span>
+				</a>
+				<ul id="ddmenu_4" class="collapse show dropdown-nav">
+					<li>
+						<a th:href="@{/admin/staffs/list}"> List of staff </a>
+					</li>
+					<li>
+						<a th:href="@{/admin/staffs/create_account}"> Provide account </a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+</aside>

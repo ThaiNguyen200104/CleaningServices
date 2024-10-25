@@ -6,20 +6,22 @@ public class OrderDetail {
 	private int id;
 	private int orderId;
 	private int serId;
+	private String detailCode;
 	private double price;
 	private Date startDate;
 	private Date completeDate;
 	private Date createDate;
 	private String status;
-	
-	public OrderDetail() {}
 
-	public OrderDetail(int id, int orderId, int serId, double price, Date startDate, Date completeDate, Date createDate,
-			String status) {
-		super();
+	public OrderDetail() {
+	}
+
+	public OrderDetail(int id, int orderId, int serId, String detailCode, double price, Date startDate,
+			Date completeDate, Date createDate, String status) {
 		this.id = id;
 		this.orderId = orderId;
 		this.serId = serId;
+		this.detailCode = detailCode;
 		this.price = price;
 		this.startDate = startDate;
 		this.completeDate = completeDate;
@@ -49,6 +51,14 @@ public class OrderDetail {
 
 	public void setSerId(int serId) {
 		this.serId = serId;
+	}
+
+	public String getDetailCode() {
+		return detailCode;
+	}
+
+	public void setDetailCode(String detailCode) {
+		this.detailCode = detailCode;
 	}
 
 	public double getPrice() {
@@ -90,6 +100,5 @@ public class OrderDetail {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
 }

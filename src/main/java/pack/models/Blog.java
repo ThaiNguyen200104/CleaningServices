@@ -2,22 +2,22 @@ package pack.models;
 
 import java.sql.Date;
 
-public class Article {
+public class Blog {
 	private int id;
 	private String title;
 	private String content;
-	private String images;
+	private String image;
 	private Date createDate;
 	private Date updateDate;
-	
-	public Article() {}
 
-	public Article(int id, String title, String content, String images, Date createDate, Date updateDate) {
-		super();
+	public Blog() {
+	}
+
+	public Blog(int id, String title, String content, String image, Date createDate, Date updateDate) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
-		this.images = images;
+		this.image = image;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 	}
@@ -46,12 +46,12 @@ public class Article {
 		this.content = content;
 	}
 
-	public String getImages() {
-		return images;
+	public String getImage() {
+		return image;
 	}
 
-	public void setImages(String images) {
-		this.images = images;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public Date getCreateDate() {
@@ -69,6 +69,5 @@ public class Article {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
-	
-	
+
 }

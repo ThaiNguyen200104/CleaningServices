@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Cleanex - Contact</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
+	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Header -->
+		<div th:replace="~{main/fragments/main_header::header}"></div>
+
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2>Contact</h2>
+					</div>
+					<div class="col-12">
+						<a th:href="@{/}">Home</a>
+						<a href="#">Contact Us</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Contact -->
+		<div class="contact">
+			<div class="container">
+				<div class="section-header">
+					<p>Contact Us</p>
+					<h2>Find Your Answer / Send Message</h2>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="faqs">
+							<div id="accordion">
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
+											aria-expanded="true">
+											<span>1</span> What areas do you serve?
+										</a>
+									</div>
+									<div id="collapseOne" class="collapse show" data-parent="#accordion">
+										<div class="card-body">
+											We provide services across the city and its surrounding suburbs. Contact us
+											to see if we cover your location.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseTwo">
+											<span>2</span> Do you use eco-friendly products?
+										</a>
+									</div>
+									<div id="collapseTwo" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											Yes, we prioritize the use of eco-friendly and non-toxic products to ensure
+											the safety of our clients and the environment.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseThree">
+											<span>3</span> How do I book a service?
+										</a>
+									</div>
+									<div id="collapseThree" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											You can book a service by calling us, visiting our website, or filling out
+											the form online. We offer flexible scheduling to suit your needs.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="contact-form">
+							<form>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<input type="text" class="form-control" placeholder="Your Name"
+											required="required" />
+									</div>
+									<div class="form-group col-md-6">
+										<input type="email" class="form-control" placeholder="Your Email"
+											required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Subject" required="required" />
+								</div>
+								<div class="form-group">
+									<textarea class="form-control" rows="6" placeholder="Message"
+										required="required"></textarea>
+								</div>
+								<div><button class="btn" type="submit">Submit</button></div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div th:replace="~{main/fragments/main_footer::footer}"></div>
+
+		<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../front/lib/easing/easing.min.js"></script>
+	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../front/js/main.js"></script>
+
+</body>
+
+</html>

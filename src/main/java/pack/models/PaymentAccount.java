@@ -5,11 +5,11 @@ public class PaymentAccount {
 	private String accountNumber;
 	private String accountName;
 	private String bankName;
-	
-	public PaymentAccount() {}
+
+	public PaymentAccount() {
+	}
 
 	public PaymentAccount(int id, String accountNumber, String accountName, String bankName) {
-		super();
 		this.id = id;
 		this.accountNumber = accountNumber;
 		this.accountName = accountName;
@@ -47,6 +47,5 @@ public class PaymentAccount {
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
 	}
-	
-	
+
 }

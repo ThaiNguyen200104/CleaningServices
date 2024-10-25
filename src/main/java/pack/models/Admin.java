@@ -8,11 +8,11 @@ public class Admin {
 	private String password;
 	private String email;
 	private Date createDate;
-	
-	public Admin() {}
+
+	public Admin() {
+	}
 
 	public Admin(int id, String username, String password, String email, Date createDate) {
-		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -59,5 +59,5 @@ public class Admin {
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
-	
+
 }

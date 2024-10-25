@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>Cleanex - Staff Login</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="login-container">
+			<div class="form-container">
+				<h2>Staff Login</h2>
+				<div th:if="${loginError}" class="error-message" th:text="${loginError}"></div>
+				<form th:action="@{/staff/checklogin}" method="post">
+					<div class="form-group">
+						<label for="username">Username</label>
+						<input type="text" id="username" name="usrname" required>
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="pw" required>
+					</div>
+					<button type="submit" class="btn-primary">Login</button>
+				</form>
+			</div>
+		</div>
+
+		<script>
+			setTimeout(function () {
+				document.querySelector('.error-message').innerText = '';
+			}, 6000);
+		</script>
+	</div>
+</body>
+
+</html>
