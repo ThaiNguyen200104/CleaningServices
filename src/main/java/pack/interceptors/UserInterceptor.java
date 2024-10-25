@@ -5,9 +5,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserInterceptor implements HandlerInterceptor {
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+	 @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		Object userId = request.getSession().getAttribute("usrId");
 		if (userId != null) {

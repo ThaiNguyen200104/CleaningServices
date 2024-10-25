@@ -9,6 +9,7 @@ import pack.models.Admin;
 import pack.utils.Views;
 
 public class Admin_mapper implements RowMapper<Admin> {
+  @Override
 	public Admin mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Admin item = new Admin();
 		item.setId(rs.getInt(Views.COL_ADMIN_ID));

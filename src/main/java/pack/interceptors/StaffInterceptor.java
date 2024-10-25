@@ -11,9 +11,7 @@ import pack.repositories.StaffRepository;
 
 @Component
 public class StaffInterceptor implements HandlerInterceptor {
-	@Autowired
-	StaffRepository rep;
-
+  @Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		Object staffId = request.getSession().getAttribute("staffId");
