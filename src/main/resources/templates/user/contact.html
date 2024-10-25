@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<title>Cleanex - Contact</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="Cleaning Company Website Template" name="keywords">
+	<meta content="Cleaning Company Website Template" name="description">
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+	<link href="../front/img/favicon.ico" rel="icon">
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+	<link href="../front/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Header -->
+		<div class="header home" th:replace="~{user/fragments/usr_header::header}">
+			HEADER
+		</div>
+
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<h2>Contact Us</h2>
+					</div>
+					<div class="col-12">
+						<a href="">Home</a>
+						<a href="">Contact Us</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Contact -->
+		<div class="contact">
+			<div class="container">
+				<div class="section-header">
+					<p>Contact Us</p>
+					<h2>Find Your Answer / Send Message</h2>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="faqs">
+							<div id="accordion">
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
+											aria-expanded="true">
+											<span>1</span> Lorem ipsum dolor sit amet?
+										</a>
+									</div>
+									<div id="collapseOne" class="collapse show" data-parent="#accordion">
+										<div class="card-body">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+											pretium mi. Curabitur facilisis ornare velit non.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseTwo">
+											<span>2</span> Lorem ipsum dolor sit amet?
+										</a>
+									</div>
+									<div id="collapseTwo" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+											pretium mi. Curabitur facilisis ornare velit non.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseThree">
+											<span>3</span> Lorem ipsum dolor sit amet?
+										</a>
+									</div>
+									<div id="collapseThree" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+											pretium mi. Curabitur facilisis ornare velit non.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseFour">
+											<span>4</span> Lorem ipsum dolor sit amet?
+										</a>
+									</div>
+									<div id="collapseFour" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+											pretium mi. Curabitur facilisis ornare velit non.
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header">
+										<a class="card-link" data-toggle="collapse" href="#collapseFour">
+											<span>5</span> Lorem ipsum dolor sit amet?
+										</a>
+									</div>
+									<div id="collapseFour" class="collapse" data-parent="#accordion">
+										<div class="card-body">
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+											pretium mi. Curabitur facilisis ornare velit non.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="contact-form">
+							<form>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<input type="text" class="form-control" placeholder="Your Name"
+											required="required" />
+									</div>
+									<div class="form-group col-md-6">
+										<input type="email" class="form-control" placeholder="Your Email"
+											required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Subject" required="required" />
+								</div>
+								<div class="form-group">
+									<textarea class="form-control" rows="6" placeholder="Message"
+										required="required"></textarea>
+								</div>
+								<div><button class="btn" type="submit">Send Message</button></div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="footer" th:replace="~{user/fragments/usr_footer::footer}">
+			FOOTER
+		</div>
+
+		<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../front/lib/easing/easing.min.js"></script>
+	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../front/js/main.js"></script>
+</body>
+
+</html>

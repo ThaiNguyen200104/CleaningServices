@@ -10,47 +10,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class OtpService {
 	@Autowired
-	private TwilioService twilioService;
-
+	EmailService mailService;
+	
 	private final Map<String, String> otpData = new HashMap<>();
 	private final Map<String, Long> otpExpiryTime = new HashMap<>();
 
-	public String generateOTP(String phoneNumber) {
+	public String generateOTP(String email) {
 		Random random = new Random();
 		String otp = String.format("%04d", random.nextInt(10000));
 
-		String e164PhoneNumber = formatPhoneNumberToE164(phoneNumber);
-
-		otpData.put(e164PhoneNumber, otp);
-		otpExpiryTime.put(e164PhoneNumber, System.currentTimeMillis() + 5 * 60 * 1000);
-
-		twilioService.sendSms(e164PhoneNumber, "Your otp code is: " + otp);
+		otpData.put(email, otp);
+		otpExpiryTime.put(email, System.currentTimeMillis() + 5 * 60 * 1000);
+		
+		mailService.SendMail(email, "Your Validate Code", "Your otp is " + otp);
 		return otp;
 	}
 
-	public boolean validateOtp(String phoneNumber, String otp) {
-		String e164PhoneNumber = formatPhoneNumberToE164(phoneNumber);
+	public boolean validateOtp(String email, String otp) {
+		
 
-		if (!otpData.containsKey(e164PhoneNumber)) {
+		if (!otpData.containsKey(email)) {
 			return false;
 		}
 
-		String correctOtp = otpData.get(e164PhoneNumber);
-		Long expiryTime = otpExpiryTime.get(e164PhoneNumber);
+		String correctOtp = otpData.get(email);
+		Long expiryTime = otpExpiryTime.get(email);
 
 		return correctOtp.equals(otp) && System.currentTimeMillis() < expiryTime;
 	}
 
-	public boolean isOtpExpired(String phoneNumber) {
-		String e164PhoneNumber = formatPhoneNumberToE164(phoneNumber);
-		Long expiryTime = otpExpiryTime.get(e164PhoneNumber);
+	public boolean isOtpExpired(String email) {
+		Long expiryTime = otpExpiryTime.get(email);
 		return System.currentTimeMillis() > expiryTime;
-	}
-
-	private String formatPhoneNumberToE164(String phoneNumber) {
-		if (phoneNumber.startsWith("0")) {
-			return "+84" + phoneNumber.substring(1);
-		}
-		return phoneNumber;
 	}
 }

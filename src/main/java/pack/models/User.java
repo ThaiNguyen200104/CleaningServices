@@ -14,12 +14,9 @@ public class User {
 	private String confirmPassword;
 	private String fullname;
 
-	public User() {
-	}
-
 	public User(int id, String username, String password, String email, String phone, String address, String image,
 			Date createDate, String confirmPassword, String fullname) {
-		this.id = id;
+    this.id = id;
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -29,7 +26,9 @@ public class User {
 		this.createDate = createDate;
 		this.confirmPassword = confirmPassword;
 		this.fullname = fullname;
-	}
+  }
+	
+	public User() {}
 
 	public int getId() {
 		return id;
@@ -110,5 +109,4 @@ public class User {
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
-
 }

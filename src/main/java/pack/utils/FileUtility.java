@@ -10,6 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUtility {
 	public static String uploadFileImage(MultipartFile file, String folderName) {
 		try {
+			if (file == null || file.isEmpty()) {
+				return null;
+			}
 			String folderUpload = System.getProperty("user.dir") + "/" + folderName;
 			String fileName = System.currentTimeMillis() + file.getOriginalFilename();
 			String strPath = String.format("%s/%s", folderUpload, fileName);

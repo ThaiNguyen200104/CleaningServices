@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
@@ -18,6 +19,7 @@ import pack.models.Order;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.repositories.AdminRepository;
+import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
 
@@ -164,21 +166,32 @@ public class AdminController {
 	@GetMapping("/services/create")
 	public String create_service_view(Model model) {
 		model.addAttribute("new_item", new Service());
-
 		return Views.ADMIN_SERVICES_CREATE;
 	}
 
 	@PostMapping("/services/createService")
-	public String create_service(@ModelAttribute("new_item") Service ser, Model model) {
+	public String create_service(@RequestParam String serName, @RequestParam(required = false) String description,
+			@RequestParam double basePrice, @RequestParam int duration,
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
-			String create = rep.newService(ser);
+			Service ser = new Service();
+			ser.setSerName(serName);
+			ser.setDescription(description);
+			ser.setBasePrice(basePrice);
+			ser.setDuration(duration);
+			
+			if (image != null && !image.isEmpty()) {
+				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
+			}else {
+				ser.setImage(null);
+			}
+			String result = rep.newService(ser);
 
-			if (create.equals("success")) {
+			if (result.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
 
 			model.addAttribute("catchError", "Failed to create service, please try again.");
-
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());

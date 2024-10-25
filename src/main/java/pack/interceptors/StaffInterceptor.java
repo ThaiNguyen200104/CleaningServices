@@ -1,19 +1,15 @@
 package pack.interceptors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import pack.repositories.StaffRepository;
 
 @Component
 public class StaffInterceptor implements HandlerInterceptor {
-	@Autowired
-	StaffRepository rep;
-
+  @Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		Object staffId = request.getSession().getAttribute("staffId");

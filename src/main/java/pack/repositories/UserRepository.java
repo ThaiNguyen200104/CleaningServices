@@ -58,10 +58,10 @@ public class UserRepository {
 		}
 	}
 
-	public User checkPhoneNumberExists(String phoneNumber) {
+	public User checkEmailExists(String email) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_USER, Views.COL_USER_PHONE);
-			return db.queryForObject(str_query, new User_mapper(), new Object[] { phoneNumber });
+			String str_query = String.format("select * from %s where %s = ?", Views.TBL_USER, Views.COL_USER_EMAIL);
+			return db.queryForObject(str_query, new User_mapper(), new Object[] { email });
 		} catch (Exception e) {
 			return null;
 		}

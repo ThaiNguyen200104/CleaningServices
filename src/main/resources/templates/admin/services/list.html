@@ -66,7 +66,7 @@
 							<td th:text="${item.basePrice}"></td>
 							<td th:text="${item.duration}"></td>
 							<td>
-								<img th:if="${item.image != null}" th:src="'/uploads/'+${item.image}" />
+								<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" style="width: 75px; height: 92px;"/>
 								<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
 							</td>
 							<td>
