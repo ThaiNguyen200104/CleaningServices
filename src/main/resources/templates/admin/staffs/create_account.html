@@ -52,8 +52,13 @@
 					</div>
 					<div class="col-4">
 						<label class="form-label" for="email">Email <span style="color: red;">(*)</span></label>
-						<input class="form-control" type="email" id="email" name="email" placeholder="Enter email:"
-							required />
+						<div class="input-group">
+							<input class="form-control" type="email" id="email" name="email" placeholder="Enter email:"
+								required />
+							<div class="input-group-append">
+								<span class="input-group-text">@gmail.com</span>
+							</div>
+						</div>
 					</div>
 				</div>
 				<button type="submit" class="btn btn-success">Create</button>

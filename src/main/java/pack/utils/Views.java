@@ -3,6 +3,9 @@ package pack.utils;
 public class Views {
 	// -------------------- ADMIN -------------------- //
 
+	// REGEX
+	public static String PHONE_REGEX = "\\d{10,11}";
+
 	// ADMIN - VIEWS
 	public static String ADMIN_LOGIN = "admin/login";
 	public static String ADMIN_INDEX = "admin/index";
@@ -51,7 +54,7 @@ public class Views {
 	public static String MAIN_INDEX = "main/index";
 	public static String MAIN_SERVICES = "main/service";
 	public static String MAIN_ABOUT = "main/about";
-	public static String MAIN_BLOG = "main/article";
+	public static String MAIN_BLOG = "main/blog";
 	public static String MAIN_CONTACT = "main/contact";
 
 	// -------------------- DATABASE -------------------- //

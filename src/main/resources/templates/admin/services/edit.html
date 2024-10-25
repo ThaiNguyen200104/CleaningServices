@@ -32,26 +32,24 @@
 						enctype="multipart/form-data">
 						<div class="form-group">
 							<lable for="serName">Service Name</lable>
-							<input type="text" id="serName" name="serName" th:value="${service.serName}" required />
+							<input type="text" id="serName" name="serName" th:text="${service.serName}" />
 						</div>
 						<div class="form-group">
 							<lable for="description">Description</lable>
 							<textarea rows="3" cols="50" id="description" name="description"
-								th:value="${service.description}"></textarea>
+								th:text="${service.description}"></textarea>
 						</div>
 						<div class="form-group">
 							<lable for="basePrice">Base Price</lable>
-							<input type="number" id="basePrice" name="basePrice" th:value="${service.basePrice}"
-								required />
+							<input type="number" id="basePrice" name="basePrice" th:text="${service.basePrice}" />
 						</div>
 						<div class="form-group">
 							<lable for="duration">Duration</lable>
-							<input type="number" id="duration" name="duration" th:value="${service.duration}"
-								required />
+							<input type="number" id="duration" name="duration" th:text="${service.duration}" />
 						</div>
 						<div class="form-group">
 							<label for="image">Image</label>
-							<input type="text" id="image" name="image" accept="image/*" th:value="${service.image}" />
+							<input type="text" id="image" name="image" accept="image/*" />
 						</div>
 						<button type="submit" class="btn btn-success">Save</button>
 					</form>

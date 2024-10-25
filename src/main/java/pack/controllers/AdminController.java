@@ -283,8 +283,8 @@ public class AdminController {
 		return "";
 	}
 
-	@PostMapping("/staffs/disabled")
-	public String disabled() {
+	@PostMapping("/staffs/disabledAccount")
+	public String disabled_account() {
 		return "";
 	}
 }

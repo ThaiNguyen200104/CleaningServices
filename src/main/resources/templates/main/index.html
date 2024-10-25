@@ -19,75 +19,88 @@
 </head>
 
 <body>
-	<div class="wrapper">
-		<!-- Header -->
-		<div class="header home">
-			<div class="container-fluid">
-				<div class="header-top row align-items-center">
-					<div class="col-lg-3">
-						<div class="brand">
-							<a th:href="@{/}">Cleanex</a>
+	<!-- Header -->
+	<div class="header home">
+		<div class="container-fluid">
+			<div class="header-top row align-items-center">
+				<div class="col-lg-3">
+					<div class="brand">
+						<a th:href="@{/}">Cleanex</a>
+					</div>
+				</div>
+				<div class="col-lg-9">
+					<div class="topbar">
+						<div class="topbar-col">
+							<a href="tel:+012 345 67890"><i class="fa fa-phone-alt"></i>+012 345 67890</a>
+						</div>
+						<div class="topbar-col">
+							<a href="mailto:cleanex@gmail.com"><i class="fa fa-envelope"></i>cleanex@gmail.com</a>
 						</div>
 					</div>
-					<div class="col-lg-9">
-						<div class="topbar">
-							<div class="topbar-col">
-								<a href="tel:+012 345 67890"><i class="fa fa-phone-alt"></i>+012 345 67890</a>
-							</div>
-							<div class="topbar-col">
-								<a href="mailto:cleanex@gmail.com"><i class="fa fa-envelope"></i>cleanex@gmail.com</a>
-							</div>
-						</div>
-						<div class="navbar navbar-expand-lg bg-light navbar-light">
-							<a href="#" class="navbar-brand">MENU</a>
-							<button type="button" class="navbar-toggler" data-toggle="collapse"
-								data-target="#navbarCollapse">
-								<span class="navbar-toggler-icon"></span>
-							</button>
+					<div class="navbar navbar-expand-lg bg-light navbar-light">
+						<a href="#" class="navbar-brand">MENU</a>
+						<button type="button" class="navbar-toggler" data-toggle="collapse"
+							data-target="#navbarCollapse">
+							<span class="navbar-toggler-icon"></span>
+						</button>
 
-							<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-								<div class="navbar-nav ml-auto">
-									<a th:href="@{/}" class="nav-item nav-link">Home</a>
-									<a th:href="@{/service}" class="nav-item nav-link">Service</a>
-									<a th:href="@{/article}" class="nav-item nav-link">Blog</a>
-									<a th:href="@{/about}" class="nav-item nav-link">About</a>
-									<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
-									<a th:if="${session.usrId == null}" th:href="@{/user/login}"
-										class="nav-item nav-link">Login</a>
-									<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
-										class="nav-item nav-link">Your Account</a>
-									<a href="#emailing" class="btn">Send us Email</a>
-									<a th:if="${session.usrId != null}" th:href="@{/user/logout}"
-										class="nav-item nav-link">Logout</a>
-								</div>
+						<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+							<div class="navbar-nav ml-auto">
+								<a th:href="@{/}" class="nav-item nav-link">Home</a>
+								<a th:href="@{/service}" class="nav-item nav-link">Service</a>
+								<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
+								<a th:href="@{/about}" class="nav-item nav-link">About</a>
+								<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
+								<a th:if="${session.usrId == null}" th:href="@{/user/login}"
+									class="nav-item nav-link">Login</a>
+								<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
+									class="nav-item nav-link">Your Account</a>
+								<a th:if="${session.usrId != null}" th:href="@{/user/logout}"
+									class="nav-item nav-link">Logout</a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<div class="hero row align-items-center">
-				<div class="col-md-7">
-					<h2>Best & Trusted</h2>
-					<h2><span>Cleaning</span> Service</h2>
-					<p>At least 3 Years Experience Employees will clean your home!</p>
-					<a class="btn" href="#PlanningPrice">Plan the price now!</a>
-				</div>
-				<div class="col-md-5">
-					<div class="form">
-						<h3>Send us your expression about our service!</h3>
-						<form>
-							<input class="form-control" type="text" placeholder="Your Name">
-							<div class="control-group">
-								<select class="custom-select">
-									<option selected>Choose a service</option>
-									<option value="1">House Cleaning</option>
-									<option value="2">Apartment Cleaning</option>
-									<option value="3">Office Cleaning</option>
-								</select>
+		<div class="hero row align-items-center">
+			<div class="col-lg-6 col-md-7 col-sm-12">
+				<h2>Best & Trusted</h2>
+				<h2>
+					<span>Cleaning</span>
+					<span class="align-items-center">Service</span>
+				</h2>
+				<p class="align-items-center">At least 1 Year Experience Employees will clean your home!</p>
+				<a class="btn" href="#PlanningPrice">Plan the price now!</a>
+			</div>
+			<div class="col-lg-6 col-md-5 col-sm-12">
+				<div class="form">
+					<h3><a th:href="@{/contact}">Have something on your mind?</a></h3>
+					<div class="contact-form">
+						<form onsubmit="sendMail(event)">
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<input type="text" class="form-control" id="name" placeholder="Your Name"
+										required />
+								</div>
+								<div class="input-group form-group col-md-6">
+									<input type="email" class="form-control" id="email" placeholder="Your Email"
+										required />
+									<div class="input-group-append">
+										<span class="input-group-text igt">@gmail.com</span>
+									</div>
+								</div>
 							</div>
-							<textarea class="form-control" placeholder="Comment"></textarea>
-							<button class="btn btn-block">Send</button>
+							<div class="form-group">
+								<input type="text" class="form-control" id="subject" placeholder="Subject" required />
+							</div>
+							<div class="form-group">
+								<textarea class="form-control" rows="6" id="message" placeholder="Message"
+									maxlength="500" required></textarea>
+								<small id="charCount">0/500</small>
+							</div>
+							<button class="btn" type="submit">Submit</button>
 						</form>
 					</div>
 				</div>
@@ -95,479 +108,333 @@
 		</div>
 	</div>
 
-	<!-- About -->
-	<div class="about">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-5 col-md-6">
-					<div class="about-img">
-						<img src="../front/img/about.jpg" alt="Image">
-					</div>
-				</div>
-				<div class="col-lg-7 col-md-6">
-					<div class="about-text">
-						<h2><span>10</span> Years Experience</h2>
-						<p>We are dedicated to providing top-notch cleaning services, backed by over a decade of
-							experience. Our team is equipped with the best tools and methods to ensure your space
-							shines every time.</p>
-						<p>With a focus on reliability, efficiency, and customer satisfaction, we aim to exceed
-							expectations with every cleaning. Whether it's residential or commercial spaces, our
-							expert cleaners are here to transform your environment.</p>
-						<a class="btn" href="">Learn More</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!-- Sections -->
+	<div class="wrapper">
 
-	<!-- Service -->
-	<div class="service">
-		<div class="container">
-			<div class="section-header">
-				<p>Our Services</p>
-				<h2>Provide Services Worldwide</h2>
-			</div>
-			<div class="row">
-				<div class="col-lg-3 col-md-6">
-					<div class="service-item">
-						<img src="../front/img/service-1.jpg" alt="Service">
-						<h3>Floor Cleaning</h3>
-						<p>Our floor cleaning services cover everything from tile and hardwood to carpet. We use
-							eco-friendly products to ensure a deep clean without compromising on safety.</p>
-						<a class="btn" href="">Learn More</a>
-					</div>
+		<!-- About -->
+		<div class="about">
+			<div class="container">
+				<div class="section-header">
+					<p>About Us</p>
+					<h2>We prioritize your satisfaction in customer care</h2>
 				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="service-item">
-						<img src="../front/img/service-2.jpg" alt="Service">
-						<h3>Window & Glass Cleaning</h3>
-						<p>We make your windows sparkle with streak-free cleaning services. Perfect for homes,
-							offices, or high-rise buildings.</p>
-						<a class="btn" href="">Learn More</a>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="service-item">
-						<img src="../front/img/service-3.jpg" alt="Service">
-						<h3>Carpet Cleaning</h3>
-						<p>Our carpet cleaning goes beyond surface-level dirt, tackling stains and odors to restore
-							your carpets to their original state.</p>
-						<a class="btn" href="">Learn More</a>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="service-item">
-						<img src="../front/img/service-4.jpg" alt="Service">
-						<h3>Bathroom Cleaning</h3>
-						<p>We provide comprehensive bathroom cleaning, ensuring every surface is sanitized and
-							fresh. From scrubbing tiles to disinfecting toilets, we've got you covered.</p>
-						<a class="btn" href="">Learn More</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Feature -->
-	<div class="feature">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-5">
-					<div class="section-header left">
-						<p>Why Choose Us</p>
-						<h2>Professional Cleaners with World-Class Services</h2>
-					</div>
-					<p>We are more than just a cleaning company. Our attention to detail, commitment to quality, and
-						customer-first approach make us the top choice for residential and commercial cleaning
-						services.</p>
-					<a class="btn" th:href="@{/about}">Learn More</a>
-				</div>
-				<div class="col-md-7">
-					<div class="row align-items-center feature-item">
-						<div class="col-5">
-							<img src="../front/img/feature-1.jpg" alt="Feature">
-						</div>
-						<div class="col-7">
-							<h3>Expert Staff</h3>
-							<p>Our team is made up of highly trained professionals who are dedicated to delivering
-								exceptional results.</p>
+				<div class="row">
+					<div class="col-lg-5 col-md-6">
+						<div class="about-img">
+							<img src="../front/img/about.jpg" alt="Image">
 						</div>
 					</div>
-					<div class="row align-items-center feature-item">
-						<div class="col-5">
-							<img src="../front/img/feature-2.jpg" alt="Feature">
-						</div>
-						<div class="col-7">
-							<h3>Eco-Friendly Cleaning</h3>
-							<p>We prioritize using green cleaning products that are safe for both your family and
-								the environment.</p>
-						</div>
-					</div>
-					<div class="row align-items-center feature-item">
-						<div class="col-5">
-							<img src="../front/img/feature-3.jpg" alt="Feature">
-						</div>
-						<div class="col-7">
-							<h3>Flexible Scheduling</h3>
-							<p>We work around your schedule to ensure minimal disruption, offering convenient
-								booking options and flexible hours.</p>
+					<div class="col-lg-7 col-md-6">
+						<div class="about-text">
+							<h2><span>1</span> year of experience least</h2>
+							<p>We are dedicated to providing top-notch cleaning services, backed by over a decade of
+								experience. Our team is equipped with the best tools and methods to ensure your space
+								shines every time.</p>
+							<p>With a focus on reliability, efficiency, and customer satisfaction, we aim to exceed
+								expectations with every cleaning. Whether it's residential or commercial spaces, our
+								expert cleaners are here to transform your environment.</p>
+							<a class="btn" th:href="@{/about}">Learn More</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
 
-	<!-- Team -->
-	<div class="team">
-		<div class="container">
-			<div class="section-header">
-				<p>Team Member</p>
-				<h2>Meet Our Expert Cleaners</h2>
-			</div>
-			<div class="row">
-				<div class="col-lg-3 col-md-6">
-					<div class="team-item">
-						<div class="team-img">
-							<img src="../front/img/team-1.jpg" alt="Team Image">
-						</div>
-						<div class="team-text">
-							<h2>Josh Dunn</h2>
-							<h3>Founder & CEO</h3>
-							<p>Josh has over 15 years of experience in the cleaning industry and leads the company
-								with a commitment to excellence and customer satisfaction.</p>
-						</div>
-					</div>
+		<!-- Service -->
+		<div class="service">
+			<div class="container">
+				<div class="section-header">
+					<p>Our Services</p>
+					<h2>Provide Many Services</h2>
 				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="team-item">
-						<div class="team-img">
-							<img src="../front/img/team-2.jpg" alt="Team Image">
-						</div>
-						<div class="team-text">
-							<h2>Mollie Ross</h2>
-							<h3>Operations Manager</h3>
-							<p>Mollie ensures that every job runs smoothly, coordinating teams and managing client
-								relations to deliver seamless service.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="team-item">
-						<div class="team-img">
-							<img src="../front/img/team-3.jpg" alt="Team Image">
-						</div>
-						<div class="team-text">
-							<h2>Dylan Adams</h2>
-							<h3>Lead Cleaner</h3>
-							<p>Dylan is an expert in deep cleaning and stain removal, specializing in carpets and
-								upholstery for residential and commercial clients.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-6">
-					<div class="team-item">
-						<div class="team-img">
-							<img src="../front/img/team-4.jpg" alt="Team Image">
-						</div>
-						<div class="team-text">
-							<h2>Jennifer Page</h2>
-							<h3>Sanitation Specialist</h3>
-							<p>Jennifer focuses on ensuring hygienic, spotless environments, paying close attention
-								to every detail, especially in bathrooms and kitchens.</p>
+				<div class="row">
+					<div th:each="item : ${services}" class="col-lg-3 col-md-6 pb-4">
+						<div class="service-item">
+							<img th:src="${item.image}" alt="Service">
+							<h3>${item.serName}</h3>
+							<p>${item.basePrice}</p>
+							<p>${item.description}</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- FAQs -->
-	<div class="faqs" id="FAQ">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-5">
-					<div class="section-header left">
-						<p>You Might Ask</p>
-						<h2>Frequently Asked Questions</h2>
+		<!-- Feature -->
+		<div class="feature">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-5">
+						<div class="section-header left">
+							<p>Why Choose Us</p>
+							<h2>Professional Cleaners provide Distinguished Services</h2>
+						</div>
+						<p>We are more than just a cleaning company. Our attention to detail, commitment to quality, and
+							customer-first approach make us the top choice for residential and commercial cleaning
+							services.</p>
+						<a class="btn" th:href="@{/about}">Learn More</a>
 					</div>
-					<img src="../front/img/faqs.jpg" alt="Image">
-				</div>
-				<div class="col-md-7">
-					<div id="accordion">
-						<div class="card">
-							<div class="card-header">
-								<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
-									aria-expanded="true">
-									<span>1</span> What areas do you serve?
-								</a>
+					<div class="col-md-7">
+						<div class="row align-items-center feature-item">
+							<div class="col-5">
+								<img src="../front/img/feature-1.jpg" alt="Feature">
 							</div>
-							<div id="collapseOne" class="collapse show" data-parent="#accordion">
-								<div class="card-body">
-									We provide services across the city and its surrounding suburbs. Contact us to
-									see if we cover your location.
+							<div class="col-7">
+								<h3>Expert Staff</h3>
+								<p>Our team is made up of highly trained professionals who are dedicated to delivering
+									exceptional results.</p>
+							</div>
+						</div>
+						<div class="row align-items-center feature-item">
+							<div class="col-5">
+								<img src="../front/img/feature-2.jpg" alt="Feature">
+							</div>
+							<div class="col-7">
+								<h3>Eco-Friendly Cleaning</h3>
+								<p>We prioritize using green cleaning products that are safe for both your family and
+									the environment.</p>
+							</div>
+						</div>
+						<div class="row align-items-center feature-item">
+							<div class="col-5">
+								<img src="../front/img/feature-3.jpg" alt="Feature">
+							</div>
+							<div class="col-7">
+								<h3>Flexible Scheduling</h3>
+								<p>We work around your schedule to ensure minimal disruption, offering convenient
+									booking options and flexible hours.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Team -->
+		<div class="team">
+			<div class="container">
+				<div class="section-header">
+					<p>Team Member</p>
+					<h2>Meet Our Expert Cleaners</h2>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-6">
+						<div class="team-item">
+							<div class="team-img">
+								<img src="../front/img/team-1.jpg" alt="Team Image">
+							</div>
+							<div class="team-text">
+								<h2>Josh Dunn</h2>
+								<h3>Founder & CEO</h3>
+								<p>Josh has over 15 years of experience in the cleaning industry and leads the company
+									with a commitment to excellence and customer satisfaction.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<div class="team-item">
+							<div class="team-img">
+								<img src="../front/img/team-2.jpg" alt="Team Image">
+							</div>
+							<div class="team-text">
+								<h2>Mollie Ross</h2>
+								<h3>Operations Manager</h3>
+								<p>Mollie ensures that every job runs smoothly, coordinating teams and managing client
+									relations to deliver seamless service.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<div class="team-item">
+							<div class="team-img">
+								<img src="../front/img/team-3.jpg" alt="Team Image">
+							</div>
+							<div class="team-text">
+								<h2>Dylan Adams</h2>
+								<h3>Lead Cleaner</h3>
+								<p>Dylan is an expert in deep cleaning and stain removal, specializing in carpets and
+									upholstery for residential and commercial clients.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<div class="team-item">
+							<div class="team-img">
+								<img src="../front/img/team-4.jpg" alt="Team Image">
+							</div>
+							<div class="team-text">
+								<h2>Jennifer Page</h2>
+								<h3>Sanitation Specialist</h3>
+								<p>Jennifer focuses on ensuring hygienic, spotless environments, paying close attention
+									to every detail, especially in bathrooms and kitchens.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- FAQs -->
+		<div class="faqs" id="FAQ">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-5">
+						<div class="section-header left">
+							<p>You Might Ask</p>
+							<h2>Frequently Asked Questions</h2>
+						</div>
+						<img src="../front/img/faqs.jpg" alt="Image">
+					</div>
+					<div class="col-md-7">
+						<div id="accordion">
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
+										aria-expanded="true">
+										<span>1</span> What areas do you serve?
+									</a>
+								</div>
+								<div id="collapseOne" class="collapse show" data-parent="#accordion">
+									<div class="card-body">
+										We provide services across the city and its surrounding suburbs. Contact us to
+										see if we cover your location.
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
+										<span>2</span> Do you use eco-friendly products?
+									</a>
+								</div>
+								<div id="collapseTwo" class="collapse" data-parent="#accordion">
+									<div class="card-body">
+										Yes, we prioritize the use of eco-friendly and non-toxic products to ensure the
+										safety of our clients and the environment.
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseThree">
+										<span>3</span> How do I book a service?
+									</a>
+								</div>
+								<div id="collapseThree" class="collapse" data-parent="#accordion">
+									<div class="card-body">
+										You can book a service by calling us, visiting our website, or filling out the
+										form online. We offer flexible scheduling to suit your needs.
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="card">
-							<div class="card-header">
-								<a class="card-link" data-toggle="collapse" href="#collapseTwo">
-									<span>2</span> Do you use eco-friendly products?
-								</a>
+						<a class="btn" href="">Ask more</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Pricing Plan -->
+		<div class="price" id="PlanningPrice">
+			<div class="container">
+				<div class="section-header">
+					<p>Pricing Plan</p>
+					<h2>Choose Your Plan</h2>
+					<p>We offer flexible cleaning plans tailored to fit your needs. Whether you need a one-time deep
+						clean or regular maintenance, we have you covered!</p>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="price-item">
+							<div class="price-header">
+								<div class="price-icon">
+									<i class="fa fa-home"></i>
+								</div>
+								<div class="price-title">
+									<h2>Basic Clean</h2>
+								</div>
+								<div class="price-pricing">
+									<h2><small>$</small>49</h2>
+								</div>
 							</div>
-							<div id="collapseTwo" class="collapse" data-parent="#accordion">
-								<div class="card-body">
-									Yes, we prioritize the use of eco-friendly and non-toxic products to ensure the
-									safety of our clients and the environment.
+							<div class="price-body">
+								<div class="price-des">
+									<ul>
+										<li>Vacuuming & Dusting</li>
+										<li>Surface Wipe-Down</li>
+										<li>Basic Bathroom & Kitchen Cleaning</li>
+										<li>Complete Within 4 hours</li>
+									</ul>
+								</div>
+							</div>
+							<div class="price-footer">
+								<div class="price-action">
+									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
 								</div>
 							</div>
 						</div>
-						<div class="card">
-							<div class="card-header">
-								<a class="card-link" data-toggle="collapse" href="#collapseThree">
-									<span>3</span> How do I book a service?
-								</a>
+					</div>
+					<div class="col-md-4">
+						<div class="price-item featured-item">
+							<div class="price-header">
+								<div class="price-icon">
+									<i class="fa fa-star"></i>
+								</div>
+								<div class="price-title">
+									<h2>Deep Clean</h2>
+								</div>
+								<div class="price-pricing">
+									<h2><small>$</small>129</h2>
+								</div>
 							</div>
-							<div id="collapseThree" class="collapse" data-parent="#accordion">
-								<div class="card-body">
-									You can book a service by calling us, visiting our website, or filling out the
-									form online. We offer flexible scheduling to suit your needs.
+							<div class="price-body">
+								<div class="price-des">
+									<ul>
+										<li>Complete Room Cleaning</li>
+										<li>Window & Glass Polishing</li>
+										<li>Carpet & Upholstery Cleaning</li>
+										<li>Bathroom & Kitchen Sanitization</li>
+										<li>Complete Within 6 hours</li>
+									</ul>
+								</div>
+							</div>
+							<div class="price-footer">
+								<div class="price-action">
+									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
 								</div>
 							</div>
 						</div>
 					</div>
-					<a class="btn" href="">Ask more</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Pricing Plan -->
-	<div class="price" id="PlanningPrice">
-		<div class="container">
-			<div class="section-header">
-				<p>Pricing Plan</p>
-				<h2>Choose Your Plan</h2>
-				<p>We offer flexible cleaning plans tailored to fit your needs. Whether you need a one-time deep
-					clean or regular maintenance, we have you covered!</p>
-			</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="price-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-home"></i>
+					<div class="col-md-4">
+						<div class="price-item">
+							<div class="price-header">
+								<div class="price-icon">
+									<i class="fa fa-gift"></i>
+								</div>
+								<div class="price-title">
+									<h2>Ultimate Clean</h2>
+								</div>
+								<div class="price-pricing">
+									<h2><small>$</small>199</h2>
+								</div>
 							</div>
-							<div class="price-title">
-								<h2>Basic Clean</h2>
+							<div class="price-body">
+								<div class="price-des">
+									<ul>
+										<li>All Deep Clean Services</li>
+										<li>Exterior Cleaning (Windows, Porch, etc.)</li>
+										<li>Special Requests (Pets, Allergies)</li>
+										<li>Customized Cleaning Plan</li>
+										<li>Complete Within 12 Hours</li>
+									</ul>
+								</div>
 							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>49</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>Vacuuming & Dusting</li>
-									<li>Surface Wipe-Down</li>
-									<li>Basic Bathroom & Kitchen Cleaning</li>
-									<li>Complete Within 4 hours</li>
-								</ul>
+							<div class="price-footer">
+								<div class="price-action">
+									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
+								</div>
 							</div>
 						</div>
-						<div class="price-footer">
-							<div class="price-action">
-								<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="price-item featured-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-star"></i>
-							</div>
-							<div class="price-title">
-								<h2>Deep Clean</h2>
-							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>129</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>Complete Room Cleaning</li>
-									<li>Window & Glass Polishing</li>
-									<li>Carpet & Upholstery Cleaning</li>
-									<li>Bathroom & Kitchen Sanitization</li>
-									<li>Complete Within 6 hours</li>
-								</ul>
-							</div>
-						</div>
-						<div class="price-footer">
-							<div class="price-action">
-								<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="price-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-gift"></i>
-							</div>
-							<div class="price-title">
-								<h2>Ultimate Clean</h2>
-							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>199</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>All Deep Clean Services</li>
-									<li>Exterior Cleaning (Windows, Porch, etc.)</li>
-									<li>Special Requests (Pets, Allergies)</li>
-									<li>Customized Cleaning Plan</li>
-									<li>Complete Within 12 Hours</li>
-								</ul>
-							</div>
-						</div>
-						<div class="price-footer">
-							<div class="price-action">
-								<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Newsletter -->
-	<div class="newsletter" id="emailing">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-md-8">
-					<h2>Stay in the Loop</h2>
-					<p>Sign up for our newsletter to receive cleaning tips, special offers, and exclusive discounts
-						directly to your inbox.</p>
-				</div>
-				<div class="col-md-4">
-					<div class="form">
-						<input class="form-control" type="email" placeholder="Enter your email" />
-						<button type="submit" class="btn">Subscribe</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Testimonial -->
-	<div class="testimonial" id="ClientReview">
-		<div class="container">
-			<div class="section-header">
-				<p>Typical clients reviews</p>
-				<h2>What Our Clients Say</h2>
-			</div>
-			<div class="owl-carousel testimonials-carousel">
-				<div class="testimonial-item">
-					<div class="testimonial-img">
-						<img src="../front/img/testimonial-1.jpg" alt="">
-					</div>
-					<div class="testimonial-content">
-						<p>"I’ve been using their services for over a year, and I’m always impressed by how thorough
-							and professional they are. My home has never looked better!"</p>
-						<h4>- Connor P.</h4>
-					</div>
-				</div>
-				<div class="testimonial-item">
-					<div class="testimonial-img">
-						<img src="../front/img/testimonial-2.jpg" alt="">
-					</div>
-					<div class="testimonial-content">
-						<p>"They consistently go above and beyond. The team is friendly, punctual, and extremely
-							detail-oriented. I highly recommend them for anyone needing regular cleaning!"</p>
-						<h4>- Sarah D.</h4>
-					</div>
-				</div>
-				<div class="testimonial-item">
-					<div class="testimonial-img">
-						<img src="../front/img/testimonial-3.jpg" alt="">
-					</div>
-					<div class="testimonial-content">
-						<p>5 STARS. No Comment.</p>
-						<h4>Richard M.</h4>
-					</div>
-				</div>
-				<div class="testimonial-item">
-					<div class="testimonial-img">
-						<img src="../front/img/testimonial-4.jpg" alt="">
-					</div>
-					<div class="testimonial-content">
-						<p>"The best cleaning service I’ve used! They’re responsive, flexible with scheduling, and
-							the quality is always top-notch. Worth every penny!"</p>
-						<h4>- Maria R.</h4>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Call to Action -->
-	<div class="call-to-action">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-md-9">
-					<h2>Ready for a Sparkling Clean?</h2>
-					<p>Our expert team is just a click away. Whether you need a one-time cleaning or ongoing
-						services, we’re here to make your space shine.</p>
-				</div>
-				<div class="col-md-3">
-					<a class="btn" href="#PlanningPrice">Book Now</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Blog -->
-	<div class="blog">
-		<div class="container">
-			<div class="section-header">
-				<p>Latest From Blog</p>
-				<h2>Stay Updated From Our Blog</h2>
-			</div>
-			<div class="row">
-				<div class="col-lg-4 col-md-6">
-					<div class="blog-item">
-						<img src="../front/img/blog-1.jpg" alt="Blog">
-						<h3><a href="">5 Quick Tips for a Cleaner Home</a></h3>
-						<p>Discover some easy, time-saving cleaning hacks to keep your home looking its best all
-							week long.</p>
-						<a class="btn" href="">Read More</a>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-6">
-					<div class="blog-item">
-						<img src="../front/img/blog-2.jpg" alt="Blog">
-						<h3><a href="">The Benefits of Green Cleaning</a></h3>
-						<p>Learn about the eco-friendly products we use and how they contribute to a healthier
-							environment for your family.</p>
-						<a class="btn" href="">Read More</a>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-6">
-					<div class="blog-item">
-						<img src="../front/img/blog-3.jpg" alt="Blog">
-						<h3><a href="">How Often Should You Clean Your Carpets?</a></h3>
-						<p>Carpets trap dirt, dust, and allergens. Find out how often you should have them
-							professionally cleaned.</p>
-						<a class="btn" href="">Read More</a>
 					</div>
 				</div>
 			</div>
@@ -579,7 +446,6 @@
 
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-	</div>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>

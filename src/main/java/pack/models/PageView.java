@@ -1,4 +1,4 @@
-package pack.modelviews;
+package pack.models;
 
 public class PageView {
 	private int pageSize = 5;

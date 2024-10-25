@@ -19,11 +19,10 @@
 </head>
 
 <body>
+	<!-- Header -->
+	<div th:replace="~{main/fragments/header::mainHeader}"></div>
+
 	<div class="wrapper">
-
-		<!-- Header -->
-		<div th:replace="~{main/fragments/main_header::header}"></div>
-
 		<!-- Page Header -->
 		<div class="page-header">
 			<div class="container">
@@ -33,19 +32,18 @@
 					</div>
 					<div class="col-12">
 						<a th:href="@{/}">Home</a>
-						<a href="#">Blogs</a>
+						<a th:href="@{/blog}">Blogs</a>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<h1>Our Blog page is currently maintaining. Thanks for using our service!</h1>
-
-		<!-- Footer -->
-		<div th:replace="~{main/fragments/main_footer::footer}"></div>
-
-		<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 	</div>
+
+	<!-- Footer -->
+	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
+
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
