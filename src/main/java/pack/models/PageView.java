@@ -1,4 +1,4 @@
-package pack.modelviews;
+package pack.models;
 
 public class PageView {
 	private int pageSize = 5;
@@ -10,6 +10,8 @@ public class PageView {
 		this.pageCurrent = pageCurrent;
 		this.totalPage = totalPage;
 	}
+	
+	public PageView() {}
 
 	public int getPageSize() {
 		return pageSize;

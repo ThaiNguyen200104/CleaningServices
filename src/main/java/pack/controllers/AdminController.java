@@ -1,7 +1,5 @@
 package pack.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
 import pack.models.Blog;
-import pack.models.Order;
+import pack.models.PageView;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.repositories.AdminRepository;
+import pack.services.EmailService;
+import pack.services.OtpService;
 import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
@@ -29,6 +29,12 @@ public class AdminController {
 
 	@Autowired
 	AdminRepository rep;
+	
+	@Autowired
+	OtpService otpService;
+	
+	@Autowired
+	EmailService emailService;
 	// -------------------- INDEX & ACCOUNT --------------------//
 
 	@GetMapping("")
@@ -66,15 +72,65 @@ public class AdminController {
 
 		return "redirect:/admin/login";
 	}
+	
+	@GetMapping("/forgotPassword")
+	public String forgot_password() {
+		return Views.ADMIN_FORGOT_PASSWORD;
+	}
+
+	@PostMapping("/getOtp")
+	public String get_otp(String email, Model model, HttpServletRequest req) {
+		try {
+			if (!email.contains("@")) {
+				model.addAttribute("pageError", "Invalid email.");
+				return Views.ADMIN_FORGOT_PASSWORD;
+			}
+			Admin admin = rep.checkEmailExists(email);
+			if (admin == null) {
+				model.addAttribute("pageError", "Email is not registered, yet.");
+				return Views.ADMIN_FORGOT_PASSWORD;
+			}
+			otpService.generateOTP(email);
+			req.getSession().setAttribute("email", admin.getEmail());
+			return "redirect:/admin/validateOtp";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	@GetMapping("/validateOtp")
+	public String validate_otp() {
+		return Views.ADMIN_VALIDATE;
+	}
+
+	@PostMapping("/verification")
+	public String verify(@RequestParam String otp, HttpServletRequest req, Model model) {
+		String email = req.getSession().getAttribute("email").toString();
+		Admin admin = rep.checkEmailExists(email);
+		if (!otpService.validateOtp(email, otp)) {
+			model.addAttribute("error", "Invalid otp");
+			return Views.ADMIN_VALIDATE;
+		} else if (otpService.isOtpExpired(email)) {
+			model.addAttribute("error", "OTP is expired.");
+			return Views.ADMIN_VALIDATE;
+		}
+
+		req.getSession().setAttribute("adminId", admin.getId());
+		req.getSession().setAttribute("username", admin.getUsername());
+		return "redirect:/admin/accounts";
+	}
 
 	// -------------------- BLOGS --------------------//
 
 	@GetMapping("/blogs/list")
-	public String blog_list(Model model) {
-		List<Blog> list = rep.getBlogs();
-
-		model.addAttribute("blogs", list);
-
+	public String blog_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+		
+		model.addAttribute("blogs", rep.getBlogs(pv));
+		model.addAttribute("pv", pv);
+		
 		return Views.ADMIN_BLOGS_LIST;
 	}
 
@@ -155,11 +211,13 @@ public class AdminController {
 	// -------------------- SERVICES --------------------//
 
 	@GetMapping("/services/list")
-	public String service_list(Model model) {
-		List<Service> list = rep.getServices();
-
-		model.addAttribute("services", list);
-
+	public String service_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+		
+		model.addAttribute("services", rep.getServices(pv));
+		model.addAttribute("pv", pv);
 		return Views.ADMIN_SERVICES_LIST;
 	}
 
@@ -244,12 +302,14 @@ public class AdminController {
 	// -------------------- ORDERS --------------------//
 
 	@GetMapping("/orders/list")
-	public String order_list(Model model) {
-		List<Order> order = rep.getOrders();
-		List<Staff> staff = rep.getStaffs();
-
-		model.addAttribute("orders", order);
-		model.addAttribute("staffs", staff);
+	public String order_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+		
+		model.addAttribute("pv", pv);
+		model.addAttribute("orders", rep.getOrders(pv));
+		model.addAttribute("staffs", rep.getStaffs(pv));
 
 		return Views.ADMIN_ORDERS_LIST;
 	}
@@ -257,10 +317,13 @@ public class AdminController {
 	// -------------------- STAFFS -------------------- //
 
 	@GetMapping("/staffs/list")
-	public String staff_list(Model model) {
-		List<Staff> list = rep.getStaffs();
-
-		model.addAttribute("staffs", list);
+	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+		
+		model.addAttribute("staffs", rep.getStaffs(pv));
+		model.addAttribute("pv", pv);
 
 		return Views.ADMIN_STAFFS_LIST;
 	}
@@ -273,16 +336,27 @@ public class AdminController {
 	}
 
 	@PostMapping("/staffs/createAccount")
-	public String create_account() {
-		return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+	public String create_account(@ModelAttribute("new_item") Staff staff, Model model) {
+		try {
+			String result = rep.newStaff(staff);
+			if(result.equals("success")) {
+				emailService.SendMail(staff.getEmail(), "Your staff Account", "Username: " + staff.getUsername() + " Password: " + staff.getPassword());
+				return Views.ADMIN_STAFFS_LIST;
+			}
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "Some information(username, email) may already exists.");
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			model.addAttribute("error", "An unexpected error occurred. Please try again later.");
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		}
 	}
 
 	@GetMapping("/staffs/accounts")
 	public String staff_accounts(int id, Model model) {
-		Staff get = rep.getStaffById(id);
-
-		model.addAttribute("staffs", get);
-
+		model.addAttribute("staffs", rep.getStaffById(id));
 		return Views.ADMIN_STAFFS_INFO;
 	}
 

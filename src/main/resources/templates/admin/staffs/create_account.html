@@ -36,19 +36,18 @@
 				<h2 class="flex-grow-1">Provide account for staff</h2>
 				<a class="btn btn-primary" th:href="@{/admin/staffs/list}">Return to staff list</a>
 			</div>
-			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
-			<form th:action="@{/admin/staffs/createAccount}" method="post" th:object="${new_item}"
-				enctype="multipart/form-data" class="mt-3">
+			<div th:if="${error}" class="error-message" th:text="${error}"></div>
+			<form th:action="@{/admin/staffs/createAccount}" method="post" th:object="${new_item}" class="mt-3">
 				<div class="mb-3 row">
 					<div class="col-4">
 						<label class="form-label" for="usrname">Username <span style="color: red;">(*)</span></label>
-						<input class="form-control" type="text" id="usrname" name="usrname"
+						<input class="form-control" type="text" id="usrname" name="username"
 							placeholder="Enter username:" required />
 					</div>
 					<div class="col-4">
 						<label class="form-label" for="pwd">Password <span style="color: red;">(*)</span></label>
-						<input class="form-control" type="password" id="pwd" name="pwd" placeholder="Enter password:"
-							required />
+						<input class="form-control" type="password" id="pwd" name="password"
+							placeholder="Enter password:" required />
 					</div>
 					<div class="col-4">
 						<label class="form-label" for="email">Email <span style="color: red;">(*)</span></label>

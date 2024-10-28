@@ -67,21 +67,6 @@ public class UserRepository {
 		}
 	}
 
-	public String changePass(String phoneNumber, String password) {
-		try {
-			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_USER,
-					Views.COL_USER_PASSWORD, Views.COL_USER_PHONE);
-			String hashpassword = SecurityUtility.encryptBcrypt(password);
-			int rowaccept = db.update(str_query, new Object[] { hashpassword, phoneNumber });
-			if (rowaccept == 1) {
-				return "succeed";
-			}
-			return "failed";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
 	public String editProfile(User user) {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("update " + Views.TBL_USER + " set ");
