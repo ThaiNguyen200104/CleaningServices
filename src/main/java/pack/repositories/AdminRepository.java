@@ -25,7 +25,7 @@ public class AdminRepository {
 	@Autowired
 	JdbcTemplate db;
 
-	//Admin Region
+	// Admin Region
 	public Admin getAdminByUsername(String username) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
@@ -43,19 +43,42 @@ public class AdminRepository {
 			return null;
 		}
 	}
-	
+
 	public String newAdmin(String username, String password) {
 		try {
 			String str_query = String.format("insert into %s (username, password) values(?,?)", Views.TBL_ADMIN);
-			int rowaccept = db.update(str_query, new Object[] {username, SecurityUtility.encryptBcrypt(password)});
-			return rowaccept == 1 ? "success": "failed";
+			int rowaccept = db.update(str_query, new Object[] { username, SecurityUtility.encryptBcrypt(password) });
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
 	}
 
-	
-	//Service region
+	public Admin checkEmailExists(String email) {
+		try {
+			String str_query = String.format("select * from %s where %s = ?", Views.TBL_ADMIN, Views.COL_ADMIN_EMAIL);
+			return db.queryForObject(str_query, new Admin_mapper(), new Object[] { email });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String changePass(String password) {
+		try {
+			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_ADMIN,
+					Views.COL_ADMIN_PASSWORD, Views.COL_ADMIN_ID);
+			String hashpassword = SecurityUtility.encryptBcrypt(password);
+			int rowaccept = db.update(str_query, new Object[] { hashpassword });
+			if (rowaccept == 1) {
+				return "succeed";
+			}
+			return "failed";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	// Service region
 	public List<Service> getServices() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
@@ -64,7 +87,6 @@ public class AdminRepository {
 			return null;
 		}
 	}
-
 
 	public Service getServiceById(int id) {
 		try {
@@ -142,7 +164,7 @@ public class AdminRepository {
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
 			return rowsAffected == 1 ? "succeed" : "failed";
-			
+
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -161,7 +183,7 @@ public class AdminRepository {
 		}
 	}
 
-	//Blog region
+	// Blog region
 	public List<Blog> getBlogs() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_BLOG);
@@ -171,7 +193,6 @@ public class AdminRepository {
 		}
 	}
 
-
 	public Blog getBlogById(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
@@ -180,7 +201,6 @@ public class AdminRepository {
 			return null;
 		}
 	}
-
 
 	public String newBlog(Blog blog) {
 		try {
@@ -194,7 +214,6 @@ public class AdminRepository {
 			return e.getMessage();
 		}
 	}
-
 
 	public String editBlog(Blog blog) {
 		try {
@@ -211,7 +230,6 @@ public class AdminRepository {
 		}
 	}
 
-
 	public String deleteBlog(int id) {
 		try {
 			String str_query = String.format("delete from %s where %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
@@ -225,7 +243,7 @@ public class AdminRepository {
 		}
 	}
 
-	//Staff region
+	// Staff region
 	public List<Staff> getStaffs() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_STAFFS);
@@ -234,7 +252,6 @@ public class AdminRepository {
 			return null;
 		}
 	}
-
 
 	public Staff getStaffById(int id) {
 		try {
@@ -245,8 +262,7 @@ public class AdminRepository {
 		}
 	}
 
-	
-	//Order region
+	// Order region
 	public List<Order> getOrders() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);

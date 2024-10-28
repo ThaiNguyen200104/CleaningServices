@@ -38,9 +38,13 @@
 						<input type="password" id="password" name="pw" required>
 					</div>
 					<button type="submit" class="btn-primary">Login</button>
-					<div class="form-footer row">
-						<a class="acc-link forgot-password col-6" th:href="@{/user/forgotPassword}">Forgot Password?</a>
-						<a class="acc-link col-6" th:href="@{/user/signup}">Don't have an account?</a>
+					<div class="row">
+						<div class="col-6">
+							<a class="acc-link" th:href="@{/user/forgotPassword}">Forgot Password?</a>
+						</div>
+						<div class="col-6 d-flex justify-content-end">
+							<a class="acc-link" th:href="@{/user/signup}">Don't have an account?</a>
+						</div>
 					</div>
 				</form>
 			</div>

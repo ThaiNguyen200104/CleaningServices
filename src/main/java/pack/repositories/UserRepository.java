@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import pack.models.Order;
 import pack.models.OrderDetail;
+import pack.models.Service;
 import pack.models.User;
 import pack.modelviews.Detail_mapper;
 import pack.modelviews.Order_mapper;
+import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
@@ -54,7 +56,7 @@ public class UserRepository {
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
-			return "error";
+			return "Error: " + e.getMessage();
 		}
 	}
 
@@ -130,6 +132,15 @@ public class UserRepository {
 		}
 	}
 
+	public List<Service> getServices() {
+		try {
+			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
+			return db.query(str_query, new Service_mapper());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public List<Order> getOrderList(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER, Views.COL_ORDERS_USER_ID);
@@ -146,6 +157,26 @@ public class UserRepository {
 			return db.query(str_query, new Detail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	public double totalPrice(int orderId) {
+		String str_query = "SELECT SUM(basePrice) FROM tbl_service WHERE orderId = ?";
+		return db.queryForObject(str_query, Double.class, new Object[] { orderId });
+	}
+
+	public String newOrder(Order order) {
+		try {
+			String str_query = String.format("insert into %s (usrId, price, startDate, status) values (?,?,?,?)",
+					Views.TBL_ORDER);
+			int rowaccept = db.update(str_query,
+					new Object[] { order.getUsrId(), order.getPrice(), order.getStartDate(), order.getStatus() });
+			if (rowaccept == 1) {
+				return "success";
+			}
+			return "failed";
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
 		}
 	}
 }

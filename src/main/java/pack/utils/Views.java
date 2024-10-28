@@ -10,6 +10,8 @@ public class Views {
 	public static String ADMIN_LOGIN = "admin/login";
 	public static String ADMIN_INDEX = "admin/index";
 	public static String ADMIN_ACCOUNTS = "admin/accounts";
+	public static String ADMIN_FORGOT_PASSWORD = "admin/forgot_password";
+	public static String ADMIN_VALIDATE = "admin/validate_otp";
 
 	// ADMIN/SERVICES
 	public static String ADMIN_SERVICES_LIST = "admin/services/list";
@@ -47,6 +49,7 @@ public class Views {
 	public static String USER_VALIDATE = "user/validate_otp";
 	public static String USER_CHANGE_PASSWORD = "user/change_password";
 	public static String USER_BOOKING_HISTORY = "user/booking_history";
+	public static String USER_ORDERS = "user/orders";
 
 	// -------------------- HOMEPAGE -------------------- //
 

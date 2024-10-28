@@ -28,12 +28,21 @@
 							<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
 							<a th:href="@{/about}" class="nav-item nav-link">About</a>
 							<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
-							<a th:if="${session.usrId == null}" th:href="@{/user/login}"
-								class="nav-item nav-link">Login</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
-								class="nav-item nav-link">Your Account</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/logout}"
-								class="nav-item nav-link">Logout</a>
+							<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'login' ? 'active' : ''}">
+								Login
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/orderList}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'orders' ? 'active' : ''}">
+								Order <span class="badge badge-light">2</span>
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'accounts' ? 'active' : ''}">
+								Your Account
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
+								Logout
+							</a>
 						</div>
 					</div>
 				</div>

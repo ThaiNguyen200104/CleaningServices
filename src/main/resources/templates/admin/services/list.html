@@ -35,7 +35,7 @@
 
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
-		
+
 		<div class="mx-5 mt-5">
 			<div class="d-flex">
 				<h2 class="flex-grow-1">Service List</h2>
@@ -63,16 +63,17 @@
 									Show Description
 								</button>
 							</td>
-							<td th:text="${item.basePrice}"></td>
-							<td th:text="${item.duration}"></td>
+							<td th:text="${item.basePrice} + '$'"></td>
+							<td th:text="${item.duration} + 'h'"></td>
 							<td>
-								<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" style="width: 75px; height: 92px;"/>
-								<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+								<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+									style="width: 75px; height: 92px;" />
+								<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'"
+									style="width: 75px; height: 92px;" />
 							</td>
 							<td>
 								<a class="btn btn-warning" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
-								<a class="btn btn-danger" th:href="@{/admin/services/deelte(id=${item.id})}">Delete</a>
-
+								<a class="btn btn-danger" th:href="@{/admin/services/disable(id=${item.id})}">Disable</a>
 							</td>
 						</tr>
 					</tbody>

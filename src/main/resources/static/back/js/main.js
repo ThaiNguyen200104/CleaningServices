@@ -52,13 +52,6 @@
 	});
 })();
 
-document.addEventListener('DOMContentLoaded', function() {
-	var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-	var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
-		return new bootstrap.Popover(popoverTriggerEl)
-	})
-});
-
 setTimeout(function() {
 	document.querySelector('.error-message').innerText = '';
 }, 6000);
@@ -67,4 +60,11 @@ setTimeout(function() {
 document.getElementById('description').addEventListener('input', function() {
 	const messageLength = this.value.length;
 	document.getElementById('charCount').innerText = `${messageLength}/255`;
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+	var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
+		return new bootstrap.Popover(popoverTriggerEl)
+	})
 });

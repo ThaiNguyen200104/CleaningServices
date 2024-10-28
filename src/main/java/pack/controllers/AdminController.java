@@ -19,6 +19,7 @@ import pack.models.Order;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.repositories.AdminRepository;
+import pack.services.OtpService;
 import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
@@ -29,12 +30,18 @@ public class AdminController {
 
 	@Autowired
 	AdminRepository rep;
-	// -------------------- INDEX & ACCOUNT --------------------//
+
+	@Autowired
+	OtpService otpService;
+
+	// -------------------- INDEX --------------------//
 
 	@GetMapping("")
 	public String index() {
 		return Views.ADMIN_INDEX;
 	}
+
+	// -------------------- ACCOUNTS --------------------//
 
 	@GetMapping("/login")
 	public String login() {
@@ -65,6 +72,53 @@ public class AdminController {
 		req.getSession().invalidate();
 
 		return "redirect:/admin/login";
+	}
+
+	@GetMapping("/forgotPassword")
+	public String forgot_password() {
+		return Views.ADMIN_FORGOT_PASSWORD;
+	}
+
+	@PostMapping("/getOtp")
+	public String get_otp(String email, Model model, HttpServletRequest req) {
+		try {
+			if (!email.contains("@")) {
+				model.addAttribute("pageError", "Invalid email.");
+				return Views.ADMIN_FORGOT_PASSWORD;
+			}
+			Admin admin = rep.checkEmailExists(email);
+			if (admin == null) {
+				model.addAttribute("pageError", "Email is not registered, yet.");
+				return Views.ADMIN_FORGOT_PASSWORD;
+			}
+			otpService.generateOTP(email);
+			req.getSession().setAttribute("email", admin.getEmail());
+			return "redirect:/admin/validateOtp";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	@GetMapping("/validateOtp")
+	public String validate_otp() {
+		return Views.ADMIN_VALIDATE;
+	}
+
+	@PostMapping("/verification")
+	public String verify(@RequestParam String otp, HttpServletRequest req, Model model) {
+		String email = req.getSession().getAttribute("email").toString();
+		Admin admin = rep.checkEmailExists(email);
+		if (!otpService.validateOtp(email, otp)) {
+			model.addAttribute("error", "Invalid otp");
+			return Views.ADMIN_VALIDATE;
+		} else if (otpService.isOtpExpired(email)) {
+			model.addAttribute("error", "OTP is expired.");
+			return Views.ADMIN_VALIDATE;
+		}
+
+		req.getSession().setAttribute("adminId", admin.getId());
+		req.getSession().setAttribute("username", admin.getUsername());
+		return "redirect:/admin/accounts";
 	}
 
 	// -------------------- BLOGS --------------------//
@@ -179,10 +233,10 @@ public class AdminController {
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
 			ser.setDuration(duration);
-			
+
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
-			}else {
+			} else {
 				ser.setImage(null);
 			}
 			String result = rep.newService(ser);
@@ -205,10 +259,8 @@ public class AdminController {
 	public String edit_service_view(int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
-
 			if (get != null) {
 				model.addAttribute("edit_item", get);
-
 				return Views.ADMIN_SERVICES_EDIT;
 			} else {
 				return "redirect:/admin/blogs/list";
@@ -229,7 +281,6 @@ public class AdminController {
 			if (edit.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
-
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
 
 			return Views.ADMIN_SERVICES_EDIT;
@@ -239,6 +290,12 @@ public class AdminController {
 
 			return Views.ADMIN_SERVICES_EDIT;
 		}
+	}
+	
+	@PostMapping("/services/disable")
+	public String disable_service() {
+		
+		return Views.ADMIN_SERVICES_LIST;
 	}
 
 	// -------------------- ORDERS --------------------//

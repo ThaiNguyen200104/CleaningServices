@@ -1,5 +1,7 @@
 package pack.controllers;
 
+import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
+import pack.models.Service;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -70,7 +73,9 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String login() {
+	public String login(Model model) {
+		model.addAttribute("currentPage", "login");
+
 		return Views.USER_LOGIN;
 	}
 
@@ -106,6 +111,8 @@ public class UserController {
 		List<Order> orderList = rep.getOrderList((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", orderList);
+		model.addAttribute("currentPage", "accounts");
+
 		return Views.USER_ACCOUNTS;
 	}
 
@@ -201,8 +208,6 @@ public class UserController {
 		return "redirect:/user/accounts";
 	}
 
-	// -------------------- ACCOUNTS -------------------- //
-
 	@GetMapping("/bookingHistory")
 	public String booking_history(int id, Model model) {
 		List<OrderDetail> detail = rep.getDetailList(id);
@@ -211,4 +216,55 @@ public class UserController {
 		return Views.USER_BOOKING_HISTORY;
 	}
 
+	// -------------------- SERVICES -------------------- //
+
+	@GetMapping("/orderList")
+	public String order_list(Model model) {
+		List<Service> list = rep.getServices();
+
+		model.addAttribute("services", list);
+		model.addAttribute("currentPage", "orders");
+
+		return Views.USER_ORDERS;
+	}
+
+	private Date getDate() {
+		Calendar get = Calendar.getInstance();
+		get.set(Calendar.HOUR_OF_DAY, 0);
+		get.set(Calendar.MINUTE, 0);
+		get.set(Calendar.SECOND, 0);
+		get.set(Calendar.MILLISECOND, 0);
+		return get.getTime();
+	}
+
+	@PostMapping("/user/confirmOrder")
+    public String confirm_order(@ModelAttribute("new_item") Order order, Model model) {
+        double totalPrice = rep.totalPrice(order.getId());
+        order.setPrice(totalPrice);
+        Date today = getDate();
+        
+        if (!order.getStartDate().after(today)) {
+            model.addAttribute("error", "The start date must be scheduled after today.");
+            return Views.USER_SIGNUP;
+        }
+
+        if (order.getUsrId() == 0) {
+            model.addAttribute("error", "Invalid user ID.");
+            return Views.USER_SIGNUP;
+        }
+
+        try {
+            String result = rep.newOrder(order);
+            if (result.equals("success")) {
+                model.addAttribute("order", "You've successfully ordered our service!");
+                return "redirect:/";
+            }
+            model.addAttribute("error", "Failed to confirm order, please try again.");
+            return Views.USER_ORDERS;
+        } catch (Exception e) {
+            System.out.println("System error: " + e.getMessage());
+            model.addAttribute("error", "An unexpected error occurred. Please try again later.");
+            return Views.USER_ORDERS;
+        }
+    }
 }

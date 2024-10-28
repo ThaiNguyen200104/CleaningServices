@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
+	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Orders</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+
+	<style>
+		.table td {
+			vertical-align: middle;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Header -->
+	<div th:replace="~{user/fragments/header::userHeader}"></div>
+
+	<div class="wrapper">
+		<div class="mx-3 mt-5">
+			<div class="d-flex">
+				<h1 class="flex-grow-1">Your Orders</h1>
+			</div>
+			<form th:action="@{/user/confirmOrder}" method="post" class="mt-2" th:object="${new_item}">
+				<div class="mb-5 table-responsive">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Select</th>
+								<th>No.</th>
+								<th>Image</th>
+								<th>Service</th>
+								<th>Price</th>
+								<th>Duration</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${services}">
+								<td>
+									<div class="d-flex justify-content-center align-items-center">
+										<input class="form-check-input" style="scale: 1.2" type="checkbox"
+											name="serId" />
+									</div>
+								</td>
+								<td th:text="${item.id}"></td>
+								<td>
+									<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+										style="width: 75px; height: 92px;" />
+									<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'"
+										style="width: 75px; height: 92px;" />
+								</td>
+								<td th:text="${item.serName}"></td>
+								<td th:text="${item.basePrice} + '$'"></td>
+								<td th:text="${item.duration} + 'h'"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="row">
+					<div class="col-6">
+						<label class="form-label">
+							Set cleaning date <span style="color: red;">(*)</span>
+						</label>
+						<input class="form-control" type="date" name="startDate" required />
+					</div>
+					<div class="col-6">
+						<label class="form-label">Total Price</label>
+						<input class="form-control" type="number" name="totalPrice" th:value="${totalPrice}" readonly />
+					</div>
+				</div>
+				<div class="mt-5">
+					<button type="submit" class="btn btn-success">Confirm order</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../front/lib/easing/easing.min.js"></script>
+	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../front/js/main.js"></script>
+
+</body>
+
+</html>
