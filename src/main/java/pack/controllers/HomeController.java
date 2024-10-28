@@ -1,15 +1,12 @@
 package pack.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import pack.models.Service;
-import pack.repositories.AdminRepository;
+import pack.repositories.HomeRepository;
 import pack.utils.Views;
 
 @RequestMapping("")
@@ -17,12 +14,11 @@ import pack.utils.Views;
 public class HomeController {
 
 	@Autowired
-	AdminRepository rep;
+	HomeRepository rep;
 
 	@GetMapping("")
 	public String index(Model model) {
-		List<Service> list = rep.getServices();
-		model.addAttribute("services", list);
+		model.addAttribute("services", rep.getServices());
 
 		return Views.MAIN_INDEX;
 	}
