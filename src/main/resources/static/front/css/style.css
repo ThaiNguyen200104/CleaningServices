@@ -129,39 +129,6 @@ a:hover, a:active, a:focus {
 	color: #FFD662;
 }
 
-.header .topbar-social {
-	position: relative;
-}
-
-.header .topbar-social a {
-	display: inline-block;
-}
-
-.header .topbar-social a i {
-	margin-right: 10px;
-	font-size: 18px;
-	color: #ffffff;
-}
-
-.header .topbar-social a:last-child i {
-	margin: 0;
-}
-
-.header .topbar-social a:hover i {
-	color: #FFD662;
-}
-
-.header .dropdown-menu {
-	margin-top: 0;
-	border: 0;
-	border-radius: 5px;
-	background: #eeeeee;
-}
-
-.header .dropdown-menu a.active {
-	color: #FFD662;
-}
-
 @media ( min-width : 992px) {
 	.header .navbar {
 		background: transparent !important;
@@ -289,14 +256,18 @@ a:hover, a:active, a:focus {
 	border-radius: 5px;
 }
 
-.header .hero .form h3 {
+.header .hero .form h3, .header .hero .form a {
 	color: #ffffff;
 	font-weight: 300;
+	margin-bottom: 20px;
+}
+
+.header .hero .form a:hover {
+	color: #FFD662;
 }
 
 .header .hero .form input, .header .hero .form select, .header .hero .form textarea
 	{
-	margin-bottom: 15px;
 	height: 45px;
 	border-radius: 5px;
 	border: 1px solid rgba(255, 255, 255, .3);
@@ -305,6 +276,7 @@ a:hover, a:active, a:focus {
 
 .header .hero .form textarea {
 	height: 75px;
+	resize: none;
 }
 
 .header .hero .form select, .header .hero .form input::placeholder,
@@ -347,7 +319,9 @@ a:hover, a:active, a:focus {
 	margin-bottom: 45px;
 	padding: 90px 0;
 	text-align: center;
-	background: #FFD662;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px
+		-2px 6px 0px inset;
 }
 
 .page-header h2 {
@@ -367,7 +341,7 @@ a:hover, a:active, a:focus {
 }
 
 .page-header a:hover {
-	color: #000000;
+	color: #FFD662;
 }
 
 .page-header a::after {
@@ -951,134 +925,6 @@ a:hover, a:active, a:focus {
 }
 
 /*******************************/
-/********** Newsletter *********/
-/*******************************/
-.newsletter {
-	position: relative;
-	margin: 45px 0;
-	padding: 60px 0;
-	background: #00539C;
-}
-
-.newsletter h2 {
-	color: #ffffff;
-	font-size: 45px;
-	font-weight: 100;
-	text-transform: uppercase;
-}
-
-.newsletter p {
-	margin: 0;
-	color: #ffffff;
-	font-size: 20px;
-	font-weight: 300;
-}
-
-.newsletter .form {
-	position: relative;
-}
-
-.newsletter input {
-	height: 60px;
-	border: none;
-	border-radius: 5px;
-}
-
-.newsletter .btn {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	height: 50px;
-	padding: 10px 20px;
-	font-size: 16px;
-	font-weight: 400;
-	text-transform: uppercase;
-	color: #000000;
-	background: #FFD662;
-	border-radius: 5px;
-	transition: .3s;
-}
-
-.newsletter .btn:hover {
-	color: #ffffff;
-	background: #00539C;
-}
-
-/*******************************/
-/******* Testimonial CSS *******/
-/*******************************/
-.testimonial {
-	position: relative;
-	padding: 45px 0;
-}
-
-.testimonial .testimonial-item {
-	position: relative;
-	margin: 0 15px;
-	text-align: center;
-}
-
-.testimonial .testimonial-img {
-	position: relative;
-	margin-bottom: 15px;
-	z-index: 1;
-}
-
-.testimonial .testimonial-item img {
-	margin: 0 auto;
-	width: 150px;
-	border: 15px solid #ffffff;
-	border-radius: 100px;
-}
-
-.testimonial .testimonial-content {
-	position: relative;
-	margin-top: -90px;
-	padding: 100px 25px 25px 25px;
-	text-align: center;
-	background: #FFD662;
-	border-radius: 5px;
-}
-
-.testimonial .testimonial-item p {
-	color: #000000;
-	font-size: 16px;
-	font-weight: 400;
-}
-
-.testimonial .testimonial-content h3 {
-	color: #000000;
-	font-size: 18px;
-	font-weight: 400;
-	text-transform: uppercase;
-	margin-bottom: 5px;
-}
-
-.testimonial .testimonial-content h4 {
-	font-size: 14px;
-	font-weight: 400;
-	margin-bottom: 0;
-}
-
-.testimonial .owl-nav, .testimonial .owl-dots {
-	margin-top: 15px;
-	text-align: center;
-}
-
-.testimonial .owl-dot {
-	display: inline-block;
-	margin: 0 5px;
-	width: 12px;
-	height: 12px;
-	border-radius: 50%;
-	background: #FFD662;
-}
-
-.testimonial .owl-dot.active {
-	background: #00539C;
-}
-
-/*******************************/
 /*********** Blog CSS **********/
 /*******************************/
 .blog {
@@ -1132,29 +978,6 @@ a:hover, a:active, a:focus {
 .blog .blog-item p {
 	padding: 0 30px;
 	font-size: 16px;
-}
-
-.blog .blog-item a.btn {
-	position: relative;
-	margin: 5px 30px 30px 30px;
-	padding: 10px 20px;
-	font-size: 14px;
-	text-transform: uppercase;
-	color: #000000;
-	border: none;
-	border-radius: 5px;
-	background: #FFD662;
-	transition: .3s;
-}
-
-.blog .blog-item:hover a.btn {
-	color: #ffffff;
-	background: #00539C;
-}
-
-.blog .blog-item a.btn:hover {
-	color: #000000;
-	background: #FFD662;
 }
 
 /*******************************/
@@ -1614,6 +1437,13 @@ a:hover, a:active, a:focus {
 	border-radius: 5px;
 }
 
+.contact-form .input-group .input-group-text.igt { 
+    color: #FFD662;
+    background-color: #00539C;
+    border: none;
+}
+
+
 .contact .contact-form .btn {
 	height: 60px;
 	padding: 0 20px;
@@ -1823,10 +1653,10 @@ a:hover, a:active, a:focus {
 .login-container {
 	max-width: 500px;
 	margin: 100px auto;
-	padding: 30px;
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	padding: 50px 30px;
 	background: rgba(0, 83, 156, 0.1);
 	border-radius: 10px;
+	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
 .login-container h2 {

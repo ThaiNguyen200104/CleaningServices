@@ -62,3 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
 setTimeout(function() {
 	document.querySelector('.error-message').innerText = '';
 }, 6000);
+
+// Hàm cập nhật đếm ký tự
+document.getElementById('description').addEventListener('input', function() {
+	const messageLength = this.value.length;
+	document.getElementById('charCount').innerText = `${messageLength}/255`;
+});

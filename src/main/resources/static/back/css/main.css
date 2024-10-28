@@ -6477,7 +6477,8 @@ h6, .h6 {
 	animation: spinner 0.9s linear infinite;
 }
 
-@keyframes spinner {from { -webkit-transform:rotate(0deg);
+@
+keyframes spinner {from { -webkit-transform:rotate(0deg);
 	-moz-transform: rotate(0deg);
 	-ms-transform: rotate(0deg);
 	-o-transform: rotate(0deg);
@@ -6559,4 +6560,9 @@ to {
 
 .error-message {
 	color: red;
+}
+
+.input-group .input-group-text {
+	background-color: lightgrey;
+	border: none;
 }

@@ -43,7 +43,7 @@ public class UserController {
 
 	@PostMapping("/newUser")
 	public String create_user(@ModelAttribute("new_item") User user, HttpServletRequest req, Model model) {
-		if (!user.getPhone().matches("\\d{10,11}")) {
+		if (!user.getPhone().matches(Views.PHONE_REGEX)) {
 			model.addAttribute("error",
 					"Your phone number must only have digits and be at least 10 to 11 digits long.");
 			return Views.USER_SIGNUP;

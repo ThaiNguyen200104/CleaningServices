@@ -128,15 +128,36 @@ public class AdminRepository {
 
 	public String editService(Service ser) {
 		try {
-			String str_query = String.format("update %s set %s=?, %s=?, %s=?, %s=?, %s=? where %s=?",
-					Views.TBL_SERVICES, Views.COL_SERVICES_NAME, Views.COL_SERVICES_DESCRIPTION,
-					Views.COL_SERVICES_BASE_PRICE, Views.COL_SERVICES_DURATION, Views.COL_SERVICES_ID,
-					Views.COL_SERVICES_IMAGES);
-			int rowaccept = db.update(str_query, new Service_mapper());
-			if (rowaccept == 1) {
-				return "success";
+			StringBuilder queryBuilder = new StringBuilder("update " + Views.TBL_SERVICES + " set ");
+			List<Object> params = new ArrayList<>();
+
+			if (ser.getSerName() != null && !ser.getSerName().isEmpty()) {
+				queryBuilder.append("serName = ?, ");
+				params.add(ser.getSerName());
 			}
-			return "failed";
+
+			if (ser.getDescription() != null && !ser.getDescription().isEmpty()) {
+				queryBuilder.append("description = ?, ");
+				params.add(ser.getDescription());
+			}
+
+			if (ser.getBasePrice() != 0) {
+				queryBuilder.append("basePrice = ?, ");
+				params.add(ser.getBasePrice());
+			}
+
+			if (ser.getDuration() != 0) {
+				queryBuilder.append("duration = ?, ");
+				params.add(ser.getDuration());
+			}
+
+			queryBuilder.setLength(queryBuilder.length() - 2);
+			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
+			params.add(ser.getId());
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "succeed" : "failed";
+			
 		} catch (Exception e) {
 			return e.getMessage();
 		}

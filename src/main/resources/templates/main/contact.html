@@ -19,11 +19,10 @@
 </head>
 
 <body>
+	<!-- Header -->
+	<div th:replace="~{main/fragments/header::mainHeader}"></div>
+
 	<div class="wrapper">
-
-		<!-- Header -->
-		<div th:replace="~{main/fragments/main_header::header}"></div>
-
 		<!-- Page Header -->
 		<div class="page-header">
 			<div class="container">
@@ -33,7 +32,7 @@
 					</div>
 					<div class="col-12">
 						<a th:href="@{/}">Home</a>
-						<a href="#">Contact Us</a>
+						<a th:href="@{/contact}">Contact Us</a>
 					</div>
 				</div>
 			</div>
@@ -95,37 +94,39 @@
 					</div>
 					<div class="col-md-6">
 						<div class="contact-form">
-							<form>
+							<form onsubmit="sendMail(event)">
 								<div class="form-row">
 									<div class="form-group col-md-6">
-										<input type="text" class="form-control" placeholder="Your Name"
-											required="required" />
+										<input type="text" class="form-control" id="name" placeholder="Your Name"
+											required />
 									</div>
 									<div class="form-group col-md-6">
-										<input type="email" class="form-control" placeholder="Your Email"
-											required="required" />
+										<input type="email" class="form-control" id="email" placeholder="Your Email"
+											required />
 									</div>
 								</div>
 								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Subject" required="required" />
+									<input type="text" class="form-control" id="subject" placeholder="Subject"
+										required />
 								</div>
 								<div class="form-group">
-									<textarea class="form-control" rows="6" placeholder="Message"
-										required="required"></textarea>
+									<textarea class="form-control" rows="6" id="message" placeholder="Message"
+										maxlength="500" required></textarea>
+									<small id="charCount">0/500</small>
 								</div>
-								<div><button class="btn" type="submit">Submit</button></div>
+								<button class="btn" type="submit">Submit</button>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- Footer -->
-		<div th:replace="~{main/fragments/main_footer::footer}"></div>
-
-		<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 	</div>
+
+	<!-- Footer -->
+	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
+
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
