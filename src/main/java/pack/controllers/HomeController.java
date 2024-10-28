@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Service;
-import pack.repositories.AdminRepository;
+import pack.repositories.HomeRepository;
 import pack.utils.Views;
 
 @RequestMapping("")
@@ -19,7 +19,7 @@ import pack.utils.Views;
 public class HomeController {
 
 	@Autowired
-	AdminRepository rep;
+	HomeRepository rep;
 
 	@ModelAttribute
 	public void addCurrentPath(HttpServletRequest req, Model model) {

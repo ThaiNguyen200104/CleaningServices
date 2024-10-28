@@ -37,6 +37,8 @@ public class Views {
 	public static String STAFF_LOGIN = "staff/login";
 	public static String STAFF_INDEX = "staff/index";
 	public static String STAFF_ACCOUNTS = "staff/accounts";
+	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
+	public static String STAFF_VALIDATE = "staff/validate_otp";
 
 	// -------------------- USER -------------------- //
 

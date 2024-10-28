@@ -45,7 +45,7 @@ public class AdminRest {
 			tokenRepository.saveToken(token, expirationTime);
 
 			// Gửi email với đường link chứa token
-			String emailBody = "Click here to create your admin account: http://localhost:8080/api/createAdmin?token="
+			String emailBody = "Username: admin\\nPassword: 123\\n\\nClick here to create your admin account: http://localhost:8080/api/createAdmin?token="
 					+ token;
 			emailService.SendMail(email, "Admin Account Creation", emailBody);
 

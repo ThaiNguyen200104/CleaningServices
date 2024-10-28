@@ -59,9 +59,6 @@
 							<td th:text="${item.status}"></td>
 							<td th:text="${item.jobOccupied}"></td>
 							<td>
-								<a class="btn btn-outline-info" th:href="@{/admin/staffs/accounts(id=${item.id})}">
-									Info
-								</a>
 								<a class="btn btn-warning" th:if="${item.jobOccupied < 3}"
 									th:href="@{/admin/staffs/assignJob(id=${item.id})}">Assign Job</a>
 								<a class="btn btn-danger" th:if="${item.jobOccupied > 0}"

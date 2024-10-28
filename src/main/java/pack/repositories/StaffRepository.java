@@ -22,4 +22,13 @@ public class StaffRepository {
 			return null;
 		}
 	}
+	
+	public Staff checkEmailExists(String email) {
+		try {
+			String str_query = String.format("select * from %s where %s = ?", Views.TBL_STAFFS, Views.COL_STAFFS_EMAIL);
+			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { email });
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

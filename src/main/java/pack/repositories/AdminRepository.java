@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import pack.models.Admin;
 import pack.models.Blog;
 import pack.models.Order;
+import pack.models.PageView;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.modelviews.Admin_mapper;
@@ -78,11 +80,16 @@ public class AdminRepository {
 		}
 	}
 
-	// Service region
-	public List<Service> getServices() {
+	public List<Service> getServices(PageView pageItem) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
-			return db.query(str_query, new Service_mapper());
+			int count = db.queryForObject("select count(*) from services", Integer.class);
+			int total_page = count / pageItem.getPageSize();
+			pageItem.setTotalPage(total_page);
+
+			String str_query = String.format("select * from %s order by %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_SERVICES, Views.COL_SERVICES_ID);
+			return db.query(str_query, new Service_mapper(),
+					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
 			return null;
 		}
@@ -184,10 +191,16 @@ public class AdminRepository {
 	}
 
 	// Blog region
-	public List<Blog> getBlogs() {
+	public List<Blog> getBlogs(PageView pageItem) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_BLOG);
-			return db.query(str_query, new Blog_mapper());
+			int count = db.queryForObject("select count(*) from blogs", Integer.class);
+			int totalPage = count / pageItem.getPageSize();
+			pageItem.setTotalPage(totalPage);
+
+			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
+					Views.TBL_BLOG, Views.COL_BLOG_ID);
+			return db.query(str_query, new Blog_mapper(),
+					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
 			return null;
 		}
@@ -244,10 +257,16 @@ public class AdminRepository {
 	}
 
 	// Staff region
-	public List<Staff> getStaffs() {
+	public List<Staff> getStaffs(PageView pageItem) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_STAFFS);
-			return db.query(str_query, new Staff_mapper());
+			int count = db.queryForObject("select count(*) from staffs", Integer.class);
+			int totalPage = count / pageItem.getPageSize();
+			pageItem.setTotalPage(totalPage);
+
+			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
+					Views.TBL_STAFFS, Views.COL_STAFFS_ID);
+			return db.query(str_query, new Staff_mapper(),
+					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
 			return null;
 		}
@@ -262,11 +281,31 @@ public class AdminRepository {
 		}
 	}
 
-	// Order region
-	public List<Order> getOrders() {
+	public String newStaff(Staff staff) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
-			return db.query(str_query, new Order_mapper());
+			String str_query = String.format("insert into %s (username, password, email) values(?,?,?)",
+					Views.TBL_STAFFS);
+			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
+			int rowaccept = db.update(str_query, new Object[] { staff.getUsername(), hashpassword, staff.getEmail() });
+			return rowaccept == 1 ? "success" : "failed";
+		} catch (DuplicateKeyException e) {
+			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	// Order region
+	public List<Order> getOrders(PageView pageItem) {
+		try {
+			int count = db.queryForObject("select count(*) from orders", Integer.class);
+			int totalPage = count / pageItem.getPageSize();
+			pageItem.setTotalPage(totalPage);
+
+			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
+					Views.TBL_ORDER, Views.COL_ORDERS_ID);
+			return db.query(str_query, new Order_mapper(),
+					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
 			return null;
 		}
