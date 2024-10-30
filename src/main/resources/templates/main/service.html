@@ -3,10 +3,11 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Cleanex - Services</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Services</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -19,6 +20,10 @@
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
 
@@ -27,33 +32,114 @@
 		<div class="service">
 			<div class="container">
 				<div class="section-header">
-					<p>Our Affordable Services</p>
-					<h2>Everyone Could Book</h2>
+					<p>Our Services</p>
+					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row" th:if="${services.size() > 0}">
-					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}">
+				<div class="row">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item == null}">
 						<div class="service-item">
-							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
-							<p>
-								Price: <span
-									th:text="${#numbers.formatDecimal(item.basePrice, 1, item.basePrice % 1 == 0 ? 0 : 2)} + 
-							            (${item.serName == 'Floor Cleaning' || item.serName == 'Yard Mowing' || item.serName == 'Wall Cleaning'} ? '$ / m²' : '$')"></span>
-								<br />
-								Duration: <span
-									th:text="${#numbers.formatDecimal(item.duration, 1, item.duration % 1 == 0 ? 0 : 2)} + 'h'"></span>
-							</p>
+							<p>Price: <span th:text="${item.basePrice}"></span></p>
 							<p th:text="${item.description}"></p>
 							<a th:if="${session.usrId != null}" class="btn justify-content-end"
-								th:href="@{/user/bookService}">Book Now</a>
+								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
 						</div>
 					</div>
-
-					<!-- Message when no services are available -->
-					<p th:if="${services.size() == 0}" class="mb-5">
+					<p th:unless="${services == null}" class="col-12 mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Pricing Plan -->
+	<div class="price">
+		<div class="container">
+			<div class="section-header">
+				<p>For your convenience, we offer three packages that are suited to our usual clients needs.</p>
+				<h2>Pricing Plan Reference</h2>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-home"></i>
+							</div>
+							<div class="price-title">
+								<h2>Basic Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>49</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Basic Bathroom & Kitchen Cleaning</li>
+									<li>Vacuuming & Dusting</li>
+									<li>Surface Wipe-Down</li>
+									<li>Floor Cleaning</li>
+									<li>Complete Within 4 hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="price-item featured-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-star"></i>
+							</div>
+							<div class="price-title">
+								<h2>Deep Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>79</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Bathroom & Kitchen Sanitization</li>
+									<li>Carpet & Upholstery Cleaning</li>
+									<li>Complete Room Cleaning</li>
+									<li>Window & Glass Polishing</li>
+									<li>Complete Within 6 hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-gift"></i>
+							</div>
+							<div class="price-title">
+								<h2>Ultimate Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>129</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Exterior Cleaning (Windows, Porch, etc.)</li>
+									<li>Special Requests (Pets, Allergies)</li>
+									<li>Customized Cleaning Plan</li>
+									<li>All Deep Clean Services</li>
+									<li>Complete Within 12 Hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

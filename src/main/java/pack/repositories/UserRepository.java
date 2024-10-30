@@ -26,7 +26,7 @@ public class UserRepository {
 
 	public User findUserByUsername(String username) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_USER, Views.COL_USER_USERNAME);
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_USER, Views.COL_USER_USERNAME);
 			return db.queryForObject(str_query, new User_mapper(), new Object[] { username });
 		} catch (Exception e) {
 			return null;
@@ -35,7 +35,7 @@ public class UserRepository {
 
 	public User findUserById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_USER, Views.COL_USER_ID);
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_USER, Views.COL_USER_ID);
 			return db.queryForObject(str_query, new User_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
@@ -49,10 +49,7 @@ public class UserRepository {
 			String hashPassword = SecurityUtility.encryptBcrypt(user.getPassword());
 			int rowaccept = db.update(str_query, new Object[] { user.getUsername(), hashPassword, user.getEmail(),
 					user.getPhone(), user.getFullname() });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
@@ -62,7 +59,7 @@ public class UserRepository {
 
 	public User checkEmailExists(String email) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_USER, Views.COL_USER_EMAIL);
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_USER, Views.COL_USER_EMAIL);
 			return db.queryForObject(str_query, new User_mapper(), new Object[] { email });
 		} catch (Exception e) {
 			return null;
@@ -109,7 +106,7 @@ public class UserRepository {
 			params.add(user.getId());
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
-			return rowsAffected == 1 ? "succeed" : "failed";
+			return rowsAffected == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
@@ -126,12 +123,33 @@ public class UserRepository {
 		}
 	}
 
+	public Service getServiceById(int id) {
+		try {
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
+			return db.queryForObject(str_query, new Service_mapper(), new Object[] { id });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public List<Order> getOrderList(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER, Views.COL_ORDERS_USER_ID);
 			return db.query(str_query, new Order_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	public String newOrder(Order order) {
+		try {
+			String str_query = String.format(
+					"insert into %s (user_id, price, expected_startDate, status) values (?,?,?,?)", Views.TBL_ORDER);
+			int rowaccept = db.update(str_query,
+					new Object[] { order.getUsrId(), order.getPrice(), order.getStartDate(), order.getStatus() });
+			return rowaccept == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
 		}
 	}
 
@@ -145,23 +163,17 @@ public class UserRepository {
 		}
 	}
 
-	public double totalPrice(int orderId) {
-		String str_query = "SELECT SUM(basePrice) FROM tbl_service WHERE orderId = ?";
-		return db.queryForObject(str_query, Double.class, new Object[] { orderId });
-	}
-
-	public String newOrder(Order order) {
+	public String newDetail(OrderDetail detail) {
 		try {
-			String str_query = String.format("insert into %s (usrId, price, startDate, status) values (?,?,?,?)",
-					Views.TBL_ORDER);
-			int rowaccept = db.update(str_query,
-					new Object[] { order.getUsrId(), order.getPrice(), order.getStartDate(), order.getStatus() });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			String str_query = String.format(
+					"insert into %s (order_id, service_id, detail_code, price, start_date, complete_date, status) values (?,?,?,?,?)",
+					Views.TBL_ORDER_DETAIL);
+			int rowaccept = db.update(str_query, new Object[] { detail.getOrderId(), detail.getSerId(),
+					detail.getPrice(), detail.getStartDate(), detail.getStatus() });
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return "Error: " + e.getMessage();
 		}
 	}
+
 }

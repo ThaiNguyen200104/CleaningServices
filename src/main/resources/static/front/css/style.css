@@ -1,7 +1,6 @@
 /*******************************/
 /********* General CSS *********/
 /*******************************/
-
 html {
 	scroll-behavior: smooth;
 }
@@ -27,6 +26,28 @@ body::-webkit-scrollbar-thumb {
 
 body::-webkit-scrollbar-thumb:hover {
 	background: #ffd662;
+}
+
+#preloader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	z-index: 999999;
+}
+
+#preloader .spinner {
+	width: 80px;
+	height: 80px;
+	border: 5px solid #365CF5;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: spinner 0.9s linear infinite;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -223,7 +244,7 @@ a:hover, a:active, a:focus {
 }
 
 .badge {
-	padding:.25rem .4rem;
+	padding: .25rem .4rem;
 	background: #FFD662;
 	color: #00539C;
 }
@@ -1883,6 +1904,18 @@ a:hover, a:active, a:focus {
 
 .account-container .link a:hover {
 	color: #FFD662;
+}
+
+.acc-container {
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	padding: 30px;
+}
+
+.acc-container h2 {
+	color: #000;
+	border-bottom: 2px solid #00539C;
+	padding-bottom: 10px;
 }
 
 /*******************************/

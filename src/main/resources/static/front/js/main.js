@@ -1,4 +1,13 @@
 (function($) {
+
+	// Preloader
+	const preloader = document.querySelectorAll('#preloader');
+	window.addEventListener('load', function() {
+		if (preloader.length) {
+			this.document.getElementById('preloader').style.display = 'none'
+		}
+	});
+
 	// Back to top button
 	$(window).scroll(function() {
 		if ($(this).scrollTop() > 200) {
@@ -63,6 +72,23 @@
 
 		portfolioIsotope.isotope({ filter: $(this).data('filter') });
 	});
+
+	// Popover Button
+	$(document).ready(function() {
+		$('[data-toggle="popover"]').popover({
+			trigger: 'click',
+			html: true,
+			placement: 'top'
+		});
+	});
+	$(document).on('click', function(e) {
+		$('[data-toggle="popover"]').each(function() {
+			if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+				$(this).popover('hide');
+			}
+		});
+	});
+
 })(jQuery);
 
 setTimeout(function() {

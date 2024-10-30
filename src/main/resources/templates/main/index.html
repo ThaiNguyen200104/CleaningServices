@@ -19,6 +19,10 @@
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div class="header home">
 		<div class="container-fluid">
@@ -55,7 +59,7 @@
 								<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
 									Login
 								</a>
-								<a th:if="${session.usrId != null}" th:href="@{/user/orderList}" class="nav-item nav-link">
+								<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link">
 									Order <span class="badge badge-light">2</span>
 								</a>
 								<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
@@ -96,12 +100,13 @@
 		<div class="about">
 			<div class="container">
 				<div class="section-header">
-					<h2>We prioritize your satisfaction in customer care</h2>
+					<p>Our Staffs</p>
+					<h2>Experience Matter</h2>
 				</div>
 				<div class="row">
 					<div class="col-lg-5 col-md-6">
 						<div class="about-img">
-							<img src="../front/img/about.jpg" alt="Image">
+							<img loading="lazy" src="../front/img/about.jpg" alt="Image">
 						</div>
 					</div>
 					<div class="col-lg-7 col-md-6">
@@ -127,28 +132,19 @@
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row" th:if="${services.size() > 0}">
-					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}">
+				<div class="row">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item == null}">
 						<div class="service-item">
-							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
-							<p>
-								Price: <span
-									th:text="${#numbers.formatDecimal(item.basePrice, 1, item.basePrice % 1 == 0 ? 0 : 2)} + 
-							            (${item.serName == 'Floor Cleaning' || item.serName == 'Yard Mowing' || item.serName == 'Wall Cleaning'} ? '$ / m²' : '$')"></span>
-								<br />
-								Duration: <span
-									th:text="${#numbers.formatDecimal(item.duration, 1, item.duration % 1 == 0 ? 0 : 2)} + 'h'"></span>
-							</p>
+							<p>Price: <span th:text="${item.basePrice}"></span></p>
 							<p th:text="${item.description}"></p>
 							<a th:if="${session.usrId != null}" class="btn justify-content-end"
-								th:href="@{/user/bookService}">Book Now</a>
+								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
 						</div>
 					</div>
-
-					<!-- Message when no services are available -->
-					<p th:if="${services.size() == 0}" class="mb-5">
+					<p th:unless="${services == null}" class="col-12 mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
 				</div>
@@ -164,43 +160,48 @@
 							<p>Why Choose Us</p>
 							<h2>Professional Cleaners provide Distinguished Services</h2>
 						</div>
-						<p>We are more than just a cleaning company. Our attention to detail, commitment to quality,
-							and
-							customer-first approach make us the top choice for residential and commercial cleaning
-							services.</p>
+						<p>
+							We are more than just a cleaning company. Our attention to detail, commitment to quality,
+							and customer-first approach make us the top choice for residential and commercial cleaning
+							services
+						</p>
 						<a class="btn" th:href="@{/about}">Learn More</a>
 					</div>
 					<div class="col-md-7">
 						<div class="row align-items-center feature-item">
 							<div class="col-5">
-								<img src="../front/img/feature-1.jpg" alt="Feature">
+								<img loading="lazy" src="../front/img/feature-1.jpg" alt="Feature">
 							</div>
 							<div class="col-7">
 								<h3>Expert Staffs</h3>
-								<p>Our team is made up of highly trained professionals who are dedicated to
-									delivering
-									exceptional results.</p>
+								<p>
+									Our team is made up of highly trained professionals who are dedicated to
+									delivering exceptional results.
+								</p>
 							</div>
 						</div>
 						<div class="row align-items-center feature-item">
 							<div class="col-5">
-								<img src="../front/img/feature-2.jpg" alt="Feature">
+								<img loading="lazy" src="../front/img/feature-2.jpg" alt="Feature">
 							</div>
 							<div class="col-7">
 								<h3>Eco-Friendly Cleaning</h3>
-								<p>We prioritize using green cleaning products that are safe for both your family
-									and
-									the environment.</p>
+								<p>
+									We prioritize using green cleaning products that are safe for both your family
+									and the environment.
+								</p>
 							</div>
 						</div>
 						<div class="row align-items-center feature-item">
 							<div class="col-5">
-								<img src="../front/img/feature-3.jpg" alt="Feature">
+								<img loading="lazy" src="../front/img/feature-3.jpg" alt="Feature">
 							</div>
 							<div class="col-7">
 								<h3>Flexible Scheduling</h3>
-								<p>We work around your schedule to ensure minimal disruption, offering convenient
-									booking options and flexible hours.</p>
+								<p>
+									We work around your schedule to ensure minimal disruption, offering convenient
+									booking options and flexible hours.
+								</p>
 							</div>
 						</div>
 					</div>
@@ -219,7 +220,7 @@
 					<div class="col-lg-3 col-md-6">
 						<div class="team-item">
 							<div class="team-img">
-								<img src="../front/img/team-1.jpg" alt="Team Image">
+								<img loading="lazy" src="../front/img/team-1.jpg" alt="Team Image">
 							</div>
 							<div class="team-text">
 								<h2>Josh Dunn</h2>
@@ -233,7 +234,7 @@
 					<div class="col-lg-3 col-md-6">
 						<div class="team-item">
 							<div class="team-img">
-								<img src="../front/img/team-2.jpg" alt="Team Image">
+								<img loading="lazy" src="../front/img/team-2.jpg" alt="Team Image">
 							</div>
 							<div class="team-text">
 								<h2>Mollie Ross</h2>
@@ -247,7 +248,7 @@
 					<div class="col-lg-3 col-md-6">
 						<div class="team-item">
 							<div class="team-img">
-								<img src="../front/img/team-3.jpg" alt="Team Image">
+								<img loading="lazy" src="../front/img/team-3.jpg" alt="Team Image">
 							</div>
 							<div class="team-text">
 								<h2>Dylan Adams</h2>
@@ -261,7 +262,7 @@
 					<div class="col-lg-3 col-md-6">
 						<div class="team-item">
 							<div class="team-img">
-								<img src="../front/img/team-4.jpg" alt="Team Image">
+								<img loading="lazy" src="../front/img/team-4.jpg" alt="Team Image">
 							</div>
 							<div class="team-text">
 								<h2>Jennifer Page</h2>
@@ -285,7 +286,7 @@
 							<p>You Might Ask</p>
 							<h2>Frequently Asked Questions</h2>
 						</div>
-						<img src="../front/img/faqs.jpg" alt="Image">
+						<img loading="lazy" src="../front/img/faqs.jpg" alt="Image">
 					</div>
 					<div class="col-md-7">
 						<div id="accordion">
@@ -343,10 +344,8 @@
 		<div class="price" id="PlanningPrice">
 			<div class="container">
 				<div class="section-header">
-					<p>Pricing Plan</p>
-					<h2>Choose Your Plan</h2>
-					<p>We offer flexible cleaning plans tailored to fit your needs. Whether you need a one-time deep
-						clean or regular maintenance, we have you covered!</p>
+					<p>For your convenience, we offer three packages that are suited to our usual clients needs.</p>
+					<h2>Pricing Plan Reference</h2>
 				</div>
 				<div class="row">
 					<div class="col-md-4">
@@ -371,11 +370,6 @@
 										<li>Floor Cleaning</li>
 										<li>Complete Within 4 hours</li>
 									</ul>
-								</div>
-							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
 								</div>
 							</div>
 						</div>
@@ -404,11 +398,6 @@
 									</ul>
 								</div>
 							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-								</div>
-							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
@@ -433,11 +422,6 @@
 										<li>All Deep Clean Services</li>
 										<li>Complete Within 12 Hours</li>
 									</ul>
-								</div>
-							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
 								</div>
 							</div>
 						</div>

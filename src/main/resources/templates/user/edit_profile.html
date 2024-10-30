@@ -3,10 +3,11 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Cleanex - Edit Profile</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Edit Profile</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -19,6 +20,10 @@
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
@@ -36,9 +41,8 @@
 							th:value="${user.fullname}" />
 					</div>
 					<div class="col-6">
-						<label class="form-label" for="image">Profile Image</label>
-						<input class="form-control" style="border: none; padding: .375rem 0;" type="file" id="image"
-							name="image" accept="image/*" />
+						<label class="form-label" for="email">Email</label>
+						<input class="form-control" type="email" id="email" name="email" th:value="${user.email}" />
 					</div>
 				</div>
 				<div class="mb-3 row">
@@ -51,21 +55,25 @@
 						<input class="form-control" type="password" id="confirmPassword" name="confirmPassword" />
 					</div>
 				</div>
-				<div class="mb-3 row">
-					<div class="col-6">
-						<label class="form-label" for="email">Email</label>
-						<input class="form-control" type="email" id="email" name="email" th:value="${user.email}" />
+				<div class="mb-4 row">
+					<div class="col-3">
+						<label class="form-label" for="image">Profile Image</label>
+						<input class="form-control" style="border: none; padding: .375rem 0;" type="file" id="image"
+							name="image" accept="image/*" />
 					</div>
-					<div class="col-6">
+					<div class="col-3">
 						<label class="form-label" for="phone">Phone</label>
 						<input class="form-control" type="text" id="phone" name="phone" th:value="${user.phone}" />
 					</div>
+					<div class="col-6">
+						<label class="form-label" for="address">Address</label>
+						<input class="form-control" type="text" id="address" name="address"
+							th:value="${user.address}" />
+					</div>
 				</div>
-				<div class="mb-3">
-					<label class="form-label" for="address">Address</label>
-					<input class="form-control" type="text" id="address" name="address" th:value="${user.address}" />
+				<div class="d-flex justify-content-end">
+					<button type="submit" class="btn btn-success">Save</button>
 				</div>
-				<button type="submit" class="btn btn-primary">Update Profile</button>
 			</form>
 		</div>
 	</div>

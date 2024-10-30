@@ -45,35 +45,34 @@
 				<table class="table table-hover">
 					<thead>
 						<th>No.</th>
+						<th>Image</th>
 						<th>Service Name</th>
 						<th>Description</th>
 						<th>Price</th>
-						<th>Duration</th>
-						<th>Image</th>
 						<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="item : ${services}">
 							<td th:text="${item.id}"></td>
-							<td th:text="${item.serName}"></td>
-							<td>
-								<button type="button" data-bs-toggle="popover" title="Content"
-									class="btn btn-outline-info" th:data-bs-content="${item.description}">
-									Show Description
-								</button>
-							</td>
-							<td th:text="${item.basePrice} + '$'"></td>
-							<td th:text="${item.duration} + 'h'"></td>
 							<td>
 								<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
 									style="width: 75px; height: 92px;" />
 								<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'"
 									style="width: 75px; height: 92px;" />
 							</td>
+							<td th:text="${item.serName}"></td>
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Description"
+									class="btn btn-outline-info" th:data-bs-content="${item.description}">
+									Show Description
+								</button>
+							</td>
+							<td th:text="${item.basePrice} + '$'"></td>
 							<td>
 								<a class="btn btn-warning" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
-								<a class="btn btn-danger" th:href="@{/admin/services/disable(id=${item.id})}">Disable</a>
+								<a class="btn btn-danger"
+									th:href="@{/admin/services/disable(id=${item.id})}">Disable</a>
 							</td>
 						</tr>
 					</tbody>

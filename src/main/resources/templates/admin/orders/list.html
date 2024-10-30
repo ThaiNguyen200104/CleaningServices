@@ -35,24 +35,21 @@
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Title</th>
-								<th>Content</th>
-								<th>Images</th>
-								<th>Created Date</th>
-								<th>Updated Date</th>
+								<th>Price</th>
+								<th>Expected Start Date</th>
+								<th>Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="item : ${orders}">
 								<td th:text="${item.id}"></td>
-								<td th:text="${item.usrId}"></td>
 								<td th:text="${item.price}"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.createDate}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a th:if="${item.status} == 'pending' || ${item.status} == 'confirmed'"
+									
+									<a th:if="${item.status == 'pending' or item.status == 'confirmed'}"
 										class="btn btn-warning" th:href="@{/admin/orders/replace(id=${item.id})}">
 										Replace Staff
 									</a>

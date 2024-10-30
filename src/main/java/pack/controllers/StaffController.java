@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Staff;
-import pack.models.User;
 import pack.repositories.StaffRepository;
 import pack.services.OtpService;
 import pack.utils.SecurityUtility;

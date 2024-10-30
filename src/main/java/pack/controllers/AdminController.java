@@ -208,7 +208,7 @@ public class AdminController {
 	public String delete_blog(int id) {
 		rep.deleteBlog(id);
 
-		return "redirect:/admin/blogs/blogList";
+		return "redirect:/admin/blogs/list";
 	}
 
 	// -------------------- SERVICES --------------------//
@@ -232,27 +232,25 @@ public class AdminController {
 
 	@PostMapping("/services/createService")
 	public String create_service(@RequestParam String serName, @RequestParam(required = false) String description,
-			@RequestParam double basePrice, @RequestParam int duration,
-			@RequestParam(required = false) MultipartFile image, Model model) {
+			@RequestParam double basePrice, @RequestParam(required = false) MultipartFile image, Model model) {
 		try {
 			Service ser = new Service();
 			ser.setSerName(serName);
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
-			ser.setDuration(duration);
 
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
 			} else {
 				ser.setImage(null);
 			}
-			String result = rep.newService(ser);
 
+			String result = rep.newService(ser);
 			if (result.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
-
 			model.addAttribute("catchError", "Failed to create service, please try again.");
+
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -267,10 +265,10 @@ public class AdminController {
 		try {
 			Service get = rep.getServiceById(id);
 			if (get != null) {
-				model.addAttribute("edit_item", get);
+				model.addAttribute("service", get);
 				return Views.ADMIN_SERVICES_EDIT;
 			} else {
-				return "redirect:/admin/blogs/list";
+				return "redirect:/admin/services/list";
 			}
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -300,9 +298,18 @@ public class AdminController {
 	}
 
 	@PostMapping("/services/disable")
-	public String disable_service() {
-
-		return Views.ADMIN_SERVICES_LIST;
+	public String disable_service(@RequestParam("id") int id, Model model) {
+		try {
+			Service get = rep.getServiceById(id);
+			if (get != null) {
+				rep.disableService(id);
+				return "redirect:/admin/services/list";
+			}
+			return Views.ADMIN_SERVICES_EDIT;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			return "redirect:/admin/services/list?error=disableFail";
+		}
 	}
 
 	// -------------------- ORDERS --------------------//
@@ -347,7 +354,7 @@ public class AdminController {
 			String result = rep.newStaff(staff);
 			if (result.equals("success")) {
 				emailService.SendMail(staff.getEmail(), "Your staff Account",
-						"Username: " + staff.getUsername() + " Password: " + staff.getPassword());
+						"Username: " + staff.getUsername() + "\n Password: " + staff.getPassword());
 				return Views.ADMIN_STAFFS_LIST;
 			}
 			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
@@ -377,8 +384,8 @@ public class AdminController {
 		return "";
 	}
 
-	@PostMapping("/staffs/disabledAccount")
-	public String disabled_account() {
+	@PostMapping("/staffs/disableAccount")
+	public String disable_account() {
 		return "";
 	}
 }

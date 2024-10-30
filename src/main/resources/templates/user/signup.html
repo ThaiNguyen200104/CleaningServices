@@ -20,13 +20,17 @@
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
 		<div class="signup-container">
 			<div class="form-container">
-				<h2>Create an Account</h2>
+				<h2>Join us as a Member</h2>
 				<form th:action="@{/user/newUser}" method="post" th:object="${new_item}">
 					<div th:if="${error}" class="error-message" th:text="${error}"></div>
 					<div class="form-group">

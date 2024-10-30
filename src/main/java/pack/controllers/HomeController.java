@@ -29,11 +29,7 @@ public class HomeController {
 	@GetMapping("")
 	public String index(Model model) {
 		List<Service> list = rep.getServices();
-
-		int limit = 8;
-		if (list.size() > limit) {
-			list = list.subList(0, limit);
-		}
+		
 		model.addAttribute("services", list);
 
 		return Views.MAIN_INDEX;
@@ -43,10 +39,6 @@ public class HomeController {
 	public String service(Model model) {
 		List<Service> list = rep.getServices();
 
-		int limit = 12;
-		if (list.size() > limit) {
-			list = list.subList(0, limit);
-		}
 		model.addAttribute("services", list);
         model.addAttribute("currentPage", "service");
 

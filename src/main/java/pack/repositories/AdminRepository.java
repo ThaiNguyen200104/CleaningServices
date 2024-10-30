@@ -71,10 +71,7 @@ public class AdminRepository {
 					Views.COL_ADMIN_PASSWORD, Views.COL_ADMIN_ID);
 			String hashpassword = SecurityUtility.encryptBcrypt(password);
 			int rowaccept = db.update(str_query, new Object[] { hashpassword });
-			if (rowaccept == 1) {
-				return "succeed";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -106,35 +103,12 @@ public class AdminRepository {
 
 	public String newService(Service ser) {
 		try {
-			StringBuilder queryBuilder = new StringBuilder("insert into ");
-			queryBuilder.append(Views.TBL_SERVICES).append(" (service_name, base_price, duration");
-
-			StringBuilder valuesBuilder = new StringBuilder(" values (?, ?, ?");
-			List<Object> params = new ArrayList<>();
-
-			params.add(ser.getSerName());
-			params.add(ser.getBasePrice());
-			params.add(ser.getDuration());
-
-			if (ser.getDescription() != null) {
-				queryBuilder.append(", description");
-				valuesBuilder.append(", ?");
-				params.add(ser.getDescription());
-			}
-
-			if (ser.getImage() != null && !ser.getImage().isEmpty()) {
-				queryBuilder.append(", image");
-				valuesBuilder.append(", ?");
-				params.add(ser.getImage());
-			}
-
-			queryBuilder.append(")");
-			valuesBuilder.append(")");
-
-			queryBuilder.append(valuesBuilder);
-
-			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
-			return rowsAffected == 1 ? "success" : "failed";
+			String str_query = String.format(
+					"insert into %s (service_name, description, base_price, image) values(?,?,?,?)",
+					Views.TBL_SERVICES);
+			int rowaccept = db.update(str_query,
+					new Object[] { ser.getSerName(), ser.getDescription(), ser.getBasePrice(), ser.getImage() });
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return "Error: " + e.getMessage();
 		}
@@ -160,31 +134,24 @@ public class AdminRepository {
 				params.add(ser.getBasePrice());
 			}
 
-			if (ser.getDuration() != 0) {
-				queryBuilder.append("duration = ?, ");
-				params.add(ser.getDuration());
-			}
-
 			queryBuilder.setLength(queryBuilder.length() - 2);
 			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
-			return rowsAffected == 1 ? "succeed" : "failed";
+			return rowsAffected == 1 ? "success" : "failed";
 
 		} catch (Exception e) {
 			return e.getMessage();
 		}
 	}
 
-	public String deleteService(int id) {
+	public String disableService(int id) {
 		try {
-			String str_query = String.format("delete from %s where %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
+			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_SERVICES,
+					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
 			int rowaccept = db.update(str_query, new Object[] { id });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -219,10 +186,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("insert into %s (title, content, images) values(?,?,?)", Views.TBL_BLOG);
 			int rowaccept = db.update(str_query, new Object[] { blog.getTitle(), blog.getContent(), blog.getImage() });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -231,13 +195,10 @@ public class AdminRepository {
 	public String editBlog(Blog blog) {
 		try {
 			String str_query = String.format("update %s set %s=?, %s=?, %s=?, %s=GETDATE() where id=?", Views.TBL_BLOG,
-					Views.COL_BLOG_TITLE, Views.COL_BLOG_CONTENT, Views.COL_BLOG_IMAGES, Views.COL_BLOG_UPDATE_DATE);
+					Views.COL_BLOG_TITLE, Views.COL_BLOG_CONTENT, Views.COL_BLOG_IMAGES, Views.COL_BLOG_UPDATEDATE);
 			int rowaccept = db.update(str_query,
 					new Object[] { blog.getTitle(), blog.getContent(), blog.getImage(), blog.getUpdateDate() });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}
@@ -247,10 +208,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("delete from %s where %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
 			int rowaccept = db.update(str_query, new Object[] { id });
-			if (rowaccept == 1) {
-				return "success";
-			}
-			return "failed";
+			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
 		}

@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Orders</title>
+	<title>Cleanex - Confirm your Orders</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -22,70 +22,58 @@
 		.table td {
 			vertical-align: middle;
 		}
+
+		.startDate {
+			margin-left: 15px;
+			border: 1px solid #dee2e6;
+			border-radius: 5px;
+			height: 2rem;
+			width: 12rem;
+		}
 	</style>
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="mx-3 mt-5">
-			<div class="d-flex">
-				<h1 class="flex-grow-1">Your Orders</h1>
-			</div>
-			<form th:action="@{/user/confirmOrder}" method="post" class="mt-2" th:object="${new_item}">
+		<div class="mx-2 my-5">
+			<h1 class="mb-4">Confirm your Orders</h1>
+			<form th:action="@{/user/confirmOrder}" method="post" th:object="${new_item}">
+				<!-- Danh sách dịch vụ -->
 				<div class="mb-5 table-responsive">
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>Select</th>
 								<th>No.</th>
-								<th>Image</th>
 								<th>Service</th>
 								<th>Price</th>
-								<th>Duration</th>
+								<th>Start Date</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item : ${services}">
-								<td>
-									<div class="d-flex justify-content-center align-items-center">
-										<input class="form-check-input" style="scale: 1.2" type="checkbox"
-											name="serId" />
-									</div>
-								</td>
+							<tr th:each="item : ${orders}">
 								<td th:text="${item.id}"></td>
-								<td>
-									<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
-										style="width: 75px; height: 92px;" />
-									<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'"
-										style="width: 75px; height: 92px;" />
-								</td>
 								<td th:text="${item.serName}"></td>
 								<td th:text="${item.basePrice} + '$'"></td>
-								<td th:text="${item.duration} + 'h'"></td>
+								<td>
+									<input type="date" th:field="*{startDate}" required />
+								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 
-				<div class="row">
-					<div class="col-6">
-						<label class="form-label">
-							Set cleaning date <span style="color: red;">(*)</span>
-						</label>
-						<input class="form-control" type="date" name="startDate" required />
-					</div>
-					<div class="col-6">
-						<label class="form-label">Total Price</label>
-						<input class="form-control" type="number" name="totalPrice" th:value="${totalPrice}" readonly />
-					</div>
-				</div>
-				<div class="mt-5">
-					<button type="submit" class="btn btn-success">Confirm order</button>
+				<div class="d-flex justify-content-between">
+					<button type="submit" class="btn btn-success">Confirm</button>
 				</div>
 			</form>
+
 		</div>
 	</div>
 

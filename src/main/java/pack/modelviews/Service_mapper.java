@@ -16,8 +16,8 @@ public class Service_mapper implements RowMapper<Service> {
 		item.setSerName(rs.getString(Views.COL_SERVICES_NAME));
 		item.setDescription(rs.getString(Views.COL_SERVICES_DESCRIPTION));
 		item.setBasePrice(rs.getDouble(Views.COL_SERVICES_BASE_PRICE));
-		item.setDuration(rs.getDouble(Views.COL_SERVICES_DURATION));
 		item.setImage(rs.getString(Views.COL_SERVICES_IMAGES));
+		item.setStatus(rs.getString(Views.COL_SERVICES_STATUS));
 		return item;
 	}
 }

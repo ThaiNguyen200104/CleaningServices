@@ -32,7 +32,7 @@
 								th:classappend="${currentPage == 'login' ? 'active' : ''}">
 								Login
 							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/orderList}" class="nav-item nav-link"
+							<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link"
 								th:classappend="${currentPage == 'orders' ? 'active' : ''}">
 								Order <span class="badge badge-light">2</span>
 							</a>
