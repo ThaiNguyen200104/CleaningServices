@@ -1,6 +1,10 @@
 package pack.controllers;
 
+import java.sql.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
 import pack.models.Blog;
+import pack.models.Order;
 import pack.models.PageView;
 import pack.models.Service;
 import pack.models.Staff;
@@ -232,12 +237,14 @@ public class AdminController {
 
 	@PostMapping("/services/createService")
 	public String create_service(@RequestParam String serName, @RequestParam(required = false) String description,
-			@RequestParam double basePrice, @RequestParam(required = false) MultipartFile image, Model model) {
+			@RequestParam double basePrice, @RequestParam int staffRequired,
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
 			Service ser = new Service();
 			ser.setSerName(serName);
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
+			ser.setStaffRequired(staffRequired);
 
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
@@ -251,6 +258,9 @@ public class AdminController {
 			}
 			model.addAttribute("catchError", "Failed to create service, please try again.");
 
+			return Views.ADMIN_SERVICES_CREATE;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("catchError", "Service name may already exists.");
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -297,8 +307,8 @@ public class AdminController {
 		}
 	}
 
-	@PostMapping("/services/disable")
-	public String disable_service(@RequestParam("id") int id, Model model) {
+	@GetMapping("/services/disable")
+	public String disable_service(@RequestParam int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
 			if (get != null) {
@@ -311,7 +321,7 @@ public class AdminController {
 			return "redirect:/admin/services/list?error=disableFail";
 		}
 	}
-
+	
 	// -------------------- ORDERS --------------------//
 
 	@GetMapping("/orders/list")
@@ -384,8 +394,12 @@ public class AdminController {
 		return "";
 	}
 
-	@PostMapping("/staffs/disableAccount")
-	public String disable_account() {
-		return "";
+	@PostMapping("/staffs/disabledAccount")
+	public ResponseEntity<String> disabled_account(@RequestParam int id) {
+		String result = rep.disableStaff(id);
+		if (result.equals("success")) {
+			return ResponseEntity.ok("success");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
 }

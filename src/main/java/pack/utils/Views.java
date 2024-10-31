@@ -101,6 +101,7 @@ public class Views {
 	public static String COL_SERVICES_BASE_PRICE = "base_price";
 	public static String COL_SERVICES_IMAGES = "image";
 	public static String COL_SERVICES_STATUS = "status";
+	public static String COL_SERVICES_STAFF_REQUIRED = "staff_required";
 
 	// ORDERS
 	public static String TBL_ORDER = "orders";

@@ -2,15 +2,17 @@ package pack.controllers;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
-import pack.models.Service;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -212,32 +213,9 @@ public class UserController {
 
 	// -------------------- SERVICES -------------------- //
 
-	@PostMapping("/bookService/{serId}")
-	public String bookService(@PathVariable("serId") int serId, HttpServletRequest req, Model model) {
-		int usrId = (int) req.getSession().getAttribute("usrId");
-		Service service = rep.getServiceById(serId);
-
-		Order order = new Order();
-		order.setUsrId(usrId);
-		order.setId(serId);
-		order.setPrice(service.getBasePrice());
-		order.setStatus("pending");
-
-		String result = rep.newOrder(order);
-		if (!result.equals("success")) {
-			model.addAttribute("error", "Failed to book the service. Please try again.");
-		}
-		List<Order> list = rep.getOrderList(usrId);
-		model.addAttribute("orders", list);
-
-		return "redirect:/user/orders";
-	}
-
 	@GetMapping("/orders")
-	public String order_list(Model model) {
-		List<Service> list = rep.getServices();
-
-		model.addAttribute("services", list);
+	public String order_list(Model model, HttpServletRequest request) {
+		model.addAttribute("services", rep.getServiceById((int) request.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "services");
 
 		return Views.USER_ORDERS;
@@ -295,5 +273,28 @@ public class UserController {
 		combinedCode += randomSuffix;
 
 		return combinedCode.length() > 10 ? combinedCode.substring(combinedCode.length() - 10) : combinedCode;
+	}
+
+	@PostMapping("/bookService")
+	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
+			@RequestParam Date startDate) {
+
+		Order order = new Order();
+		order.setUsrId(userId);
+		Date currentDate = new Date(System.currentTimeMillis());
+		if (startDate.before(currentDate)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+		}
+		
+		if (rep.isServiceInOrder(userId, serviceId)) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+		}
+		String result = rep.newOrder(order, serviceId, startDate);
+
+		if ("success".equals(result)) {
+			return ResponseEntity.ok("Order created successfully.");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+		}
 	}
 }

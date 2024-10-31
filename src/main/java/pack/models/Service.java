@@ -7,17 +7,21 @@ public class Service {
 	private double basePrice;
 	private String image;
 	private String status;
+	private int staffRequired;
 
 	public Service() {
 	}
 
-	public Service(int id, String serName, String description, double basePrice, String image, String status) {
+	public Service(int id, String serName, String description, double basePrice, String image, String status,
+			int staffRequired) {
+		super();
 		this.id = id;
 		this.serName = serName;
 		this.description = description;
 		this.basePrice = basePrice;
 		this.image = image;
 		this.status = status;
+		this.staffRequired = staffRequired;
 	}
 
 	public int getId() {
@@ -66,6 +70,14 @@ public class Service {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public int getStaffRequired() {
+		return staffRequired;
+	}
+
+	public void setStaffRequired(int staffRequired) {
+		this.staffRequired = staffRequired;
 	}
 
 }

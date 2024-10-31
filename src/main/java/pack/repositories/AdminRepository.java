@@ -103,14 +103,36 @@ public class AdminRepository {
 
 	public String newService(Service ser) {
 		try {
-			String str_query = String.format(
-					"insert into %s (service_name, description, base_price, image) values(?,?,?,?)",
-					Views.TBL_SERVICES);
-			int rowaccept = db.update(str_query,
-					new Object[] { ser.getSerName(), ser.getDescription(), ser.getBasePrice(), ser.getImage() });
-			return rowaccept == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			return "Error: " + e.getMessage();
+			StringBuilder queryBuilder = new StringBuilder("insert into ");
+			queryBuilder.append(Views.TBL_SERVICES).append(" (service_name, base_price, staff_required");
+			StringBuilder valuesBuilder = new StringBuilder(" values (?, ?, ?");
+
+			List<Object> params = new ArrayList<>();
+			params.add(ser.getSerName());
+			params.add(ser.getBasePrice());
+			params.add(ser.getStaffRequired());
+
+			if (ser.getDescription() != null) {
+				queryBuilder.append(", description");
+				valuesBuilder.append(", ?");
+				params.add(ser.getDescription());
+			}
+			if (ser.getImage() != null && !ser.getImage().isEmpty()) {
+				queryBuilder.append(", image");
+				valuesBuilder.append(", ?");
+				params.add(ser.getImage());
+			}
+			queryBuilder.append(")");
+			valuesBuilder.append(")");
+			queryBuilder.append(valuesBuilder);
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
+		}catch (DuplicateKeyException e) {
+			throw new IllegalArgumentException("Service name may already exists.");
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -150,7 +172,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
-			int rowaccept = db.update(str_query, new Object[] { id });
+			int rowaccept = db.update(str_query, new Object[] { "disabled", id});
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
@@ -250,6 +272,18 @@ public class AdminRepository {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
 			return e.getMessage();
+		}
+	}
+
+	public String disableStaff(int id) {
+		try {
+			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
+			int rowaccepted = db.update(str_query, new Object[] { "disabled", id });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
 		}
 	}
 

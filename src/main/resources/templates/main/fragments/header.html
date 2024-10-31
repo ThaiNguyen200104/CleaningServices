@@ -32,7 +32,7 @@
 								th:classappend="${currentPage == 'about' ? 'active' : ''}">About</a>
 							<a th:href="@{/contact}" class="nav-item nav-link"
 								th:classappend="${currentPage == 'contact' ? 'active' : ''}">Contact</a>
-								
+
 							<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
 								Login
 							</a>

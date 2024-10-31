@@ -43,6 +43,11 @@ public class StaffController {
 			model.addAttribute("loginError", "Account doesn't exists, please check again!");
 			return Views.STAFF_LOGIN;
 		}
+		
+		if(staff.getStatus().equals("disabled")) {
+			model.addAttribute("loginError", "Your account has been disabled.");
+			return Views.STAFF_LOGIN;
+		}
 
 		if (!SecurityUtility.compareBcrypt(staff.getPassword(), password)) {
 			model.addAttribute("loginError", "Password incorrect!");

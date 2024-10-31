@@ -16,6 +16,46 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+	<style>
+		#bookingModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			text-align: center;
+			width: 50vw;
+		}
+
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 1000;
+		}
+
+		.success {
+			background-color: #4CAF50;
+		}
+
+		.error {
+			background-color: #f44336;
+		}
+	</style>
 </head>
 
 <body>
@@ -132,22 +172,39 @@
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row">
-					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item == null}">
+				<div class="row" th:if="${services.size() > 0}">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
+						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
-							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
-							<p>Price: <span th:text="${item.basePrice}"></span></p>
+							<p>
+								Price: <span
+									th:text="${#numbers.formatDecimal(item.basePrice, 1, item.basePrice % 1 == 0 ? 0 : 2)} + 
+							            (${item.serName == 'Floor Cleaning' || item.serName == 'Yard Mowing' || item.serName == 'Wall Cleaning'} ? '$ / m²' : '$')"></span>
+							</p>
 							<p th:text="${item.description}"></p>
-							<a th:if="${session.usrId != null}" class="btn justify-content-end"
-								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
+							<a class="btn justify-content-end" href="javascript:void(0);"
+								onclick="showBookingPopup(event)"
+								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
 						</div>
 					</div>
-					<p th:unless="${services == null}" class="col-12 mb-5">
+
+
+					<!-- Message when no services are available -->
+					<p th:if="${services.size() == 0}" class="mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
 				</div>
+			</div>
+		</div>
+		<div id="bookingModal" style="display: none;">
+			<div class="modal-content">
+				<h4>Select Service Date</h4>
+				<input type="date" id="serviceDate" required>
+				<button onclick="confirmBooking()">Confirm Booking</button>
+				<button onclick="closePopup()">Cancel</button>
 			</div>
 		</div>
 
@@ -437,14 +494,78 @@
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 	<script src="../front/lib/easing/easing.min.js"></script>
 	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
+
+	<script>
+		let selectedServiceId = null;
+		let UserId = null;
+
+		function showBookingPopup(event) {
+			var item = event.target
+			selectedServiceId = item.getAttribute("serId");
+			UserId = item.getAttribute("userId");
+			document.getElementById("bookingModal").style.display = "flex";
+		}
+
+		function closePopup() {
+			document.getElementById("bookingModal").style.display = "none";
+		}
+
+		function confirmBooking() {
+			const date = document.getElementById("serviceDate").value;
+
+			if (!date) {
+				alert("Please select a date.");
+				return;
+			}
+
+			if (UserId == null) {
+				window.location.href = '/user/login';
+			}
+
+			$.ajax({
+				url: '/user/bookService',
+				type: 'POST',
+				data: {
+					userId: UserId,
+					serviceId: selectedServiceId,
+					startDate: date
+				},
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						showNotification(response, "success");
+						closePopup();
+					} else {
+						showNotification("Failed to create order: " + response, "error");
+					}
+				},
+				error: function (xhr) {
+					if (xhr.status === 409) {
+						showNotification("Service is already booked.", "warning");
+					} else {
+						console.error('Error:', xhr.responseText);
+						showNotification("Error: " + xhr.responseText, "error");
+					}
+				}
+			});
+		}
+		function showNotification(message, type) {
+			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
+			$('body').append(notification);
+			notification.fadeIn('slow').delay(3000).fadeOut('slow', function () {
+				$(this).remove();
+			});
+		}
+	</script>
 </body>
 
 </html>
