@@ -29,18 +29,21 @@ public class AdminController {
 
 	@Autowired
 	AdminRepository rep;
-	
+
 	@Autowired
 	OtpService otpService;
-	
+
 	@Autowired
 	EmailService emailService;
-	// -------------------- INDEX & ACCOUNT --------------------//
+
+	// -------------------- INDEX --------------------//
 
 	@GetMapping("")
 	public String index() {
 		return Views.ADMIN_INDEX;
 	}
+
+	// -------------------- ACCOUNTS --------------------//
 
 	@GetMapping("/login")
 	public String login() {
@@ -72,7 +75,7 @@ public class AdminController {
 
 		return "redirect:/admin/login";
 	}
-	
+
 	@GetMapping("/forgotPassword")
 	public String forgot_password() {
 		return Views.ADMIN_FORGOT_PASSWORD;
@@ -127,10 +130,10 @@ public class AdminController {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(20);
-		
+
 		model.addAttribute("blogs", rep.getBlogs(pv));
 		model.addAttribute("pv", pv);
-		
+
 		return Views.ADMIN_BLOGS_LIST;
 	}
 
@@ -205,7 +208,7 @@ public class AdminController {
 	public String delete_blog(int id) {
 		rep.deleteBlog(id);
 
-		return "redirect:/admin/blogs/blogList";
+		return "redirect:/admin/blogs/list";
 	}
 
 	// -------------------- SERVICES --------------------//
@@ -215,7 +218,7 @@ public class AdminController {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(20);
-		
+
 		model.addAttribute("services", rep.getServices(pv));
 		model.addAttribute("pv", pv);
 		return Views.ADMIN_SERVICES_LIST;
@@ -229,27 +232,25 @@ public class AdminController {
 
 	@PostMapping("/services/createService")
 	public String create_service(@RequestParam String serName, @RequestParam(required = false) String description,
-			@RequestParam double basePrice, @RequestParam int duration,
-			@RequestParam(required = false) MultipartFile image, Model model) {
+			@RequestParam double basePrice, @RequestParam(required = false) MultipartFile image, Model model) {
 		try {
 			Service ser = new Service();
 			ser.setSerName(serName);
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
-			ser.setDuration(duration);
-			
+
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
-			}else {
+			} else {
 				ser.setImage(null);
 			}
-			String result = rep.newService(ser);
 
+			String result = rep.newService(ser);
 			if (result.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
-
 			model.addAttribute("catchError", "Failed to create service, please try again.");
+
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -263,13 +264,11 @@ public class AdminController {
 	public String edit_service_view(int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
-
 			if (get != null) {
-				model.addAttribute("edit_item", get);
-
+				model.addAttribute("service", get);
 				return Views.ADMIN_SERVICES_EDIT;
 			} else {
-				return "redirect:/admin/blogs/list";
+				return "redirect:/admin/services/list";
 			}
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -287,7 +286,6 @@ public class AdminController {
 			if (edit.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
-
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
 
 			return Views.ADMIN_SERVICES_EDIT;
@@ -299,6 +297,21 @@ public class AdminController {
 		}
 	}
 
+	@PostMapping("/services/disable")
+	public String disable_service(@RequestParam("id") int id, Model model) {
+		try {
+			Service get = rep.getServiceById(id);
+			if (get != null) {
+				rep.disableService(id);
+				return "redirect:/admin/services/list";
+			}
+			return Views.ADMIN_SERVICES_EDIT;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			return "redirect:/admin/services/list?error=disableFail";
+		}
+	}
+
 	// -------------------- ORDERS --------------------//
 
 	@GetMapping("/orders/list")
@@ -306,7 +319,7 @@ public class AdminController {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(20);
-		
+
 		model.addAttribute("pv", pv);
 		model.addAttribute("orders", rep.getOrders(pv));
 		model.addAttribute("staffs", rep.getStaffs(pv));
@@ -321,7 +334,7 @@ public class AdminController {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(20);
-		
+
 		model.addAttribute("staffs", rep.getStaffs(pv));
 		model.addAttribute("pv", pv);
 
@@ -339,8 +352,9 @@ public class AdminController {
 	public String create_account(@ModelAttribute("new_item") Staff staff, Model model) {
 		try {
 			String result = rep.newStaff(staff);
-			if(result.equals("success")) {
-				emailService.SendMail(staff.getEmail(), "Your staff Account", "Username: " + staff.getUsername() + " Password: " + staff.getPassword());
+			if (result.equals("success")) {
+				emailService.SendMail(staff.getEmail(), "Your staff Account",
+						"Username: " + staff.getUsername() + "\n Password: " + staff.getPassword());
 				return Views.ADMIN_STAFFS_LIST;
 			}
 			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
@@ -370,8 +384,8 @@ public class AdminController {
 		return "";
 	}
 
-	@PostMapping("/staffs/disabledAccount")
-	public String disabled_account() {
+	@PostMapping("/staffs/disableAccount")
+	public String disable_account() {
 		return "";
 	}
 }

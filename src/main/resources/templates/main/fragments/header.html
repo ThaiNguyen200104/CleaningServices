@@ -24,16 +24,27 @@
 					<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 						<div class="navbar-nav ml-auto">
 							<a th:href="@{/}" class="nav-item nav-link">Home</a>
-							<a th:href="@{/service}" class="nav-item nav-link">Service</a>
-							<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
-							<a th:href="@{/about}" class="nav-item nav-link">About</a>
-							<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
-							<a th:if="${session.usrId == null}" th:href="@{/user/login}"
-								class="nav-item nav-link">Login</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
-								class="nav-item nav-link">Your Account</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/logout}"
-								class="nav-item nav-link">Logout</a>
+							<a th:href="@{/service}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'service' ? 'active' : ''}">Service</a>
+							<a th:href="@{/blog}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'blog' ? 'active' : ''}">Blog</a>
+							<a th:href="@{/about}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'about' ? 'active' : ''}">About</a>
+							<a th:href="@{/contact}" class="nav-item nav-link"
+								th:classappend="${currentPage == 'contact' ? 'active' : ''}">Contact</a>
+								
+							<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
+								Login
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link">
+								Order <span class="badge">2</span>
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}" class="nav-item nav-link">
+								Your Account
+							</a>
+							<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
+								Logout
+							</a>
 						</div>
 					</div>
 				</div>

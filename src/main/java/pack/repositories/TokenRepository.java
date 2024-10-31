@@ -23,14 +23,15 @@ public class TokenRepository implements TokenInterface {
 	@Override
 	public TokenRecord findToken(String token) {
 		String sql = "SELECT token_id, expiration_time, used FROM tokens WHERE token_id = ?";
-		return db.queryForObject(sql, (rs, rowNum) -> new TokenRecord(rs.getString("token_id"),
+		return db.queryForObject(sql,
+				(rs, rowNum) -> new TokenRecord(rs.getString("token_id"),
 						rs.getTimestamp("expiration_time").toLocalDateTime(), rs.getBoolean("used")),
 				new Object[] { token });
 	}
-	
-	 @Override
-	    public void markTokenAsUsed(String token) {
-	        String sql = "UPDATE tokens SET used = 1 WHERE token_id = ?";
-	        db.update(sql, token);
-	    }
+
+	@Override
+	public void markTokenAsUsed(String token) {
+		String sql = "UPDATE tokens SET used = 1 WHERE token_id = ?";
+		db.update(sql, token);
+	}
 }

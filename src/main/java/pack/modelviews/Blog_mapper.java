@@ -17,7 +17,7 @@ public class Blog_mapper implements RowMapper<Blog> {
 		item.setContent(rs.getString(Views.COL_BLOG_CONTENT));
 		item.setImage(rs.getString(Views.COL_BLOG_IMAGES));
 		item.setCreateDate(rs.getDate(Views.COL_BLOG_CREATEDATE));
-		item.setUpdateDate(rs.getDate(Views.COL_BLOG_UPDATE_DATE));
+		item.setUpdateDate(rs.getDate(Views.COL_BLOG_UPDATEDATE));
 		return item;
 	}
 }

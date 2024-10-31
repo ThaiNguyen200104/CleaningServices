@@ -3,10 +3,11 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Cleanex - Services</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Services</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -19,221 +20,123 @@
 </head>
 
 <body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+
 	<!-- Header -->
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
 
 	<div class="wrapper">
-		<!-- Page Header -->
-		<div class="page-header">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<h2>Services</h2>
-					</div>
-					<div class="col-12">
-						<a th:href="@{/}">Home</a>
-						<a th:href="@{/service}">Services</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<!-- Service -->
 		<div class="service">
 			<div class="container">
 				<div class="section-header">
-					<h2>Provide Services Worldwide</h2>
+					<p>Our Services</p>
+					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
 				<div class="row">
-					<div class="col-lg-3 col-md-6">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item == null}">
 						<div class="service-item">
-							<img src="../front/img/service-1.jpg" alt="Service">
-							<h3>Floor Cleaning</h3>
-							<p>Our floor cleaning services cover everything from tile and hardwood to carpet. We use
-								eco-friendly products to ensure a deep clean without compromising on safety.</p>
-							<a class="btn" href="">Learn More</a>
+							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<h3 th:text="${item.serName}"></h3>
+							<p>Price: <span th:text="${item.basePrice}"></span></p>
+							<p th:text="${item.description}"></p>
+							<a th:if="${session.usrId != null}" class="btn justify-content-end"
+								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
 						</div>
 					</div>
-					<div class="col-lg-3 col-md-6">
-						<div class="service-item">
-							<img src="../front/img/service-2.jpg" alt="Service">
-							<h3>Window & Glass Cleaning</h3>
-							<p>We make your windows sparkle with streak-free cleaning services. Perfect for homes,
-								offices, or high-rise buildings.</p>
-							<a class="btn" href="">Learn More</a>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6">
-						<div class="service-item">
-							<img src="../front/img/service-3.jpg" alt="Service">
-							<h3>Carpet Cleaning</h3>
-							<p>Our carpet cleaning goes beyond surface-level dirt, tackling stains and odors to restore
-								your carpets to their original state.</p>
-							<a class="btn" href="">Learn More</a>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6">
-						<div class="service-item">
-							<img src="../front/img/service-4.jpg" alt="Service">
-							<h3>Bathroom Cleaning</h3>
-							<p>We provide comprehensive bathroom cleaning, ensuring every surface is sanitized and
-								fresh. From scrubbing tiles to disinfecting toilets, we've got you covered.</p>
-							<a class="btn" href="">Learn More</a>
-						</div>
-					</div>
+					<p th:unless="${services == null}" class="col-12 mb-5">
+						We are re-organizing our services to better meet your house cleaning demands.
+					</p>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- Feature -->
-		<div class="feature">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-5">
-						<div class="section-header left">
-							<p>Why Choose Us</p>
-							<h2>Professional Cleaners with World-Class Services</h2>
-						</div>
-						<p>We are more than just a cleaning company. Our attention to detail, commitment to quality, and
-							customer-first approach make us the top choice for residential and commercial cleaning
-							services.</p>
-						<a class="btn" th:href="@{/about}">Learn More</a>
-					</div>
-					<div class="col-md-7">
-						<div class="row align-items-center feature-item">
-							<div class="col-5">
-								<img src="../front/img/feature-1.jpg" alt="Feature">
-							</div>
-							<div class="col-7">
-								<h3>Expert Staff</h3>
-								<p>Our team is made up of highly trained professionals who are dedicated to delivering
-									exceptional results.</p>
-							</div>
-						</div>
-						<div class="row align-items-center feature-item">
-							<div class="col-5">
-								<img src="../front/img/feature-2.jpg" alt="Feature">
-							</div>
-							<div class="col-7">
-								<h3>Eco-Friendly Cleaning</h3>
-								<p>We prioritize using green cleaning products that are safe for both your family and
-									the environment.</p>
-							</div>
-						</div>
-						<div class="row align-items-center feature-item">
-							<div class="col-5">
-								<img src="../front/img/feature-3.jpg" alt="Feature">
-							</div>
-							<div class="col-7">
-								<h3>Flexible Scheduling</h3>
-								<p>We work around your schedule to ensure minimal disruption, offering convenient
-									booking options and flexible hours.</p>
-							</div>
-						</div>
-					</div>
-				</div>
+	<!-- Pricing Plan -->
+	<div class="price">
+		<div class="container">
+			<div class="section-header">
+				<p>For your convenience, we offer three packages that are suited to our usual clients needs.</p>
+				<h2>Pricing Plan Reference</h2>
 			</div>
-		</div>
-
-		<!-- Pricing Plan -->
-		<div class="price" id="PlanningPrice">
-			<div class="container">
-				<div class="section-header">
-					<p>Pricing Plan</p>
-					<h2>Choose Your Plan</h2>
-					<p>We offer flexible cleaning plans tailored to fit your needs. Whether you need a one-time deep
-						clean or regular maintenance, we have you covered!</p>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-home"></i>
+							</div>
+							<div class="price-title">
+								<h2>Basic Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>49</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Basic Bathroom & Kitchen Cleaning</li>
+									<li>Vacuuming & Dusting</li>
+									<li>Surface Wipe-Down</li>
+									<li>Floor Cleaning</li>
+									<li>Complete Within 4 hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="price-item">
-							<div class="price-header">
-								<div class="price-icon">
-									<i class="fa fa-home"></i>
-								</div>
-								<div class="price-title">
-									<h2>Basic Clean</h2>
-								</div>
-								<div class="price-pricing">
-									<h2><small>$</small>49</h2>
-								</div>
+				<div class="col-md-4">
+					<div class="price-item featured-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-star"></i>
 							</div>
-							<div class="price-body">
-								<div class="price-des">
-									<ul>
-										<li>Vacuuming & Dusting</li>
-										<li>Surface Wipe-Down</li>
-										<li>Basic Bathroom & Kitchen Cleaning</li>
-										<li>Complete Within 4 hours</li>
-									</ul>
-								</div>
+							<div class="price-title">
+								<h2>Deep Clean</h2>
 							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-								</div>
+							<div class="price-pricing">
+								<h2><small>$</small>79</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Bathroom & Kitchen Sanitization</li>
+									<li>Carpet & Upholstery Cleaning</li>
+									<li>Complete Room Cleaning</li>
+									<li>Window & Glass Polishing</li>
+									<li>Complete Within 6 hours</li>
+								</ul>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
-						<div class="price-item featured-item">
-							<div class="price-header">
-								<div class="price-icon">
-									<i class="fa fa-star"></i>
-								</div>
-								<div class="price-title">
-									<h2>Deep Clean</h2>
-								</div>
-								<div class="price-pricing">
-									<h2><small>$</small>129</h2>
-								</div>
+				</div>
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-gift"></i>
 							</div>
-							<div class="price-body">
-								<div class="price-des">
-									<ul>
-										<li>Complete Room Cleaning</li>
-										<li>Window & Glass Polishing</li>
-										<li>Carpet & Upholstery Cleaning</li>
-										<li>Bathroom & Kitchen Sanitization</li>
-										<li>Complete Within 6 hours</li>
-									</ul>
-								</div>
+							<div class="price-title">
+								<h2>Ultimate Clean</h2>
 							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-								</div>
+							<div class="price-pricing">
+								<h2><small>$</small>129</h2>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="price-item">
-							<div class="price-header">
-								<div class="price-icon">
-									<i class="fa fa-gift"></i>
-								</div>
-								<div class="price-title">
-									<h2>Ultimate Clean</h2>
-								</div>
-								<div class="price-pricing">
-									<h2><small>$</small>199</h2>
-								</div>
-							</div>
-							<div class="price-body">
-								<div class="price-des">
-									<ul>
-										<li>All Deep Clean Services</li>
-										<li>Exterior Cleaning (Windows, Porch, etc.)</li>
-										<li>Special Requests (Pets, Allergies)</li>
-										<li>Customized Cleaning Plan</li>
-										<li>Complete Within 12 Hours</li>
-									</ul>
-								</div>
-							</div>
-							<div class="price-footer">
-								<div class="price-action">
-									<a href=""><i class="fa fa-shopping-cart"></i>Book Now</a>
-								</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Exterior Cleaning (Windows, Porch, etc.)</li>
+									<li>Special Requests (Pets, Allergies)</li>
+									<li>Customized Cleaning Plan</li>
+									<li>All Deep Clean Services</li>
+									<li>Complete Within 12 Hours</li>
+								</ul>
 							</div>
 						</div>
 					</div>

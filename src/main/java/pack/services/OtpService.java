@@ -27,12 +27,9 @@ public class OtpService {
 	}
 
 	public boolean validateOtp(String email, String otp) {
-		
-
 		if (!otpData.containsKey(email)) {
 			return false;
 		}
-
 		String correctOtp = otpData.get(email);
 		Long expiryTime = otpExpiryTime.get(email);
 

@@ -32,10 +32,7 @@
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
 		<div class="mx-5 mt-5">
-			<div class="d-flex">
-				<h2 class="flex-grow-1">Write a blog</h2>
-				<a class="btn btn-primary" th:href="@{/admin/blogs/list}">Return to blog list</a>
-			</div>
+			<h2 class="mb-4">Write a blog</h2>
 			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
 			<form th:action="@{/admin/blogs/createBlog}" method="post" th:object="${new_item}"
 				enctype="multipart/form-data" class="mt-3">
@@ -44,7 +41,7 @@
 			</form>
 		</div>
 	</main>
-	
+
 	<script type="importmap">
 	{
 		"imports": {
@@ -53,7 +50,7 @@
 		}
 	}
 	</script>
-	
+
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
 	<script src="../../back/js/dynamic-pie-chart.js"></script>

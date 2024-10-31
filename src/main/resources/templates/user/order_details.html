@@ -7,8 +7,8 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Verify OTP</title>
-	
+	<title>Cleanex - Order Details</title>
+
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
@@ -17,6 +17,7 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -28,23 +29,42 @@
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="container">
-			<h2 class="mb-4">Enter your OTP</h2>
-			<form th:action="@{/user/verification}" method="post">
-				<div th:if="${error}" class="error-message" th:text="${error}"></div>
-				<div class="mb-3">
-					<input class="form-control" placeholder="Enter your OTP:" type="text" id="otp" name="otp"
-						maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);" required />
+		<div class="account-container">
+			<div class="account-content">
+				<h2>Order Details</h2>
+				<div class="table-container">
+					<table class="booking-table">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Series Number</th>
+								<th>Order Id</th>
+								<th>Service Id</th>
+								<th>Price</th>
+								<th>Dates</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${details}">
+								<td th:text="${item.id}"></td>
+								<td th:text="${item.detailCode}"></td>
+								<td th:text="${item.orderId"></td>
+								<td th:text="${item.serId}"></td>
+								<td th:text="${item.price}"></td>
+								<td>
+									<button type="button" data-toggle="popover" title="Dates"
+										data-content="Start: ${item.startDate}&#10;Complete: ${item.completeDate}&#10;Created: ${item.createDate}"
+										class="btn btn-outline-info">Show Dates
+									</button>
+								</td>
+								<td th:text="${item.status}"></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-				<div class="row">
-					<div class="col-6">
-						<button class="btn btn-success" type="submit">Submit</button>
-					</div>
-					<div class="col-6 d-flex justify-content-end">
-						<a class="btn btn-outline-warning" th:href="@{/user/resendOtp}" id="resend">Resend OTP</a>
-					</div>
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
 
@@ -59,7 +79,6 @@
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
-
 </body>
 
 </html>

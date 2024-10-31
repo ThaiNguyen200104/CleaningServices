@@ -5,19 +5,19 @@ public class Service {
 	private String serName;
 	private String description;
 	private double basePrice;
-	private double duration;
 	private String image;
+	private String status;
 
 	public Service() {
 	}
 
-	public Service(int id, String serName, String description, double basePrice, double duration, String image) {
+	public Service(int id, String serName, String description, double basePrice, String image, String status) {
 		this.id = id;
 		this.serName = serName;
 		this.description = description;
 		this.basePrice = basePrice;
-		this.duration = duration;
 		this.image = image;
+		this.status = status;
 	}
 
 	public int getId() {
@@ -52,14 +52,6 @@ public class Service {
 		this.basePrice = basePrice;
 	}
 
-	public double getDuration() {
-		return duration;
-	}
-
-	public void setDuration(double duration) {
-		this.duration = duration;
-	}
-
 	public String getImage() {
 		return image;
 	}
@@ -67,4 +59,13 @@ public class Service {
 	public void setImage(String image) {
 		this.image = image;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 }

@@ -29,10 +29,8 @@
 						<label for="password">Password <span style="color: red;">(*)</span></label>
 						<input type="password" id="password" name="pw" required />
 					</div>
-					<button type="submit" class="btn btn-primary">Login</button>
-					<div class="form-footer row">
-						<a class="acc-link forgot-password col-6" th:href="@{/admin/forgotPassword}">Forgot Password?</a>
-					</div>
+					<button type="submit" class="btn btn-primary mb-4">Login</button>
+					<a class="acc-link" th:href="@{/admin/forgotPassword}">Forgot Password?</a>
 				</form>
 			</div>
 		</div>

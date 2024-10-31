@@ -30,16 +30,30 @@
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
 		<div class="mx-5 mt-5">
-			<div class="d-flex">
-				<h2 class="flex-grow-1">Create Service</h2>
-				<a class="btn btn-primary" th:href="@{/admin/services/list}">Return to Service List</a>
-			</div>
+			<h2 class="mb-4">Create Service</h2>
 			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
 			<form th:action="@{/admin/services/createService}" method="post" th:object="${new_item}"
 				enctype="multipart/form-data">
-				<div class="mb-3">
-					<label class="form-label" for="serName">Service Name <span style="color: red;">(*)</span></label>
-					<input class="form-control" type="text" id="serName" th:field="*{serName}" required />
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="form-label" for="serName">Service Name <span
+								style="color: red;">(*)</span></label>
+						<input class="form-control" type="text" id="serName" th:field="*{serName}" required />
+					</div>
+					<div class="col-4">
+						<label class="form-label" for="image">Image</label>
+						<input class="form-control" type="file" id="image" name="image" accept="image/*" />
+					</div>
+					<div class="col-2">
+						<label class="form-label" for="basePrice">Base Price <span style="color: red;">(*)</span></label>
+						<div class="input-group">
+							<input type="text" class="form-control" pattern="^[0-9]*\.?[0-9]+$" id="basePrice" name="basePrice"
+								th:field="*{basePrice}" required />
+							<div class="input-group-append">
+								<span class="input-group-text" id="priceUnit">$</span>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="description">Description</label>
@@ -47,34 +61,7 @@
 						style="resize:none;" maxlength="255" th:field="*{description}"></textarea>
 					<small class="char" id="charCount">0/255</small>
 				</div>
-				<div class="mb-3 row">
-					<div class="col-6">
-						<label class="form-label" for="basePrice">Base Price <span
-								style="color: red;">(*)</span></label>
-						<div class="input-group">
-							<input class="form-control" type="number" id="basePrice" name="basePrice"
-								th:field="*{basePrice}" required />
-							<div class="input-group-append">
-								<span class="input-group-text" id="priceUnit">$</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-6">
-						<label class="form-label" for="duration">Duration <span style="color: red;">(*)</span></label>
-						<div class="input-group">
-							<input class="form-control" type="number" id="duration" name="duration"
-								th:field="*{duration}" required min="1" />
-							<div class="input-group-append">
-								<span class="input-group-text" id="durationText">hour</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="mb-3">
-					<label class="form-label" for="image">Image</label>
-					<input class="form-control" type="file" id="image" name="image" accept="image/*" />
-				</div>
-				<button type="submit" class="btn btn-success">Create</button>
+				<button type="submit" class="btn btn-success d-flex justify-content-end">Create</button>
 			</form>
 		</div>
 	</main>
@@ -90,18 +77,6 @@
 	<script src="../../back/js/main.js"></script>
 
 	<script>
-		const serviceNameInput = document.getElementById("serName");
-		const priceUnit = document.getElementById("priceUnit");
-		serviceNameInput.addEventListener("input", function () {
-			const serviceName = serviceNameInput.value.toLowerCase();
-			const m2Services = ["wall cleaning", "floor cleaning", "yard mowing"];
-			if (m2Services.includes(serviceName)) {
-				priceUnit.textContent = "$ / m²";
-			} else {
-				priceUnit.textContent = "$";
-			}
-		});
-
 		document.getElementById("duration").addEventListener("input", function () {
 			const durationText = document.getElementById("durationText");
 			durationText.textContent = this.value == 1 ? "hour" : "hours";

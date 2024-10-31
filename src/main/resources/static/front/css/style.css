@@ -1,11 +1,53 @@
 /*******************************/
 /********* General CSS *********/
 /*******************************/
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	color: #666666;
 	background: #ffffff;
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 400;
+}
+
+body::-webkit-scrollbar {
+	width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+	background: #00539C;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+	background: #ffd662;
+}
+
+#preloader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	z-index: 999999;
+}
+
+#preloader .spinner {
+	width: 80px;
+	height: 80px;
+	border: 5px solid #365CF5;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: spinner 0.9s linear infinite;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -199,6 +241,16 @@ a:hover, a:active, a:focus {
 .header .navbar .btn i {
 	font-size: 16px;
 	margin-right: 8px;
+}
+
+.badge {
+	padding: .25rem .4rem;
+	background: #FFD662;
+	color: #00539C;
+}
+
+.badge:hover {
+	scale: 1.5;
 }
 
 @media ( max-width : 992px) {
@@ -485,16 +537,18 @@ a:hover, a:active, a:focus {
 .service .service-item {
 	position: relative;
 	width: 100%;
+	height: 100%;
 	text-align: center;
 	background: #ffffff;
 	border-radius: 5px;
-	margin-bottom: 30px;
-	box-shadow: 0 0 30px rgba(0, 0, 0, .1);
+	margin-bottom: 15px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px
+		-2px 6px 0px inset;
 }
 
 .service .service-item img {
 	width: 100%;
-	border-radius: 5px 5px 0 0;
 }
 
 .service .service-item h3 {
@@ -513,7 +567,7 @@ a:hover, a:active, a:focus {
 
 .service .service-item a.btn {
 	position: relative;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 	padding: 10px 20px;
 	font-size: 14px;
 	text-transform: uppercase;
@@ -814,18 +868,21 @@ a:hover, a:active, a:focus {
 }
 
 .price .price-item {
+	height: 100%;
 	text-align: center;
 	background: #ffffff;
-	border-radius: 5px;
-	box-shadow: 0 0 30px rgba(0, 0, 0, .1);
-	margin-bottom: 30px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px
+		-12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px
+		12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+	margin-bottom: 15px;
 }
 
 .price .price-header {
 	padding: 30px 0 50px 0;
 	color: #000000;
 	background: #FFD662;
-	border-radius: 5px 5px 0 0;
+	border-radius: 10px;
 }
 
 .price .featured-item .price-header {
@@ -1437,12 +1494,11 @@ a:hover, a:active, a:focus {
 	border-radius: 5px;
 }
 
-.contact-form .input-group .input-group-text.igt { 
-    color: #FFD662;
-    background-color: #00539C;
-    border: none;
+.contact-form .input-group .input-group-text.igt {
+	color: #FFD662;
+	background-color: #00539C;
+	border: none;
 }
-
 
 .contact .contact-form .btn {
 	height: 60px;
@@ -1652,6 +1708,7 @@ a:hover, a:active, a:focus {
 /*******************************/
 .login-container {
 	max-width: 500px;
+	height: 100%;
 	margin: 100px auto;
 	padding: 50px 30px;
 	background: rgba(0, 83, 156, 0.1);
@@ -1719,11 +1776,12 @@ a:hover, a:active, a:focus {
 /*******************************/
 .signup-container {
 	max-width: 500px;
+	height: 100%;
 	margin: 100px auto;
-	padding: 30px;
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	padding: 50px 30px;
 	background: rgba(0, 83, 156, 0.1);
 	border-radius: 10px;
+	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
 .signup-container h2 {
@@ -1846,6 +1904,18 @@ a:hover, a:active, a:focus {
 
 .account-container .link a:hover {
 	color: #FFD662;
+}
+
+.acc-container {
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	padding: 30px;
+}
+
+.acc-container h2 {
+	color: #000;
+	border-bottom: 2px solid #00539C;
+	padding-bottom: 10px;
 }
 
 /*******************************/

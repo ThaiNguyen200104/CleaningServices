@@ -17,8 +17,8 @@ public class Detail_mapper implements RowMapper<OrderDetail> {
 		item.setSerId(rs.getInt(Views.COL_ORDER_DETAIL_SERVICE_ID));
 		item.setDetailCode(rs.getString(Views.COL_ORDER_DETAIL_CODE));
 		item.setPrice(rs.getDouble(Views.COL_ORDER_DETAIL_PRICE));
-		item.setStartDate(rs.getDate(Views.COL_ORDER_DETAIL_START_DATE));
-		item.setCompleteDate(rs.getDate(Views.COL_ORDER_DETAIL_COMPLETED_DATE));
+		item.setStartDate(rs.getDate(Views.COL_ORDER_DETAIL_STARTDATE));
+		item.setCompleteDate(rs.getDate(Views.COL_ORDER_DETAIL_COMPLETEDATE));
 		item.setCreateDate(rs.getDate(Views.COL_ORDER_DETAIL_CREATEDATE));
 		item.setStatus(rs.getString(Views.COL_ORDER_DETAIL_STATUS));
 
