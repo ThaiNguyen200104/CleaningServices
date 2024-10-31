@@ -8,11 +8,12 @@ import org.springframework.jdbc.core.RowMapper;
 import pack.models.Staff;
 import pack.utils.Views;
 
-public class Staff_mapper implements RowMapper<Staff>{
+public class Staff_mapper implements RowMapper<Staff> {
 	@Override
-	public Staff mapRow(ResultSet rs, int rowNum) throws SQLException{
+	public Staff mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Staff item = new Staff();
 		item.setId(rs.getInt(Views.COL_STAFFS_ID));
+		item.setFullname(rs.getString(Views.COL_STAFFS_FULLNAME));
 		item.setUsername(rs.getString(Views.COL_STAFFS_USERNAME));
 		item.setPassword(rs.getString(Views.COL_STAFFS_PASSWORD));
 		item.setEmail(rs.getString(Views.COL_STAFFS_EMAIL));

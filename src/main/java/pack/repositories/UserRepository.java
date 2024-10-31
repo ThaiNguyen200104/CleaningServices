@@ -12,7 +12,6 @@ import pack.models.Order;
 import pack.models.OrderDetail;
 import pack.models.Service;
 import pack.models.User;
-import pack.modelviews.Detail_mapper;
 import pack.modelviews.Order_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
@@ -132,7 +131,7 @@ public class UserRepository {
 		}
 	}
 
-	public List<Order> getOrderList(int id) {
+	public List<Order> getOrderById(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER, Views.COL_ORDERS_USER_ID);
 			return db.query(str_query, new Order_mapper(), new Object[] { id });
@@ -143,21 +142,19 @@ public class UserRepository {
 
 	public String newOrder(Order order) {
 		try {
-			String str_query = String.format(
-					"insert into %s (user_id, price, expected_startDate, status) values (?,?,?,?)", Views.TBL_ORDER);
-			int rowaccept = db.update(str_query,
-					new Object[] { order.getUsrId(), order.getPrice(), order.getStartDate(), order.getStatus() });
+			String str_query = String.format("insert into %s (user_id) values (?)", Views.TBL_ORDER);
+			int rowaccept = db.update(str_query, new Object[] { order.getUsrId() });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return "Error: " + e.getMessage();
 		}
 	}
 
-	public List<OrderDetail> getDetailList(int id) {
+	public List<Order> getDetailList(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
 					Views.COL_ORDERS_ID);
-			return db.query(str_query, new Detail_mapper(), new Object[] { id });
+			return db.query(str_query, new Order_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
 		}

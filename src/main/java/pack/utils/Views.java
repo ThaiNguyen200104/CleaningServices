@@ -99,6 +99,7 @@ public class Views {
 	public static String COL_SERVICES_NAME = "service_name";
 	public static String COL_SERVICES_DESCRIPTION = "description";
 	public static String COL_SERVICES_BASE_PRICE = "base_price";
+	public static String COL_SERVICES_STAFF_REQUIRED = "staff_required";
 	public static String COL_SERVICES_IMAGES = "image";
 	public static String COL_SERVICES_STATUS = "status";
 
@@ -106,9 +107,6 @@ public class Views {
 	public static String TBL_ORDER = "orders";
 	public static String COL_ORDERS_ID = "id";
 	public static String COL_ORDERS_USER_ID = "user_id";
-	public static String COL_ORDERS_PRICE = "price";
-	public static String COL_ORDERS_STARTDATE = "expected_startDate";
-	public static String COL_ORDERS_STATUS = "status";
 
 	// ORDER_DETAILS
 	public static String TBL_ORDER_DETAIL = "order_details";
@@ -117,7 +115,6 @@ public class Views {
 	public static String COL_ORDER_DETAIL_SERVICE_ID = "service_id";
 	public static String COL_ORDER_DETAIL_CODE = "detail_code";
 	public static String COL_ORDER_DETAIL_PRICE = "price";
-	public static String COL_ORDER_DETAIL_ASSIGNEDSTAFF = "assigned_staff";
 	public static String COL_ORDER_DETAIL_STARTDATE = "start_date";
 	public static String COL_ORDER_DETAIL_COMPLETEDATE = "complete_date";
 	public static String COL_ORDER_DETAIL_CREATEDATE = "create_date";
@@ -134,6 +131,7 @@ public class Views {
 	// STAFFS
 	public static String TBL_STAFFS = "staffs";
 	public static String COL_STAFFS_ID = "id";
+	public static String COL_STAFFS_FULLNAME = "fullname";
 	public static String COL_STAFFS_USERNAME = "username";
 	public static String COL_STAFFS_PASSWORD = "password";
 	public static String COL_STAFFS_EMAIL = "email";

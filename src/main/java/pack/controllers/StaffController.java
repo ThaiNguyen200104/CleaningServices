@@ -23,6 +23,7 @@ public class StaffController {
 
 	@Autowired
 	OtpService otpService;
+
 	// -------------------- INDEX & ACCOUNT --------------------//
 
 	@GetMapping("")
@@ -52,7 +53,15 @@ public class StaffController {
 		request.getSession().setAttribute("staffId", staff.getId());
 		return "redirect:/staff";
 	}
-	
+
+	@GetMapping("/accounts")
+	public String accounts(HttpServletRequest req, Model model) {
+		Staff st = rep.getStaffByUsername(req.getSession().getAttribute("username").toString());
+		model.addAttribute("staff", st);
+
+		return Views.STAFF_ACCOUNTS;
+	}
+
 	@GetMapping("/forgotPassword")
 	public String forgot_password() {
 		return Views.STAFF_FORGOT_PASSWORD;
@@ -99,4 +108,5 @@ public class StaffController {
 		req.getSession().setAttribute("username", staff.getUsername());
 		return "redirect:/staff/accounts";
 	}
+
 }

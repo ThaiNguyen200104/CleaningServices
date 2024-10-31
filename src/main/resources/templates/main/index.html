@@ -133,7 +133,7 @@
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
 				<div class="row">
-					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item == null}">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item != null}">
 						<div class="service-item">
 							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
 							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
@@ -144,7 +144,7 @@
 								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
 						</div>
 					</div>
-					<p th:unless="${services == null}" class="col-12 mb-5">
+					<p th:unless="${services != null}" class="col-12 mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
 				</div>

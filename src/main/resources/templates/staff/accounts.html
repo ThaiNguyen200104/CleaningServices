@@ -59,87 +59,52 @@
 </head>
 
 <body>
-	<script src="../back/js/preloader.js"></script>
-	<div class="body-wrapper">
-		<div class="main-wrapper mdc-drawer-app-content">
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
 
-			<!-- Header -->
-			<div th:replace="~{admin/fragment/header::adminHeader}"></div>
+	<!-- Header -->
+	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-			<div class="acc-container mt-5">
-				<div class="row">
-					<div class="col-3 text-center">
-						<img src="../front/img/none-user.png" class="img-fluid rounded-circle mb-3" width="150"
-							height="150" />
-						<h4 th:text="${user.fullname}"></h4>
-						<button class="btn btn-primary mt-3" aria-label="Edit Information">Edit Profile</button>
-					</div>
-					<div class="col-9">
-						<h2 class="mb-4">Your Information:</h2>
-						<dl class="row">
-							<dt class="col-3">Username:</dt>
-							<dd class="col-9" th:text="${staff.username}"></dd>
-							<dt class="col-3">Email:</dt>
-							<dd class="col-6" th:text="${staff.email}"></dd>
-							<dt class="col-3">Phone:</dt>
-							<dd class="col-6" th:text="${staff.phone}"></dd>
-							<dt class="col-3">Status:</dt>
-							<dd class="col-6" th:text="${staff.status}"></dd>
-						</dl>
-					</div>
+	<div class="wrapper">
+		<div class="acc-container mt-5">
+			<div class="row">
+				<div class="col-3 text-center">
+					<img th:if="${staff.image == null}" src="../front/img/none-user.png"
+						class="img-fluid rounded-circle mb-3" width="150" height="150" />
+					<img th:unless="${staff.image == null}" th:src="'/upload/' + ${staff.image}"
+						class="img-fluid rounded-circle mb-3" width="150" height="150" />
+					<h3 th:text="${staff.fullname}"></h3>
+					<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
 				</div>
-				<div class="row mt-5">
-					<div class="col-12">
-						<h2 class="mb-4">Assigned Jobs</h2>
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th scope="col">No.</th>
-										<th scope="col">Service</th>
-										<th scope="col">Price</th>
-										<th scope="col">Start Date</th>
-										<th scope="col">End Date</th>
-										<th scope="col">Status</th>
-										<th scope="col">Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>123123</td>
-										<td>456456</td>
-										<td>789789</td>
-										<td>1111</td>
-										<td>2222</td>
-										<td>12123</td>
-										<td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
-									</tr>
-
-									<!--<tr th:each="item : ${details}">
-											<td th:text="${item.id}"></td>
-											<td th:text="${item.service}"></td>
-											<td th:text="${item.price}"></td>
-											<td th:text="${item.startDate}"></td>
-											<td th:text="${item.endDate}"></td>
-											<td th:text="${item.status}"></td>
-											<td th:href="${user/details}">See details</td>
-									</tr>-->
-								</tbody>
-							</table>
-						</div>
-					</div>
+				<div class="col-9">
+					<h2 class="mb-4">Profile</h2>
+					<dl class="row">
+						<dt class="col-3">Username:</dt>
+						<dd class="col-9" th:text="${staff.username}"></dd>
+						<dt class="col-3">Email:</dt>
+						<dd class="col-9" th:text="${staff.email}"></dd>
+						<dt class="col-3">Phone:</dt>
+						<dd class="col-9" th:text="${staff.phone}"></dd>
+						<dt class="col-3">Job Occupied:</dt>
+						<dd class="col-9" th:text="${staff.jobOccupied}"></dd>
+					</dl>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<script src="../back/vendors/js/vendor.bundle.base.js"></script>
-	<script src="../back/vendors/chartjs/Chart.min.js"></script>
-	<script src="../back/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-	<script src="../back/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-	<script src="../back/js/material.js"></script>
-	<script src="../back/js/misc.js"></script>
-	<script src="../back/js/dashboard.js"></script>
+	<!-- Footer -->
+	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../front/lib/easing/easing.min.js"></script>
+	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../front/js/main.js"></script>
 </body>
 
 </html>

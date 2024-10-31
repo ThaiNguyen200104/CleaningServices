@@ -19,6 +19,10 @@
 		.table tbody tr td {
 			text-align: center !important;
 		}
+
+		.form-inline {
+			display: inline-block;
+		}
 	</style>
 </head>
 
@@ -49,6 +53,8 @@
 						<th>Service Name</th>
 						<th>Description</th>
 						<th>Price</th>
+						<th>Staff Required</th>
+						<th>Status</th>
 						<th>Actions</th>
 						</tr>
 					</thead>
@@ -69,10 +75,19 @@
 								</button>
 							</td>
 							<td th:text="${item.basePrice} + '$'"></td>
+							<td th:text="${item.staffRequired}"></td>
+							<td th:text="${item.status}"></td>
 							<td>
 								<a class="btn btn-warning" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
-								<a class="btn btn-danger"
-									th:href="@{/admin/services/disable(id=${item.id})}">Disable</a>
+								<form th:action="@{/admin/services/disable(id=${item.id})}" method="post"
+									class="form-inline" th:if="${item.status == 'activated'}">
+									<button class="btn btn-danger" type="submit">Disable</button>
+								</form>
+
+								<form th:action="@{/admin/services/activate(id=${item.id})}" method="post"
+									class="form-inline" th:if="${item.status == 'disabled'}">
+									<button class="btn btn-info" type="submit">Activate</button>
+								</form>
 							</td>
 						</tr>
 					</tbody>

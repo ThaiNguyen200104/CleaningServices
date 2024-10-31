@@ -5,17 +5,20 @@ public class Service {
 	private String serName;
 	private String description;
 	private double basePrice;
+	private int staffRequired;
 	private String image;
 	private String status;
 
 	public Service() {
 	}
 
-	public Service(int id, String serName, String description, double basePrice, String image, String status) {
+	public Service(int id, String serName, String description, double basePrice, int staffRequired, String image,
+			String status) {
 		this.id = id;
 		this.serName = serName;
 		this.description = description;
 		this.basePrice = basePrice;
+		this.staffRequired = staffRequired;
 		this.image = image;
 		this.status = status;
 	}
@@ -50,6 +53,14 @@ public class Service {
 
 	public void setBasePrice(double basePrice) {
 		this.basePrice = basePrice;
+	}
+
+	public int getStaffRequired() {
+		return staffRequired;
+	}
+
+	public void setStaffRequired(int staffRequired) {
+		this.staffRequired = staffRequired;
 	}
 
 	public String getImage() {

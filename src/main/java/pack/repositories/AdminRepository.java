@@ -104,11 +104,13 @@ public class AdminRepository {
 	public String newService(Service ser) {
 		try {
 			String str_query = String.format(
-					"insert into %s (service_name, description, base_price, image) values(?,?,?,?)",
+					"insert into %s (service_name, description, base_price, staff_required, image) values(?,?,?,?,?)",
 					Views.TBL_SERVICES);
-			int rowaccept = db.update(str_query,
-					new Object[] { ser.getSerName(), ser.getDescription(), ser.getBasePrice(), ser.getImage() });
+			int rowaccept = db.update(str_query, new Object[] { ser.getSerName(), ser.getDescription(),
+					ser.getBasePrice(), ser.getStaffRequired(), ser.getImage() });
 			return rowaccept == 1 ? "success" : "failed";
+		} catch (DuplicateKeyException e) {
+			throw new IllegalArgumentException("Service name may already exists.");
 		} catch (Exception e) {
 			return "Error: " + e.getMessage();
 		}
@@ -134,6 +136,11 @@ public class AdminRepository {
 				params.add(ser.getBasePrice());
 			}
 
+			if (ser.getStaffRequired() != 0) {
+				queryBuilder.append("staffRequired = ?");
+				params.add(ser.getStaffRequired());
+			}
+
 			queryBuilder.setLength(queryBuilder.length() - 2);
 			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
@@ -146,9 +153,20 @@ public class AdminRepository {
 		}
 	}
 
-	public String disableService(int id) {
+	public String activateServiceStatus(int id) {
 		try {
-			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_SERVICES,
+			String str_query = String.format("update %s set %s = 'activated' where %s = ?", Views.TBL_SERVICES,
+					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
+			int rowaccept = db.update(str_query, new Object[] { id });
+			return rowaccept == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	public String disableServiceStatus(int id) {
+		try {
+			String str_query = String.format("update %s set %s = 'disabled' where %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
 			int rowaccept = db.update(str_query, new Object[] { id });
 			return rowaccept == 1 ? "success" : "failed";

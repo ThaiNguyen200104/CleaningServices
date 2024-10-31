@@ -232,12 +232,14 @@ public class AdminController {
 
 	@PostMapping("/services/createService")
 	public String create_service(@RequestParam String serName, @RequestParam(required = false) String description,
-			@RequestParam double basePrice, @RequestParam(required = false) MultipartFile image, Model model) {
+			@RequestParam double basePrice, @RequestParam int staffRequired,
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
 			Service ser = new Service();
 			ser.setSerName(serName);
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
+			ser.setStaffRequired(staffRequired);
 
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
@@ -251,6 +253,9 @@ public class AdminController {
 			}
 			model.addAttribute("catchError", "Failed to create service, please try again.");
 
+			return Views.ADMIN_SERVICES_CREATE;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "Service name may already exists.");
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -289,6 +294,9 @@ public class AdminController {
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
 
 			return Views.ADMIN_SERVICES_EDIT;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "Service name may already exists.");
+			return Views.ADMIN_SERVICES_EDIT;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
@@ -297,15 +305,30 @@ public class AdminController {
 		}
 	}
 
+	@PostMapping("/services/activate")
+	public String activate_service(@RequestParam("id") int id, Model model) {
+		try {
+			Service get = rep.getServiceById(id);
+			if (get != null) {
+				rep.activateServiceStatus(id);
+				return "redirect:/admin/services/list";
+			}
+			return Views.ADMIN_SERVICES_LIST;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			return "redirect:/admin/services/list?error=activateFail";
+		}
+	}
+
 	@PostMapping("/services/disable")
 	public String disable_service(@RequestParam("id") int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
 			if (get != null) {
-				rep.disableService(id);
+				rep.disableServiceStatus(id);
 				return "redirect:/admin/services/list";
 			}
-			return Views.ADMIN_SERVICES_EDIT;
+			return Views.ADMIN_SERVICES_LIST;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			return "redirect:/admin/services/list?error=disableFail";
