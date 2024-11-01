@@ -13,7 +13,6 @@ import pack.utils.Views;
 
 @Repository
 public class HomeRepository {
-
 	@Autowired
 	JdbcTemplate db;
 
@@ -31,4 +30,8 @@ public class HomeRepository {
 			return null;
 		}
 	}
+
+	
+	
+	
 }

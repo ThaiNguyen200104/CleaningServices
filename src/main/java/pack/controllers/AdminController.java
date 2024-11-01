@@ -1,6 +1,8 @@
 package pack.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -255,7 +257,7 @@ public class AdminController {
 
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "Service name may already exists.");
+			model.addAttribute("catchError", "Service name may already exists.");
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
@@ -407,8 +409,12 @@ public class AdminController {
 		return "";
 	}
 
-	@PostMapping("/staffs/disableAccount")
-	public String disable_account() {
-		return "";
+	@PostMapping("/staffs/disabledAccount")
+	public ResponseEntity<String> disabled_account(@RequestParam int id) {
+		String result = rep.disableStaff(id);
+		if (result.equals("success")) {
+			return ResponseEntity.ok("success");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
 }

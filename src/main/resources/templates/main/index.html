@@ -16,6 +16,47 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+	<style>
+		#bookingModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		.modal-content {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			text-align: center;
+			width: 50vw;
+		}
+
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 9999;
+		}
+
+		.success {
+			background-color: #4CAF50;
+		}
+
+		.error {
+			background-color: #f44336;
+		}
+	</style>
 </head>
 
 <body>
@@ -133,20 +174,34 @@
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
 				<div class="row">
-					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item != null}">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
+						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
-							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img loading="lazy" th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
-							<p>Price: <span th:text="${item.basePrice}"></span></p>
+							<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
 							<p th:text="${item.description}"></p>
-							<a th:if="${session.usrId != null}" class="btn justify-content-end"
-								th:href="@{/user/bookService/{serId}(serId=${item.serId})}">Book Now</a>
+							<a class="btn justify-content-end" href="javascript:void(0);"
+								onclick="showBookingPopup(event)"
+								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
 						</div>
 					</div>
+					<!-- Message when no services are available -->
 					<p th:unless="${services != null}" class="col-12 mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
+				</div>
+			</div>
+		</div>
+		<!-- Popup Modal -->
+		<div id="bookingModal" style="display: none;">
+			<div class="modal-content">
+				<h3>Select Service Date</h3>
+				<input class="form-control my-4" type="date" id="serviceDate" required />
+				<div class="d-flex justify-content-between">
+					<button class="btn btn-success" onclick="confirmBooking()">Confirm Booking</button>
+					<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -437,8 +492,10 @@
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 	<script src="../front/lib/easing/easing.min.js"></script>
 	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>

@@ -44,31 +44,34 @@
 	<div class="wrapper">
 		<div class="mx-2 my-5">
 			<h1 class="mb-4">Confirm your Orders</h1>
-			<form th:action="@{/user/confirmOrder}" method="post" th:object="${new_item}">
+			<form th:action="@{/user/confirmOrder}" method="post">
 				<div class="mb-5 table-responsive">
 					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Service</th>
-								<th>Price</th>
+								<th>Service Name</th>
+								<th>Base Price</th>
+								<th>Start Date</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="item : ${orders}">
 								<td th:text="${item.id}"></td>
-								<td th:text="${service.serName}"></td>
-								<td th:text="${service.basePrice} + '$'"></td>
+								<td th:text="${item.serName}"></td>
+								<td th:text="${item.basePrice} + '$'"></td>
+								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 				<div class="d-flex justify-content-between">
-					<button type="submit" class="btn btn-success">Confirm</button>
+					<button type="submit" class="btn btn-success">Confirm Order</button>
 				</div>
 			</form>
 		</div>
 	</div>
+
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>

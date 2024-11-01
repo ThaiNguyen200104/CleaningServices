@@ -52,7 +52,6 @@ public class HomeController {
 
 	@GetMapping("/blog")
 	public String blog(Model model) {
-
 		model.addAttribute("currentPage", "blog");
 
 		return Views.MAIN_BLOG;
@@ -69,14 +68,13 @@ public class HomeController {
 	@GetMapping("/about")
 	public String about(Model model) {
 		model.addAttribute("currentPage", "about");
-
 		return Views.MAIN_ABOUT;
 	}
 
 	@GetMapping("/contact")
 	public String contact(Model model) {
 		model.addAttribute("currentPage", "contact");
-
 		return Views.MAIN_CONTACT;
 	}
+
 }

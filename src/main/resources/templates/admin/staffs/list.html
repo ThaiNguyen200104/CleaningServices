@@ -41,6 +41,7 @@
 				<h2 class="flex-grow-1">Staff List</h2>
 				<a class="btn btn-primary" th:href="@{/admin/staffs/create_account}">Provide Account</a>
 			</div>
+			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">
 				<table class="table table-hover">
 					<thead>
@@ -59,10 +60,10 @@
 							<td th:text="${item.status}"></td>
 							<td th:text="${item.jobOccupied}"></td>
 							<td>
-								<a class="btn btn-warning" th:if="${item.jobOccupied < 3}"
-									th:href="@{/admin/staffs/assignJob(id=${item.id})}">Assign Job</a>
-								<a class="btn btn-danger" th:if="${item.jobOccupied > 0}"
-									th:href="@{/admin/staffs/replaceStaff(id=${item.id})}">Replace Staff</a>
+								<a class="btn btn-warning" th:if="${item.status != 'disabled'}" th:attr="id=${item.id}"
+									onclick="Deactivate(event)">Disabled</a>
+								<!--<a class="btn btn-danger" th:if="${item.jobOccupied > 0}"
+									th:href="@{/admin/staffs/replaceStaff(id=${item.id})}">Replace Staff</a>-->
 							</td>
 						</tr>
 					</tbody>
@@ -70,7 +71,7 @@
 			</div>
 		</div>
 	</main>
-
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
 	<script src="../../back/js/dynamic-pie-chart.js"></script>
@@ -81,6 +82,32 @@
 	<script src="../../back/js/polyfill.js"></script>
 	<script src="../../back/js/main.js"></script>
 
+	<script>
+		function Deactivate(event) {
+			event.preventDefault();
+			var item = event.target;
+			var staffId = item.getAttribute("id");
+			if (confirm('Are you sure you want to deactivate this staff member?')) {
+				$.ajax({
+					url: '/admin/staffs/disabledAccount',
+					type: 'POST',
+					data: {id: staffId},
+					success: function (response) {
+						if (response === "success") {
+							alert('Staff member deactivated successfully.');
+							window.location.reload();
+						} else {
+							alert('Failed to deactivate the staff member.');
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error('AJAX Error:', status, error);
+						alert('An error occurred. Please try again.');
+					}
+				});
+			}
+		}
+	</script>
 </body>
 
 </html>

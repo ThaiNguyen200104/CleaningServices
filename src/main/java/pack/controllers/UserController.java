@@ -1,8 +1,12 @@
 package pack.controllers;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
-import pack.models.Service;
+import pack.models.OrderDetail;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -105,7 +109,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<Order> list = rep.getOrderById((int) req.getSession().getAttribute("usrId"));
+		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -208,13 +212,87 @@ public class UserController {
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String orders(int id, Model model) {
-		List<Order> order = rep.getOrderById(id);
-		List<Service> service = rep.getServices();
-
-		model.addAttribute("order", order);
-		model.addAttribute("service", service);
+	public String orders(@RequestParam int id, Model model) {
+		List<Order> list = rep.getOrders(id);
+		model.addAttribute("orders", list);
 
 		return Views.USER_ORDERS;
+	}
+
+	@PostMapping("/user/confirmOrder")
+	public String confirmOrder(@ModelAttribute("new_item") OrderDetail detail, HttpServletRequest req, Model model) {
+		String usrId = req.getSession().getAttribute("usrId").toString();
+		if (usrId == null) {
+			model.addAttribute("error", "User invalid. Please login to continue.");
+			return "redirect:/user/login";
+		}
+
+		String serId = req.getSession().getAttribute("serId").toString();
+		if (serId == null) {
+			model.addAttribute("error", "You don't have any service booked yet. Please book a service to order.");
+			return "redirect:/services";
+		}
+
+		Date today = new Date(System.currentTimeMillis());
+		if (!detail.getStartDate().after(today)) {
+			model.addAttribute("error", "The start date must be scheduled after today.");
+			return "redirect:/user/orders";
+		}
+
+		String detailCode = generate_code(usrId, serId, detail.getStartDate());
+		detail.setDetailCode(detailCode);
+		detail.setStartDate(today);
+		detail.setStatus("pending");
+		String result = rep.newDetail(detail);
+
+		if (result.equals("success")) {
+			model.addAttribute("success", "Order confirmed successfully!");
+			return "redirect:/user/accounts";
+		}
+		model.addAttribute("error", "Failed to confirm order, please try again.");
+		return "redirect:/user/orders";
+	}
+
+	@GetMapping("/orderDetails")
+	public String order_details(@RequestParam int id, Model model) {
+		List<OrderDetail> detail = rep.getDetails(id);
+		model.addAttribute("details", detail);
+
+		return Views.USER_ORDER_DETAILS;
+	}
+
+	private String generate_code(String usrId, String serId, Date startDate) {
+		String formattedStartDate = new SimpleDateFormat("yyMMdd").format(startDate);
+		// Adding + "" + between usrId & serId for Java wouldn't add them numerically
+		String combinedCode = usrId + "" + serId + formattedStartDate;
+
+		// Add randomly one number from 100 to 999 for not duplicate the detail_code
+		int randomSuffix = (int) (Math.random() * 900) + 100;
+		combinedCode += randomSuffix;
+
+		return combinedCode.length() > 10 ? combinedCode.substring(combinedCode.length() - 10) : combinedCode;
+	}
+
+	@PostMapping("/bookService")
+	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
+			@RequestParam Date startDate) {
+
+		Order order = new Order();
+		order.setUsrId(userId);
+		Date currentDate = new Date(System.currentTimeMillis());
+		if (startDate.before(currentDate)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+		}
+
+		if (rep.isServiceInOrder(userId, serviceId)) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+		}
+		String result = rep.newOrder(order, serviceId, startDate);
+
+		if ("success".equals(result)) {
+			return ResponseEntity.ok("Order created successfully.");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+		}
 	}
 }

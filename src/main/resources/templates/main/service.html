@@ -32,6 +32,7 @@
 		<div class="service">
 			<div class="container">
 				<div class="section-header">
+<<<<<<< Updated upstream
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
@@ -140,6 +141,35 @@
 							</div>
 						</div>
 					</div>
+=======
+					<p>Our Affordable Services</p>
+					<h2>Everyone Could Book</h2>
+				</div>
+				<div class="row" th:if="${services.size() > 0}">
+					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}">
+						<div class="service-item">
+							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
+							<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<h3 th:text="${item.serName}"></h3>
+							<p>
+								Price: <span
+									th:text="${#numbers.formatDecimal(item.basePrice, 1, item.basePrice % 1 == 0 ? 0 : 2)} + 
+							            (${item.serName == 'Floor Cleaning' || item.serName == 'Yard Mowing' || item.serName == 'Wall Cleaning'} ? '$ / m²' : '$')"></span>
+								<br />
+								Duration: <span
+									th:text="${#numbers.formatDecimal(item.duration, 1, item.duration % 1 == 0 ? 0 : 2)} + 'h'"></span>
+							</p>
+							<p th:text="${item.description}"></p>
+							<a th:if="${session.usrId != null}" class="btn justify-content-end"
+								th:href="@{/user/bookService}">Book Now</a>
+						</div>
+					</div>
+
+					<!-- Message when no services are available -->
+					<p th:if="${services.size() == 0}" class="mb-5">
+						We are re-organizing our services to better meet your house cleaning demands.
+					</p>
+>>>>>>> Stashed changes
 				</div>
 			</div>
 		</div>

@@ -104,10 +104,10 @@ public class AdminRepository {
 	public String newService(Service ser) {
 		try {
 			String str_query = String.format(
-					"insert into %s (service_name, description, base_price, staff_required, image) values(?,?,?,?,?)",
+					"insert into %s (service_name, description, base_price, staff_required, image, status) values(?,?,?,?,?,?)",
 					Views.TBL_SERVICES);
 			int rowaccept = db.update(str_query, new Object[] { ser.getSerName(), ser.getDescription(),
-					ser.getBasePrice(), ser.getStaffRequired(), ser.getImage() });
+					ser.getBasePrice(), ser.getStaffRequired(), ser.getImage(), ser.getStatus() });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Service name may already exists.");
@@ -139,6 +139,11 @@ public class AdminRepository {
 			if (ser.getStaffRequired() != 0) {
 				queryBuilder.append("staffRequired = ?");
 				params.add(ser.getStaffRequired());
+			}
+
+			if (ser.getStatus() == null) {
+				queryBuilder.append("status = ?");
+				params.add(ser.getStatus());
 			}
 
 			queryBuilder.setLength(queryBuilder.length() - 2);
@@ -268,6 +273,18 @@ public class AdminRepository {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
 			return e.getMessage();
+		}
+	}
+
+	public String disableStaff(int id) {
+		try {
+			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
+			int rowaccepted = db.update(str_query, new Object[] { "disabled", id });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
 		}
 	}
 
