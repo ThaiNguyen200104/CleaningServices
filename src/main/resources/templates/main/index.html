@@ -49,7 +49,7 @@
 			border-radius: 4px;
 			color: white;
 			font-weight: bold;
-			z-index: 1000;
+			z-index: 9999;
 		}
 
 		.success {
@@ -182,35 +182,32 @@
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row" th:if="${services.size() > 0}">
+				<div class="row">
 					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
 						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
 							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img th:if="${item.image == null}" th:src="'../../front/img/none-img.png'" />
+							<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
-							<p>
-								Price: <span th:text="${item.basePrice}"></span>
-							</p>
+							<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
 							<p th:text="${item.description}"></p>
 							<a class="btn justify-content-end" href="javascript:void(0);"
 								onclick="showBookingPopup(event)"
 								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
 						</div>
 					</div>
-
-
 					<!-- Message when no services are available -->
-					<p th:if="${services.size() == 0}" class="mb-5">
+					<p th:unless="${services != null}" class="col-12 mb-5">
 						We are re-organizing our services to better meet your house cleaning demands.
 					</p>
 				</div>
 			</div>
 		</div>
+		<!-- Popup Modal -->
 		<div id="bookingModal" style="display: none;">
 			<div class="modal-content">
 				<h3>Select Service Date</h3>
-				<input class="form-control my-4" type="date" id="serviceDate" required/>
+				<input class="form-control my-4" type="date" id="serviceDate" required />
 				<div class="d-flex justify-content-between">
 					<button class="btn btn-success" onclick="confirmBooking()">Confirm Booking</button>
 					<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
@@ -514,13 +511,12 @@
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
-
 	<script>
 		let selectedServiceId = null;
 		let UserId = null;
 		const inputDate = document.getElementById("serviceDate");
-				const currentYear = new Date().getFullYear();
-				inputDate.max = `${currentYear + 2}-12-31`;
+		const currentYear = new Date().getFullYear();
+		inputDate.max = `${currentYear + 2}-12-31`;
 
 		function showBookingPopup(event) {
 			var item = event.target

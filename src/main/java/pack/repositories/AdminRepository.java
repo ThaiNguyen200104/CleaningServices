@@ -158,6 +158,16 @@ public class AdminRepository {
 				params.add(ser.getBasePrice());
 			}
 
+			if (ser.getStaffRequired() != 0) {
+				queryBuilder.append("staffRequired = ?");
+				params.add(ser.getStaffRequired());
+			}
+
+			if (ser.getStatus() == null) {
+				queryBuilder.append("status = ?");
+				params.add(ser.getStatus());
+			}
+
 			queryBuilder.setLength(queryBuilder.length() - 2);
 			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
@@ -170,11 +180,22 @@ public class AdminRepository {
 		}
 	}
 
-	public String disableService(int id) {
+	public String activateServiceStatus(int id) {
 		try {
-			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_SERVICES,
+			String str_query = String.format("update %s set %s = 'activated' where %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
-			int rowaccept = db.update(str_query, new Object[] { "disabled", id });
+			int rowaccept = db.update(str_query, new Object[] { id });
+			return rowaccept == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+
+	public String disableServiceStatus(int id) {
+		try {
+			String str_query = String.format("update %s set %s = 'disabled' where %s = ?", Views.TBL_SERVICES,
+					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
+			int rowaccept = db.update(str_query, new Object[] { id });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();

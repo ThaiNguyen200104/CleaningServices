@@ -113,7 +113,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<Order> list = rep.getOrderList((int) req.getSession().getAttribute("usrId"));
+		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -216,9 +216,9 @@ public class UserController {
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String order_list(Model model, HttpServletRequest request) {
-		model.addAttribute("services", rep.getServiceById((int) request.getSession().getAttribute("usrId")));
-		model.addAttribute("currentPage", "services");
+	public String orders(@RequestParam int id, Model model) {
+		List<Order> list = rep.getOrders(id);
+		model.addAttribute("orders", list);
 
 		return Views.USER_ORDERS;
 	}
@@ -258,8 +258,8 @@ public class UserController {
 	}
 
 	@GetMapping("/orderDetails")
-	public String order_details(@RequestParam(name = "id", required = false) Integer id, Model model) {
-		List<OrderDetail> detail = (id != null) ? rep.getDetailList(id) : new ArrayList<>();
+	public String order_details(@RequestParam int id, Model model) {
+		List<OrderDetail> detail = rep.getDetails(id);
 		model.addAttribute("details", detail);
 
 		return Views.USER_ORDER_DETAILS;
@@ -287,7 +287,7 @@ public class UserController {
 			if (startDate.before(currentDate)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
 			}
-			
+
 			if (rep.isServiceInOrder(userId, serviceId)) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
 			}
@@ -298,7 +298,8 @@ public class UserController {
 			java.util.Date dateLimit = cal.getTime();
 
 			if (startDate.after(dateLimit)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be more than 5 years from now.");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Start date cannot be more than 5 years from now.");
 			}
 			String result = rep.newOrder(order, serviceId, startDate);
 

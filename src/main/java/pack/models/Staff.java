@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class Staff {
 	private int id;
+	private String fullname;
 	private String username;
 	private String password;
 	private String email;
@@ -16,9 +17,10 @@ public class Staff {
 	public Staff() {
 	}
 
-	public Staff(int id, String username, String password, String email, String phone, int jobOccupied, String image,
-			Date createDate, String status) {
+	public Staff(int id, String fullname, String username, String password, String email, String phone, int jobOccupied,
+			String image, Date createDate, String status) {
 		this.id = id;
+		this.fullname = fullname;
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -35,6 +37,14 @@ public class Staff {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public String getUsername() {

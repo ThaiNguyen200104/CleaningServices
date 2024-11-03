@@ -5,23 +5,22 @@ public class Service {
 	private String serName;
 	private String description;
 	private double basePrice;
+	private int staffRequired;
 	private String image;
 	private String status;
-	private int staffRequired;
 
 	public Service() {
 	}
 
-	public Service(int id, String serName, String description, double basePrice, String image, String status,
-			int staffRequired) {
-		super();
+	public Service(int id, String serName, String description, double basePrice, int staffRequired, String image,
+			String status) {
 		this.id = id;
 		this.serName = serName;
 		this.description = description;
 		this.basePrice = basePrice;
+		this.staffRequired = staffRequired;
 		this.image = image;
 		this.status = status;
-		this.staffRequired = staffRequired;
 	}
 
 	public int getId() {
@@ -56,6 +55,14 @@ public class Service {
 		this.basePrice = basePrice;
 	}
 
+	public int getStaffRequired() {
+		return staffRequired;
+	}
+
+	public void setStaffRequired(int staffRequired) {
+		this.staffRequired = staffRequired;
+	}
+
 	public String getImage() {
 		return image;
 	}
@@ -70,14 +77,6 @@ public class Service {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public int getStaffRequired() {
-		return staffRequired;
-	}
-
-	public void setStaffRequired(int staffRequired) {
-		this.staffRequired = staffRequired;
 	}
 
 }

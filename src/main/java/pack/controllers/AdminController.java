@@ -1,11 +1,9 @@
 package pack.controllers;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
 import pack.models.Blog;
-import pack.models.Order;
-import pack.models.OrderDetail;
 import pack.models.PageView;
 import pack.models.Schedule;
 import pack.models.Service;
@@ -306,6 +302,9 @@ public class AdminController {
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
 
 			return Views.ADMIN_SERVICES_EDIT;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "Service name may already exists.");
+			return Views.ADMIN_SERVICES_EDIT;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
@@ -314,15 +313,30 @@ public class AdminController {
 		}
 	}
 
-	@GetMapping("/services/disable")
-	public String disable_service(@RequestParam int id, Model model) {
+	@PostMapping("/services/activate")
+	public String activate_service(@RequestParam("id") int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
 			if (get != null) {
-				rep.disableService(id);
+				rep.activateServiceStatus(id);
 				return "redirect:/admin/services/list";
 			}
-			return Views.ADMIN_SERVICES_EDIT;
+			return Views.ADMIN_SERVICES_LIST;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			return "redirect:/admin/services/list?error=activateFail";
+		}
+	}
+
+	@PostMapping("/services/disable")
+	public String disable_service(@RequestParam("id") int id, Model model) {
+		try {
+			Service get = rep.getServiceById(id);
+			if (get != null) {
+				rep.disableServiceStatus(id);
+				return "redirect:/admin/services/list";
+			}
+			return Views.ADMIN_SERVICES_LIST;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			return "redirect:/admin/services/list?error=disableFail";
