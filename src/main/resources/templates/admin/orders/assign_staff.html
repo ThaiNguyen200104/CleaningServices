@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Orders Management</title>
+
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+		<div class="mx-5 mt-5">
+			<div class="col-12">
+				<h2 class="mb-4">Staff list</h2>
+				<div class="table-responsive border-1">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Name</th>
+								<th>Expected Start Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="staff : ${staffs}">
+								<td th:text="${staff.id}"></td>
+								<!--<td th:text="${staff.fullName}"></td>-->
+								<td th:text="${staff.jobOccupied}"></td>
+								<td><button type="button" onclick="selectStaff(event)"
+										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div>
+					<h4>Selected Staff for Assignment:</h4>
+					<ul id="selectedStaffList"></ul>
+					<input type="datetime-local" id="startDate" required>
+					<button type="button" onclick="assignStaff()">Assign</button>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+		let selectedStaffIds = [];
+		let ordId;
+
+		function selectStaff(event) {
+			var item = event.target;
+			var staffId = item.getAttribute("staffid");
+			ordId = parseInt(item.getAttribute("ordId"));
+			if (!selectedStaffIds.includes(staffId)) {
+				selectedStaffIds.push(parseInt(staffId));
+				updateSelectedStaffDisplay(staffId);
+			}
+		}
+
+		function updateSelectedStaffDisplay(staffId) {
+			var selectedStaffList = document.getElementById("selectedStaffList");
+			var listItem = document.createElement("li");
+			listItem.textContent = "Staff ID: " + staffId;
+			selectedStaffList.appendChild(listItem);
+		}
+
+		function assignStaff() {
+			var startDateTime = document.getElementById("startDate").value;
+
+			if (selectedStaffIds.length === 0) {
+				alert("Please select at least one staff member.");
+				return;
+			}
+
+			if (!startDateTime) {
+				alert("Please select a start date and time.");
+				return;
+			}
+
+			$.ajax({
+				url: '/admin/newSchedule',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					staffIds: selectedStaffIds,
+					startDate: startDateTime,
+					orderId: ordId
+
+				}),
+				success: function (response) {
+					alert(response);
+					selectedStaffIds = [];
+					document.getElementById("selectedStaffList").innerHTML = "";
+					document.getElementById("startDate").value = "";
+					location.reload();
+				},
+				error: function (xhr) {
+					if (xhr.responseText) {
+						alert(xhr.responseText);
+					} else {
+						alert("An error occurred. Please try again.");
+					}
+					console.error('Error:', xhr.responseText);
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>

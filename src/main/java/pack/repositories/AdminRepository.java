@@ -1,5 +1,7 @@
 package pack.repositories;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +12,14 @@ import org.springframework.stereotype.Repository;
 
 import pack.models.Admin;
 import pack.models.Blog;
-import pack.models.Order;
+import pack.models.OrderDetail;
 import pack.models.PageView;
+import pack.models.Schedule;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.modelviews.Admin_mapper;
 import pack.modelviews.Blog_mapper;
-import pack.modelviews.Order_mapper;
+import pack.modelviews.Detail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.Staff_mapper;
 import pack.utils.SecurityUtility;
@@ -127,10 +130,9 @@ public class AdminRepository {
 			queryBuilder.append(valuesBuilder);
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
 			return rowsAffected == 1 ? "success" : "failed";
-		}catch (DuplicateKeyException e) {
+		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Service name may already exists.");
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -172,7 +174,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
-			int rowaccept = db.update(str_query, new Object[] { "disabled", id});
+			int rowaccept = db.update(str_query, new Object[] { "disabled", id });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return e.getMessage();
@@ -239,12 +241,13 @@ public class AdminRepository {
 	// Staff region
 	public List<Staff> getStaffs(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from staffs", Integer.class);
+			int count = db.queryForObject("select count(*) from staffs where status != 'disabled'", Integer.class);
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
-			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
-					Views.TBL_STAFFS, Views.COL_STAFFS_ID);
+			String str_query = String.format(
+					"select * from %s where %s != 'disabled' order by %s desc offset ? rows fetch next ? rows only",
+					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
 			return db.query(str_query, new Staff_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
@@ -263,10 +266,11 @@ public class AdminRepository {
 
 	public String newStaff(Staff staff) {
 		try {
-			String str_query = String.format("insert into %s (username, password, email) values(?,?,?)",
+			String str_query = String.format("insert into %s (username, password, email, phone) values(?,?,?,?)",
 					Views.TBL_STAFFS);
 			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
-			int rowaccept = db.update(str_query, new Object[] { staff.getUsername(), hashpassword, staff.getEmail() });
+			int rowaccept = db.update(str_query,
+					new Object[] { staff.getUsername(), hashpassword, staff.getEmail(), staff.getPhone() });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
@@ -287,18 +291,64 @@ public class AdminRepository {
 		}
 	}
 
-	// Order region
-	public List<Order> getOrders(PageView pageItem) {
+	public List<Staff> staffListForAssign(int detailId) {
 		try {
-			int count = db.queryForObject("select count(*) from orders", Integer.class);
+			String str_query = String.format(
+					"select * from %s where %s = ? and %s < 3 and id not in (select staff_id from %s where detail_id = ?)",
+					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_JOB_OCCUPIED, Views.TBL_SCHEDULES);
+			return db.query(str_query, new Staff_mapper(), new Object[] { "available", detailId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String assignStaff(Schedule item) {
+		try {
+			String latestScheduleQuery = String.format("SELECT MAX(start_date) FROM %s WHERE staff_id = ?",
+					Views.TBL_SCHEDULES);
+
+			LocalDateTime latestStartDate = db.queryForObject(latestScheduleQuery, LocalDateTime.class,
+					new Object[] { item.getStaffId() });
+
+			if (latestStartDate != null) {
+				Duration timeDifference = Duration.between(latestStartDate, item.getStartDate());
+
+				if (timeDifference.toHours() < 5) {
+					return "The new start date must be at least 5 hours after the latest assigned schedule for this staff member.";
+				}
+			}
+			String str_query = String.format("insert into %s (staff_id, detail_id, start_date) values(?,?,?)",
+					Views.TBL_SCHEDULES);
+			int rowaccepted = db.update(str_query,
+					new Object[] { item.getStaffId(), item.getDetailId(), item.getStartDate() });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	// Order region
+	public List<OrderDetail> getOrders(PageView pageItem) {
+		try {
+			int count = db.queryForObject("select count(*) from order_details", Integer.class);
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
-			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
-					Views.TBL_ORDER, Views.COL_ORDERS_ID);
-			return db.query(str_query, new Order_mapper(),
-					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			String str_query = String.format(
+					"SELECT od.*, o.*, u.fullname AS customer_name, "
+							+ "       CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
+							+ "            THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od "
+							+ "JOIN %s o ON od.order_id = o.id " + "JOIN %s u ON o.user_id = u.id "
+							+ "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
+
+			return db.query(str_query, new Detail_mapper(), (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(),
+					pageItem.getPageSize());
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

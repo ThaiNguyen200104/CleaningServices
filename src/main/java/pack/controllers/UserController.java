@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -278,22 +280,35 @@ public class UserController {
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate) {
+		try {
+			Order order = new Order();
+			order.setUsrId(userId);
+			Date currentDate = new Date(System.currentTimeMillis());
+			if (startDate.before(currentDate)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+			}
+			
+			if (rep.isServiceInOrder(userId, serviceId)) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+			}
 
-		Order order = new Order();
-		order.setUsrId(userId);
-		Date currentDate = new Date(System.currentTimeMillis());
-		if (startDate.before(currentDate)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
-		}
-		
-		if (rep.isServiceInOrder(userId, serviceId)) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
-		}
-		String result = rep.newOrder(order, serviceId, startDate);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(currentDate);
+			cal.add(Calendar.YEAR, 5);
+			java.util.Date dateLimit = cal.getTime();
 
-		if ("success".equals(result)) {
-			return ResponseEntity.ok("Order created successfully.");
-		} else {
+			if (startDate.after(dateLimit)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be more than 5 years from now.");
+			}
+			String result = rep.newOrder(order, serviceId, startDate);
+
+			if ("success".equals(result)) {
+				return ResponseEntity.ok("Order created successfully.");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
 		}
 	}

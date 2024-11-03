@@ -30,6 +30,7 @@ public class Views {
 
 	// ADMIN/ORDERS
 	public static String ADMIN_ORDERS_LIST = "admin/orders/list";
+	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
 
 	// -------------------- STAFF -------------------- //
 
@@ -118,7 +119,6 @@ public class Views {
 	public static String COL_ORDER_DETAIL_SERVICE_ID = "service_id";
 	public static String COL_ORDER_DETAIL_CODE = "detail_code";
 	public static String COL_ORDER_DETAIL_PRICE = "price";
-	public static String COL_ORDER_DETAIL_ASSIGNEDSTAFF = "assigned_staff";
 	public static String COL_ORDER_DETAIL_STARTDATE = "start_date";
 	public static String COL_ORDER_DETAIL_COMPLETEDATE = "complete_date";
 	public static String COL_ORDER_DETAIL_CREATEDATE = "create_date";

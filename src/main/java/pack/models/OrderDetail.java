@@ -12,6 +12,8 @@ public class OrderDetail {
 	private Date completeDate;
 	private Date createDate;
 	private String status;
+	private String customerName;
+	private int hasAssignedStaff;
 
 	public OrderDetail() {
 	}
@@ -99,6 +101,22 @@ public class OrderDetail {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public int getHasAssignedStaff() {
+		return hasAssignedStaff;
+	}
+
+	public void setHasAssignedStaff(int hasAssignedStaff) {
+		this.hasAssignedStaff = hasAssignedStaff;
 	}
 
 }
