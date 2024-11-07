@@ -265,32 +265,36 @@ public class UserController {
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate) {
+		try {
+			Order order = new Order();
+			order.setUsrId(userId);
+			Date currentDate = new Date(System.currentTimeMillis());
+			if (startDate.before(currentDate)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+			}
 
-		Order order = new Order();
-		order.setUsrId(userId);
-		Date currentDate = new Date(System.currentTimeMillis());
-		if (startDate.before(currentDate)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
-		}
+			if (rep.isServiceInOrder(userId, serviceId)) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+			}
 
-		if (rep.isServiceInOrder(userId, serviceId)) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
-		}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(currentDate);
+			cal.add(Calendar.YEAR, 5);
+			java.util.Date dateLimit = cal.getTime();
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(currentDate);
-		cal.add(Calendar.YEAR, 5);
-		Date dateLimit = (Date) cal.getTime();
+			if (startDate.after(dateLimit)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Start date cannot be more than 5 years from now.");
+			}
+			String result = rep.newOrder(order, serviceId, startDate);
 
-		if (startDate.after(dateLimit)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body("Start date cannot be more than 10 years from now.");
-		}
-		String result = rep.newOrder(order, serviceId, startDate);
-
-		if ("success".equals(result)) {
-			return ResponseEntity.ok("Order created successfully.");
-		} else {
+			if ("success".equals(result)) {
+				return ResponseEntity.ok("Order created successfully.");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
 		}
 	}

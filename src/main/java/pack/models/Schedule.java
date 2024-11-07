@@ -1,19 +1,19 @@
 package pack.models;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class Schedule {
 	private int id;
 	private int staffId;
 	private int detailId;
-	private Date startDate;
-	private Date endDate;
+	private LocalDateTime startDate;
+	private LocalDateTime endDate;
 	private String status;
 
 	public Schedule() {
 	}
 
-	public Schedule(int id, int staffId, int detailId, Date startDate, Date endDate, String status) {
+	public Schedule(int id, int staffId, int detailId, LocalDateTime startDate, LocalDateTime endDate, String status) {
 		this.id = id;
 		this.staffId = staffId;
 		this.detailId = detailId;
@@ -46,19 +46,19 @@ public class Schedule {
 		this.detailId = detailId;
 	}
 
-	public Date getStartDate() {
+	public LocalDateTime getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDateTime getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
 

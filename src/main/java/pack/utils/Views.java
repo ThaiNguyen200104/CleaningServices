@@ -31,6 +31,7 @@ public class Views {
 	// ADMIN/ORDERS
 	public static String ADMIN_ORDERS_LIST = "admin/orders/list";
 	public static String ADMIN_ORDERS_REQUEST = "admin/orders/request";
+	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
 
 	// -------------------- STAFF -------------------- //
 
@@ -147,8 +148,8 @@ public class Views {
 	public static String COL_SCHEDULES_ID = "id";
 	public static String COL_SCHEDULES_STAFF_ID = "staff_id";
 	public static String COL_SCHEDULES_DETAIL_ID = "detail_id";
-	public static String COL_SCHEDULES_START_AT = "start_date";
-	public static String COL_SCHEDULES_END_AT = "end_date";
+	public static String COL_SCHEDULES_START_DATE = "start_date";
+	public static String COL_SCHEDULES_END_DATE = "end_date";
 	public static String COL_SCHEDULES_STATUS = "status";
 
 	// REQUESTS

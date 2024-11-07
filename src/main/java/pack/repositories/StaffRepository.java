@@ -13,11 +13,11 @@ public class StaffRepository {
 	@Autowired
 	JdbcTemplate db;
 
-	public Staff getStaffByUsername(String username) {
+	public Staff getStaffByUsernameOrPhone(String acc) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_STAFFS,
-					Views.COL_STAFFS_USERNAME);
-			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { username });
+			String str_query = String.format("select * from %s where %s = ? or %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_USERNAME, Views.COL_STAFFS_PHONE);
+			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { acc, acc});
 		} catch (Exception e) {
 			return null;
 		}

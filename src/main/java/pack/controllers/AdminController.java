@@ -1,5 +1,9 @@
 package pack.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
 import pack.models.Blog;
 import pack.models.PageView;
+import pack.models.Schedule;
 import pack.models.Service;
 import pack.models.Staff;
 import pack.repositories.AdminRepository;
@@ -351,11 +357,54 @@ public class AdminController {
 
 		return Views.ADMIN_ORDERS_LIST;
 	}
-	
+
 	@GetMapping("/orders/request")
 	public String order_request() {
-		
+
 		return Views.ADMIN_ORDERS_REQUEST;
+	}
+
+	@GetMapping("/orders/assignStaff")
+	public String orderlisttoassign(@RequestParam int id, Model model) {
+		model.addAttribute("staffs", rep.staffListForAssign(id));
+		model.addAttribute("Ord_id", id);
+		return Views.ADMIN_ORDERS_ASSIGN_STAFF;
+	}
+
+	@PostMapping("/newSchedule")
+	public ResponseEntity<String> assignStaff(@RequestBody Map<String, Object> payload) {
+		List<Integer> staffIds = (List<Integer>) payload.get("staffIds");
+		String startDateStr = (String) payload.get("startDate");
+		Integer orderId = Integer.parseInt(payload.get("orderId").toString());
+
+		if (staffIds == null || staffIds.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No staff selected.");
+		}
+		if (startDateStr == null || startDateStr.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date is required.");
+		}
+
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+			LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
+
+			for (Integer staffId : staffIds) {
+				Schedule schedule = new Schedule();
+				schedule.setStaffId(staffId);
+				schedule.setStartDate(startDate);
+				schedule.setDetailId(orderId);
+
+				String result = rep.assignStaff(schedule);
+				if (!"success".equals(result)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+				}
+			}
+			return ResponseEntity.ok("Staff assigned successfully.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while assigning staff.");
+		}
 	}
 
 	// -------------------- STAFFS -------------------- //
@@ -383,14 +432,19 @@ public class AdminController {
 	public String create_account(@ModelAttribute("new_item") Staff staff, Model model) {
 		try {
 			String result = rep.newStaff(staff);
+			if (!staff.getPhone().matches(Views.PHONE_REGEX)) {
+				model.addAttribute("error",
+						"Your phone number must only have digits and be at least 10 to 11 digits long.");
+				return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+			}
 			if (result.equals("success")) {
 				emailService.SendMail(staff.getEmail(), "Your staff Account",
 						"Username: " + staff.getUsername() + "\n Password: " + staff.getPassword());
-				return Views.ADMIN_STAFFS_LIST;
+				return "redirect:/admin/staffs/list";
 			}
 			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
 		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "Some information(username, email) may already exists.");
+			model.addAttribute("error", "Some information(username, email, phone) may already exists.");
 			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());

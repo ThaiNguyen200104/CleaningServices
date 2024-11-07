@@ -37,9 +37,9 @@ public class StaffController {
 	}
 
 	@PostMapping("/checklogin")
-	public String chklogin(@RequestParam("usrname") String username, @RequestParam("pw") String password,
+	public String chklogin(@RequestParam("acc") String acc, @RequestParam("pw") String password,
 			HttpServletRequest request, Model model) {
-		Staff staff = rep.getStaffByUsername(username);
+		Staff staff = rep.getStaffByUsernameOrPhone(acc);
 		if (staff == null) {
 			model.addAttribute("loginError", "Account doesn't exists, please check again!");
 			return Views.STAFF_LOGIN;
@@ -61,7 +61,7 @@ public class StaffController {
 
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
-		Staff st = rep.getStaffByUsername(req.getSession().getAttribute("username").toString());
+		Staff st = rep.getStaffByUsernameOrPhone(req.getSession().getAttribute("username").toString());
 		model.addAttribute("staff", st);
 
 		return Views.STAFF_ACCOUNTS;
