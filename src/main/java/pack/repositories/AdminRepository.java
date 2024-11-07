@@ -272,7 +272,7 @@ public class AdminRepository {
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
-			return e.getMessage();
+			return "Error: " + e.getMessage();
 		}
 	}
 

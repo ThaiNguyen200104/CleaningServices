@@ -25,14 +25,17 @@
 						<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
 							fill="#e8eaed">
 							<path
-								d="M288-288h288v-72H288v72Zm0-156h384v-72H288v72Zm0-156h384v-72H288v72Zm-72 456q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h528q29.7 0 50.85 21.15Q816-773.7 816-744v528q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm0-72h528v-528H216v528Zm0-528v528-528Z" />
+								d="M192-192v-480l-76-161 65-31 91 192h416l91-192 65 30-76 162v480H192Zm228-264h120q15.3 0 25.65-10.29Q576-476.58 576-491.79t-10.35-25.71Q555.3-528 540-528H420q-15.3 0-25.65 10.29Q384-507.42 384-492.21t10.35 25.71Q404.7-456 420-456ZM264-264h432v-336H264v336Zm0 0v-336 336Z" />
 						</svg>
 					</span>
 					<span class="text">Order Management</span>
 				</a>
-				<ul id="ddmenu_1" class="collapse show dropdown-nav">
+				<ul id="ddmenu_1" class="collapse dropdown-nav">
 					<li>
 						<a th:href="@{/admin/orders/list}"> List of order </a>
+					</li>
+					<li>
+						<a th:href="@{/admin/orders/request}"> Order Requests </a>
 					</li>
 				</ul>
 			</li>
@@ -48,7 +51,7 @@
 					</span>
 					<span class="text">Blog Management</span>
 				</a>
-				<ul id="ddmenu_2" class="collapse show dropdown-nav">
+				<ul id="ddmenu_2" class="collapse dropdown-nav">
 					<li>
 						<a th:href="@{/admin/blogs/list}"> List of blog </a>
 					</li>
@@ -69,7 +72,7 @@
 					</span>
 					<span class="text">Service Management</span>
 				</a>
-				<ul id="ddmenu_3" class="collapse show dropdown-nav">
+				<ul id="ddmenu_3" class="collapse dropdown-nav">
 					<li>
 						<a th:href="@{/admin/services/list}"> List of service </a>
 					</li>
@@ -90,7 +93,7 @@
 					</span>
 					<span class="text">Staff Management</span>
 				</a>
-				<ul id="ddmenu_4" class="collapse show dropdown-nav">
+				<ul id="ddmenu_4" class="collapse dropdown-nav">
 					<li>
 						<a th:href="@{/admin/staffs/list}"> List of staff </a>
 					</li>

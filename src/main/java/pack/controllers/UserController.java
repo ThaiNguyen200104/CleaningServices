@@ -1,7 +1,7 @@
 package pack.controllers;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +109,9 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
+		int usrId = (int) req.getSession().getAttribute("usrId");
+		List<Order> list = rep.getOrders(usrId);
+
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -212,65 +214,52 @@ public class UserController {
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String orders(@RequestParam int id, Model model) {
-		List<Order> list = rep.getOrders(id);
-		model.addAttribute("orders", list);
+	public String orders(HttpServletRequest req, Model model) {
+		int usrId = (int) req.getSession().getAttribute("usrId");
+		model.addAttribute("orders", rep.getOrders(usrId));
 
 		return Views.USER_ORDERS;
 	}
 
 	@PostMapping("/user/confirmOrder")
-	public String confirmOrder(@ModelAttribute("new_item") OrderDetail detail, HttpServletRequest req, Model model) {
-		String usrId = req.getSession().getAttribute("usrId").toString();
-		if (usrId == null) {
-			model.addAttribute("error", "User invalid. Please login to continue.");
-			return "redirect:/user/login";
-		}
+	public String confirm_order(int id, HttpServletRequest req, Model model) {
+		try {
+			OrderDetail get = rep.getDetailById(id);
+			if (get != null) {
+				rep.confirmOrder(id);
+				return "redirect:/";
+			}
 
-		String serId = req.getSession().getAttribute("serId").toString();
-		if (serId == null) {
-			model.addAttribute("error", "You don't have any service booked yet. Please book a service to order.");
-			return "redirect:/services";
-		}
-
-		Date today = new Date(System.currentTimeMillis());
-		if (!detail.getStartDate().after(today)) {
-			model.addAttribute("error", "The start date must be scheduled after today.");
+			model.addAttribute("error", "Failed to confirm order, please try again.");
 			return "redirect:/user/orders";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
+	}
 
-		String detailCode = generate_code(usrId, serId, detail.getStartDate());
-		detail.setDetailCode(detailCode);
-		detail.setStartDate(today);
-		detail.setStatus("pending");
-		String result = rep.newDetail(detail);
-
-		if (result.equals("success")) {
-			model.addAttribute("success", "Order confirmed successfully!");
-			return "redirect:/user/accounts";
+	@PostMapping("/user/cancelOrder")
+	public String cancel_order(int id, HttpServletRequest req, Model model) {
+		try {
+			OrderDetail get = rep.getDetailById(id);
+			if (get != null) {
+				rep.cancelOrder(id);
+				return "redirect:/user/accounts";
+			}
+			model.addAttribute("error", "Failed to confirm order, please try again.");
+			return "redirect:/user/orders";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		model.addAttribute("error", "Failed to confirm order, please try again.");
-		return "redirect:/user/orders";
 	}
 
 	@GetMapping("/orderDetails")
-	public String order_details(@RequestParam int id, Model model) {
-		List<OrderDetail> detail = rep.getDetails(id);
+	public String order_details(Model model) {
+		List<OrderDetail> detail = rep.getDetails();
 		model.addAttribute("details", detail);
 
 		return Views.USER_ORDER_DETAILS;
-	}
-
-	private String generate_code(String usrId, String serId, Date startDate) {
-		String formattedStartDate = new SimpleDateFormat("yyMMdd").format(startDate);
-		// Adding + "" + between usrId & serId for Java wouldn't add them numerically
-		String combinedCode = usrId + "" + serId + formattedStartDate;
-
-		// Add randomly one number from 100 to 999 for not duplicate the detail_code
-		int randomSuffix = (int) (Math.random() * 900) + 100;
-		combinedCode += randomSuffix;
-
-		return combinedCode.length() > 10 ? combinedCode.substring(combinedCode.length() - 10) : combinedCode;
 	}
 
 	@PostMapping("/bookService")
@@ -286,6 +275,16 @@ public class UserController {
 
 		if (rep.isServiceInOrder(userId, serviceId)) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+		}
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(currentDate);
+		cal.add(Calendar.YEAR, 5);
+		Date dateLimit = (Date) cal.getTime();
+
+		if (startDate.after(dateLimit)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Start date cannot be more than 10 years from now.");
 		}
 		String result = rep.newOrder(order, serviceId, startDate);
 

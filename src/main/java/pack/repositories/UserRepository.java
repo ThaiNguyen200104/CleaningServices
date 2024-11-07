@@ -134,13 +134,13 @@ public class UserRepository {
 		}
 	}
 
-	public List<Order> getOrders(int id) {
+	public List<Order> getOrders(int usrId) {
 		try {
 			String str_query = String
-					.format("SELECT s.serName AS service_name, s.basePrice AS base_price, od.startDate AS start_date "
-							+ "FROM services s " + "JOIN order_details od ON s.id = od.service_id "
-							+ "JOIN orders o ON o.id = od.order_id " + "WHERE o.user_id = ?");
-			return db.query(str_query, new Order_mapper(), new Object[] { id });
+					.format("SELECT s.service_name, s.base_price, od.start_date od.status AS status FROM services s "
+							+ "JOIN order_details od ON s.id = od.service_id " + "JOIN orders o ON od.order_id = o.id "
+							+ "WHERE o.user_id = ?");
+			return db.query(str_query, new Order_mapper(), new Object[] { usrId });
 		} catch (Exception e) {
 			return null;
 		}
@@ -148,6 +148,7 @@ public class UserRepository {
 
 	public String newOrder(Order item, int serId, Date startDate) {
 		try {
+			// Insert into order table
 			String order_query = String.format("INSERT INTO %s OUTPUT INSERTED.id VALUES (?)", Views.TBL_ORDER);
 			Integer order_id = db.queryForObject(order_query, Integer.class, new Object[] { item.getUsrId() });
 
@@ -183,24 +184,41 @@ public class UserRepository {
 		return count != null && count > 0;
 	}
 
-	public List<OrderDetail> getDetails(int id) {
+	public List<OrderDetail> getDetails() {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDERS_ID);
-			return db.query(str_query, new Detail_mapper(), new Object[] { id });
+			String str_query = String.format("select * from %s", Views.TBL_ORDER_DETAIL);
+			return db.query(str_query, new Detail_mapper());
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public String newDetail(OrderDetail detail) {
+	public OrderDetail getDetailById(int id) {
 		try {
-			String str_query = String.format(
-					"insert into %s (order_id, service_id, detail_code, price, start_date, complete_date, status) values (?,?,?,?,?)",
-					Views.TBL_ORDER_DETAIL);
-			int rowaccept = db.update(str_query,
-					new Object[] { detail.getOrderId(), detail.getSerId(), detail.getDetailCode(), detail.getPrice(),
-							detail.getStartDate(), detail.getCompleteDate(), detail.getStatus() });
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_ID);
+			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String confirmOrder(int id) {
+		try {
+			String str_query = String.format("update %s set %s = 'confirmed' where %s = ?", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
+			int rowaccept = db.update(str_query, new Object[] { id });
+			return rowaccept == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String cancelOrder(int id) {
+		try {
+			String str_query = String.format("update %s set %s = 'canceled' where %s = ?", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
+			int rowaccept = db.update(str_query, new Object[] { id });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			return null;

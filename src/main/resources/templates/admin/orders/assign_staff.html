@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Assign Staff</title>
+
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+		<div class="mx-5 mt-5">
+			<h2 class="mb-4">Assign Staff</h2>
+			<div class="table-responsive border-1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>User</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${staffs}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.usrId}"></td>
+							<td>
+								<a th:href="@{/admin/details/(id=${item.usrId})}">See user's order detail</a>
+								<form class="btn btn-warning" method="post"
+									th:if="${item.status == 'pending' or item.status == 'confirmed'}"
+									th:action="@{/admin/orders/replace(id=${item.id})}">Replace Staff
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
+</body>
+
+</html>

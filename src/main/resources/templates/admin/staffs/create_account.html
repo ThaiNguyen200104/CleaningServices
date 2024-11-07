@@ -34,7 +34,7 @@
 		<div class="mx-5 mt-5">
 			<h2 class="mb-4">Provide account for staff</h2>
 			<div th:if="${error}" class="error-message" th:text="${error}"></div>
-			<form th:action="@{/admin/staffs/createAccount}" method="post" th:object="${new_item}" class="mt-3">
+			<form th:action="@{/admin/staffs/createAccount}" method="post" class="mt-3">
 				<div class="mb-3 row">
 					<div class="col-4">
 						<label class="form-label" for="usrname">Username <span style="color: red;">(*)</span></label>

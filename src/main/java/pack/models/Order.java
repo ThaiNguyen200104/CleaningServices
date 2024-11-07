@@ -9,16 +9,14 @@ public class Order {
 	private String serName;
 	private double basePrice;
 	private Date startDate;
+	private String status;
 
 	public Order() {
 	}
 
-	public Order(int id, int usrId, String serName, double basePrice, Date startDate) {
+	public Order(int id, int usrId) {
 		this.id = id;
 		this.usrId = usrId;
-		this.serName = serName;
-		this.basePrice = basePrice;
-		this.startDate = startDate;
 	}
 
 	public int getId() {
@@ -59,6 +57,14 @@ public class Order {
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

@@ -171,3 +171,7 @@ function showNotification(message, type) {
 		$(this).remove();
 	});
 }
+
+const inputDate = document.getElementById("serviceDate");
+const currentYear = new Date().getFullYear();
+inputDate.max = `${currentYear + 2}-12-31`;

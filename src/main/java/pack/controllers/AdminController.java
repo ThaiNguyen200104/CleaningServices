@@ -351,6 +351,12 @@ public class AdminController {
 
 		return Views.ADMIN_ORDERS_LIST;
 	}
+	
+	@GetMapping("/orders/request")
+	public String order_request() {
+		
+		return Views.ADMIN_ORDERS_REQUEST;
+	}
 
 	// -------------------- STAFFS -------------------- //
 
