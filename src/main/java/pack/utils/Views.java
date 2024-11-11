@@ -157,10 +157,8 @@ public class Views {
 	public static String COL_REQUESTS_ID = "id";
 	public static String COL_REQUESTS_SCHEDULE_ID = "schedule_id";
 	public static String COL_REQUESTS_DATE_ADJUST = "date_adjust";
-	public static String COL_REQUESTS_PRICE_ADJUST = "price_adjust";
 	public static String COL_REQUESTS_REASON = "reason";
-	public static String COL_REQUESTS_DATE_STATUS = "date_status";
-	public static String COL_REQUESTS_PRICE_STATUS = "price_status";
+	public static String COL_REQUESTS_STATUS = "status";
 
 	// PAYMENT_ACCOUNTS
 	public static String TBL_PAYMENT_ACCOUNTS = "payment_accounts";

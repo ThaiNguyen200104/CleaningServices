@@ -31,22 +31,24 @@
 
 		<div class="mx-5 mt-5">
 			<h2 class="mb-4">Edit Service</h2>
-			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
-			<form th:action="@{/admin/services/editService}" method="post" enctype="multipart/form-data">
+			<div th:if="${error}" class="error-message" th:text="${error}"></div>
+			<form th:action="@{/admin/services/editService}" method="post" th:object="${edit_item}"
+				enctype="multipart/form-data">
+				<input type="hidden" id="id" name="id" th:field="*{id}" />
 				<div class="row mb-3">
 					<div class="col-5">
-						<lable class="form-lable" for="serName">Service Name</lable>
-						<input class="form-control" type="text" id="serName" th:value="${service.serName}" />
+						<label class="form-label" for="serName">Service Name</label>
+						<input class="form-control" type="text" id="serName" th:field="*{serName}" />
 					</div>
 					<div class="col-3">
-						<label class="form-lable" for="image">Image</label>
-						<input class="form-control" type="file" id="image" accept="image/*" />
+						<label class="form-label" for="image">Image</label>
+						<input class="form-control" type="file" name="image" accept="image/*" />
 					</div>
 					<div class="col-2">
-						<lable class="form-lable" for="basePrice">Base Price</lable>
+						<label class="form-label" for="basePrice">Base Price</label>
 						<div class="input-group">
 							<input type="text" class="form-control" pattern="^[0-9]*\.?[0-9]+$" id="basePrice"
-								th:value="${service.basePrice}" required />
+								th:field="*{basePrice}" required />
 							<div class="input-group-append">
 								<span class="input-group-text" id="priceUnit">$</span>
 							</div>
@@ -54,15 +56,13 @@
 					</div>
 					<div class="col-2">
 						<label class="form-label" for="staffRequired">Staff Required</label>
-						<input class="form-control" type="number" id="staffRequired"
-							th:value="*{service.staffRequired}" />
+						<input class="form-control" type="number" id="staffRequired" th:field="*{staffRequired}" />
 					</div>
 				</div>
 				<div class="mb-3">
-					<lable class="form-lable" for="description">Description</lable>
+					<label class="form-label" for="description">Description</label>
 					<textarea class="form-control" rows="3" cols="50" id="description" maxlength="255"
-						style="resize:none;" th:value="${service.description}"
-						th:text="${service.description}"></textarea>
+						style="resize:none;" th:field="*{description}"></textarea>
 					<small class="char" id="charCount">0/255</small>
 				</div>
 				<div class="d-flex justify-content-end">

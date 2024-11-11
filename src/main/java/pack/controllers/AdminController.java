@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -274,33 +275,49 @@ public class AdminController {
 	}
 
 	@GetMapping("/services/edit")
-	public String edit_service_view(int id, Model model) {
+	public String edit_service_view(@RequestParam int id, Model model) {
 		try {
 			Service get = rep.getServiceById(id);
 			if (get != null) {
-				model.addAttribute("service", get);
+				model.addAttribute("edit_item", get);
 				return Views.ADMIN_SERVICES_EDIT;
-			} else {
-				return "redirect:/admin/services/list";
 			}
+			return "redirect:/admin/services/list";
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
-
 			return Views.ADMIN_SERVICES_EDIT;
 		}
 	}
 
 	@PostMapping("/services/editService")
-	public String edit_service(@ModelAttribute("edit_item") Service ser, Model model) {
+	public String edit_service(@ModelAttribute("edit_item") Service ser, BindingResult br,
+			@RequestParam(required = false) MultipartFile image, @RequestParam(required = false) String status,
+			Model model) {
 		try {
-			String edit = rep.editService(ser);
+			if (image != null && !image.isEmpty()) {
+				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
+			}
 
+			if (ser.getBasePrice() <= 0) {
+				model.addAttribute("error", "The price should not be negative or free. Please raise the price.");
+				return Views.ADMIN_SERVICES_EDIT;
+			}
+
+			if (ser.getStaffRequired() <= 0) {
+				model.addAttribute("error", "A minimum of one staff member is necessary. Please increase the number.");
+				return Views.ADMIN_SERVICES_EDIT;
+			}
+
+			String edit = rep.editService(ser);
 			if (edit.equals("success")) {
 				return "redirect:/admin/services/list";
 			}
+			if (br.hasErrors()) {
+				model.addAttribute("error", "There was an error with your input.");
+				return Views.ADMIN_SERVICES_EDIT;
+			}
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
-
 			return Views.ADMIN_SERVICES_EDIT;
 		} catch (IllegalArgumentException e) {
 			model.addAttribute("error", "Service name may already exists.");
@@ -387,7 +404,6 @@ public class AdminController {
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 			LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
-
 			for (Integer staffId : staffIds) {
 				Schedule schedule = new Schedule();
 				schedule.setStaffId(staffId);

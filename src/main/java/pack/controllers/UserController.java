@@ -128,9 +128,9 @@ public class UserController {
 
 	@PostMapping("/updateProflie")
 	public String update_profile(@RequestParam(required = false) MultipartFile image, @ModelAttribute User user,
-			Model model, RedirectAttributes ra, HttpServletRequest request) {
+			Model model, RedirectAttributes ra, HttpServletRequest req) {
 		try {
-			User oldUserInfo = rep.findUserById((int) request.getSession().getAttribute("usrId"));
+			User oldUserInfo = rep.findUserById((int) req.getSession().getAttribute("usrId"));
 
 			if (user.getPassword() != null && !user.getPassword().equals(user.getConfirmPassword())) {
 				model.addAttribute("error", "Password and Confirm Password are not match.");
@@ -216,12 +216,17 @@ public class UserController {
 	@GetMapping("/orders")
 	public String orders(HttpServletRequest req, Model model) {
 		int usrId = (int) req.getSession().getAttribute("usrId");
-		model.addAttribute("orders", rep.getOrders(usrId));
+		List<Order> orders = rep.getOrders(usrId);
 
+		boolean checkStatus = orders != null
+				&& orders.stream().allMatch(order -> "reviewing".equals(order.getStatus()));
+		model.addAttribute("orders", orders);
+		model.addAttribute("checkStatus", checkStatus);
+		
 		return Views.USER_ORDERS;
 	}
 
-	@PostMapping("/user/confirmOrder")
+	@PostMapping("/confirmOrder")
 	public String confirm_order(int id, HttpServletRequest req, Model model) {
 		try {
 			OrderDetail get = rep.getDetailById(id);

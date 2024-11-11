@@ -95,6 +95,15 @@ public class AdminRepository {
 		}
 	}
 
+	public Service getServiceName() {
+		try {
+			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
+			return db.queryForObject(str_query, new Service_mapper());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Service getServiceById(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
@@ -144,8 +153,13 @@ public class AdminRepository {
 			List<Object> params = new ArrayList<>();
 
 			if (ser.getSerName() != null && !ser.getSerName().isEmpty()) {
-				queryBuilder.append("serName = ?, ");
+				queryBuilder.append("service_name = ?, ");
 				params.add(ser.getSerName());
+			}
+
+			if (ser.getImage() != null && !ser.getImage().isEmpty()) {
+				queryBuilder.append("image = ?, ");
+				params.add(ser.getImage());
 			}
 
 			if (ser.getDescription() != null && !ser.getDescription().isEmpty()) {
@@ -153,29 +167,27 @@ public class AdminRepository {
 				params.add(ser.getDescription());
 			}
 
-			if (ser.getBasePrice() != 0) {
-				queryBuilder.append("basePrice = ?, ");
+			if (ser.getBasePrice() > 0) {
+				queryBuilder.append("base_price = ?, ");
 				params.add(ser.getBasePrice());
 			}
 
-			if (ser.getStaffRequired() != 0) {
-				queryBuilder.append("staffRequired = ?");
+			if (ser.getStaffRequired() > 0) {
+				queryBuilder.append("staff_required = ?, ");
 				params.add(ser.getStaffRequired());
 			}
 
-			if (ser.getStatus() == null) {
-				queryBuilder.append("status = ?");
-				params.add(ser.getStatus());
+			if (queryBuilder.toString().endsWith(", ")) {
+				queryBuilder.setLength(queryBuilder.length() - 2);
 			}
 
-			queryBuilder.setLength(queryBuilder.length() - 2);
 			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
 			return rowsAffected == 1 ? "success" : "failed";
-
 		} catch (Exception e) {
+			e.printStackTrace();
 			return e.getMessage();
 		}
 	}
@@ -315,7 +327,7 @@ public class AdminRepository {
 	public List<Staff> staffListForAssign(int detailId) {
 		try {
 			String str_query = String.format(
-					"select * from %s where %s = ? and %s < 3 and id not in (select staff_id from %s where detail_id = ?)",
+					"SELECT * FROM %s WHERE %s = ? AND %s < 3 AND id NOT IN (SELECT staff_id FROM %s WHERE detail_id = ?)",
 					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_JOB_OCCUPIED, Views.TBL_SCHEDULES);
 			return db.query(str_query, new Staff_mapper(), new Object[] { "available", detailId });
 		} catch (Exception e) {
