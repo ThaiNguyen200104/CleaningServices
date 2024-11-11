@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
+import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -109,9 +110,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		int usrId = (int) req.getSession().getAttribute("usrId");
-		List<Order> list = rep.getOrders(usrId);
-
+		List<ServiceOrderDetail> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -214,49 +213,19 @@ public class UserController {
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String orders(HttpServletRequest req, Model model) {
-		int usrId = (int) req.getSession().getAttribute("usrId");
-		List<Order> orders = rep.getOrders(usrId);
-
-		boolean checkStatus = orders != null
-				&& orders.stream().allMatch(order -> "reviewing".equals(order.getStatus()));
-		model.addAttribute("orders", orders);
-		model.addAttribute("checkStatus", checkStatus);
-		
+	public String orders(Model model, HttpServletRequest request) {
+		model.addAttribute("orders", rep.getOrders((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
-	@PostMapping("/confirmOrder")
-	public String confirm_order(int id, HttpServletRequest req, Model model) {
-		try {
-			OrderDetail get = rep.getDetailById(id);
-			if (get != null) {
-				rep.confirmOrder(id);
-				return "redirect:/";
-			}
-
-			model.addAttribute("error", "Failed to confirm order, please try again.");
+	@GetMapping("/confirmOrder")
+	public String confirmOrder(@RequestParam int detailId, @RequestParam double price, Model model) {
+		String result = rep.confirmOrder(detailId, price);
+		if (result.equals("success")) {
 			return "redirect:/user/orders";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
 		}
-	}
-
-	@PostMapping("/user/cancelOrder")
-	public String cancel_order(int id, HttpServletRequest req, Model model) {
-		try {
-			OrderDetail get = rep.getDetailById(id);
-			if (get != null) {
-				rep.cancelOrder(id);
-				return "redirect:/user/accounts";
-			}
-			model.addAttribute("error", "Failed to confirm order, please try again.");
-			return "redirect:/user/orders";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		model.addAttribute("error", "Confirm failed due to some errors");
+		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/orderDetails")
@@ -267,6 +236,17 @@ public class UserController {
 		return Views.USER_ORDER_DETAILS;
 	}
 
+	@GetMapping("/cancelOrder")
+	public String cancel_order(@RequestParam int id, Model model) {
+		String result = rep.cancelOrder(id);
+		if (result.equals("success")) {
+			return "redirect:/user/orders";
+		}
+		model.addAttribute("error", "Cancel failed. Please try again.");
+		return Views.USER_ORDERS;
+	}
+
+	// Service
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate) {

@@ -1,10 +1,15 @@
 package pack.repositories;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import pack.models.OrderDetail;
+import pack.models.Request;
 import pack.models.Staff;
+import pack.modelviews.Detail_mapper;
 import pack.modelviews.Staff_mapper;
 import pack.utils.Views;
 
@@ -31,4 +36,16 @@ public class StaffRepository {
 			return null;
 		}
 	}
+	
+	//orders
+	public List<OrderDetail> pendingOrderList(){
+		try {
+			String str_query = String.format("select * from %s where %s = 'pending'", Views.TBL_ORDER_DETAIL, Views.COL_ORDER_DETAIL_STATUS);
+			return db.query(str_query, new Detail_mapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

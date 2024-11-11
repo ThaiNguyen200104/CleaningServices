@@ -14,12 +14,6 @@ public class Order_mapper implements RowMapper<Order> {
 		Order item = new Order();
 		item.setId(rs.getInt(Views.COL_ORDERS_ID));
 		item.setUsrId(rs.getInt(Views.COL_ORDERS_USER_ID));
-
-		item.setSerName(rs.getString("serName"));
-		item.setBasePrice(rs.getDouble("basePrice"));
-		item.setStartDate(rs.getDate("startDate"));
-		item.setStatus(rs.getString("status"));
-
 		return item;
 	}
 }

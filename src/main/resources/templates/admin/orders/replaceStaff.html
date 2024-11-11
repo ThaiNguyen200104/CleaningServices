@@ -38,8 +38,7 @@
 
 		<div class="mx-5 mt-5">
 			<div class="d-flex">
-				<h2 class="flex-grow-1">Staff List</h2>
-				<a class="btn btn-primary" th:href="@{/admin/staffs/create_account}">Provide Account</a>
+				<h2 class="flex-grow-1">Staff replacement list</h2>
 			</div>
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">
@@ -48,8 +47,7 @@
 						<tr>
 							<th>No.</th>
 							<th>Username</th>
-							<th>Status</th>
-							<th>Job Occupied</th>
+							<th>Fullname</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -57,12 +55,10 @@
 						<tr th:each="item : ${staffs}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.username}"></td>
-							<td th:text="${item.status}"></td>
-							<td th:text="${item.jobOccupied}"></td>
+							<td th:text="${item.fullname}"></td>
 							<td>
 								<a class="btn btn-warning"
-									th:if="${item.status != 'disabled' && item.status != 'unavailable'}"
-									th:attr="id=${item.id}" onclick="Deactivate(event)">Disabled</a>
+									th:href="@{/admin/orders/staffToReplaceWith(detailId=${detailId}, staffId= ${item.id})}">Replace</a>
 							</td>
 						</tr>
 					</tbody>
@@ -81,32 +77,6 @@
 	<script src="../../back/js/polyfill.js"></script>
 	<script src="../../back/js/main.js"></script>
 
-	<script>
-		function Deactivate(event) {
-			event.preventDefault();
-			var item = event.target;
-			var staffId = item.getAttribute("id");
-			if (confirm('Are you sure you want to deactivate this staff member?')) {
-				$.ajax({
-					url: '/admin/staffs/disabledAccount',
-					type: 'POST',
-					data: {id: staffId},
-					success: function (response) {
-						if (response === "success") {
-							alert('Staff member deactivated successfully.');
-							window.location.reload();
-						} else {
-							alert('Failed to deactivate the staff member.');
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error('AJAX Error:', status, error);
-						alert('An error occurred. Please try again.');
-					}
-				});
-			}
-		}
-	</script>
 </body>
 
 </html>

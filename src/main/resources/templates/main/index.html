@@ -65,7 +65,7 @@
 		}
 
 		body.no-scroll {
-			overflow: hidden;
+			overflow: hidden !important;
 		}
 	</style>
 </head>
@@ -188,7 +188,8 @@
 						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
 							<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img loading="lazy" th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
+							<img loading="lazy" th:unless="${item.image != null}"
+								th:src="'../../front/img/none-img.png'" />
 							<h3 th:text="${item.serName}"></h3>
 							<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
 							<p th:text="${item.description}"></p>
@@ -512,7 +513,7 @@
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
-	
+
 	<script>
 		let selectedServiceId = null;
 		let UserId = null;
@@ -571,7 +572,7 @@
 				}
 			});
 		}
-		
+
 		function showNotification(message, type) {
 			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
 			$('body').append(notification);

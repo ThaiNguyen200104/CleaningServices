@@ -299,11 +299,11 @@ public class AdminRepository {
 
 	public String newStaff(Staff staff) {
 		try {
-			String str_query = String.format("insert into %s (username, password, email, phone) values(?,?,?,?)",
+			String str_query = String.format("insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)",
 					Views.TBL_STAFFS);
 			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
 			int rowaccept = db.update(str_query,
-					new Object[] { staff.getUsername(), hashpassword, staff.getEmail(), staff.getPhone() });
+					new Object[] { staff.getUsername(), hashpassword, staff.getEmail(), staff.getPhone(), staff.getFullname()});
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
@@ -355,6 +355,46 @@ public class AdminRepository {
 					Views.TBL_SCHEDULES);
 			int rowaccepted = db.update(str_query,
 					new Object[] { item.getStaffId(), item.getDetailId(), item.getStartDate() });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	public List<Staff> AssignedStaffList(int id) {
+		try {
+			String str_query = String.format("select s.* from %s s join %s ts on s.id = ts.staff_id where ts.%s = ?",
+					Views.TBL_STAFFS, Views.TBL_SCHEDULES, Views.COL_SCHEDULES_DETAIL_ID);
+			return db.query(str_query, new Staff_mapper(), new Object[] { id });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Staff> getCurrentStaff(int detailId){
+		try {
+			String str_query ="select s.* from staffs s join schedules sd on s.id = sd.staff_id"
+					+ " join order_details od on sd.detail_id = od.id where od.id = ?";
+			return db.query(str_query, new Staff_mapper(), new Object[] {detailId});
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Staff> getAvailableStaffForReplacement(int orderId, int excludeStaffId) {
+		String query = "SELECT * FROM staffs WHERE id != ? "
+				+ "AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
+		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
+	}
+
+	public String ReplaceStaff(int currentStaff, int newStaff, int orderId) {
+		try {
+			String str_query = String.format("update %s set %s =? where %s = ? and %s = ?", Views.TBL_SCHEDULES,
+					Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_DETAIL_ID);
+			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff , orderId});
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();
