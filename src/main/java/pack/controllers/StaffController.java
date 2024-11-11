@@ -114,4 +114,14 @@ public class StaffController {
 		return "redirect:/staff/accounts";
 	}
 
+	//ORDERS
+	
+	@GetMapping("/orders/list")
+	public String getMethodName(Model model) {
+		model.addAttribute("orders", rep.pendingOrderList());
+		return Views.STAFF_ORDER_LIST;
+	}
+	
+	
+	
 }

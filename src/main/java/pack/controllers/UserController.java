@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
+import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -113,7 +114,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
+		List<ServiceOrderDetail> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -216,45 +217,19 @@ public class UserController {
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String orders(@RequestParam int id, Model model) {
-		List<Order> list = rep.getOrders(id);
-		model.addAttribute("orders", list);
-
+	public String orders(Model model, HttpServletRequest request) {
+		model.addAttribute("orders", rep.getOrders((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
-	@PostMapping("/user/confirmOrder")
-	public String confirmOrder(@ModelAttribute("new_item") OrderDetail detail, HttpServletRequest req, Model model) {
-		String usrId = req.getSession().getAttribute("usrId").toString();
-		if (usrId == null) {
-			model.addAttribute("error", "User invalid. Please login to continue.");
-			return "redirect:/user/login";
-		}
-
-		String serId = req.getSession().getAttribute("serId").toString();
-		if (serId == null) {
-			model.addAttribute("error", "You don't have any service booked yet. Please book a service to order.");
-			return "redirect:/services";
-		}
-
-		Date today = new Date(System.currentTimeMillis());
-		if (!detail.getStartDate().after(today)) {
-			model.addAttribute("error", "The start date must be scheduled after today.");
+	@GetMapping("/confirmOrder")
+	public String confirmOrder(@RequestParam int detailId, @RequestParam double price, Model model) {
+		String result = rep.confirmOrder(detailId, price);
+		if(result.equals("success")) {
 			return "redirect:/user/orders";
 		}
-
-		String detailCode = generate_code(usrId, serId, detail.getStartDate());
-		detail.setDetailCode(detailCode);
-		detail.setStartDate(today);
-		detail.setStatus("pending");
-		String result = rep.newDetail(detail);
-
-		if (result.equals("success")) {
-			model.addAttribute("success", "Order confirmed successfully!");
-			return "redirect:/user/accounts";
-		}
-		model.addAttribute("error", "Failed to confirm order, please try again.");
-		return "redirect:/user/orders";
+		model.addAttribute("error", "Confirm failed due to some errors");
+		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/orderDetails")
@@ -277,6 +252,17 @@ public class UserController {
 		return combinedCode.length() > 10 ? combinedCode.substring(combinedCode.length() - 10) : combinedCode;
 	}
 
+	@GetMapping("/cancelOrder")
+	public String cancleOrder(@RequestParam int id, Model model) {
+		String result = rep.cancleOrder(id);
+		if (result.equals("success")) {
+			return "redirect:/user/orders";
+		}
+		model.addAttribute("error", "Cancle failed due to some errors.");
+		return Views.USER_ORDERS;
+	}
+
+	// Service
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate) {

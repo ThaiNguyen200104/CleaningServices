@@ -234,7 +234,6 @@ public class AdminController {
 
 	@GetMapping("/services/create")
 	public String create_service_view(Model model) {
-		model.addAttribute("new_item", new Service());
 		return Views.ADMIN_SERVICES_CREATE;
 	}
 
@@ -247,7 +246,13 @@ public class AdminController {
 			ser.setSerName(serName);
 			ser.setDescription(description);
 			ser.setBasePrice(basePrice);
-			ser.setStaffRequired(staffRequired);
+
+			if (staffRequired <= 0) {
+				model.addAttribute("catchError", "Staff required cannot be 0 or less.");
+				return Views.ADMIN_SERVICES_CREATE;
+			} else {
+				ser.setStaffRequired(staffRequired);
+			}
 
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
@@ -266,9 +271,8 @@ public class AdminController {
 			model.addAttribute("catchError", "Service name may already exists.");
 			return Views.ADMIN_SERVICES_CREATE;
 		} catch (Exception e) {
-			System.out.println("System error: " + e.getMessage());
+			e.printStackTrace();
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
-
 			return Views.ADMIN_SERVICES_CREATE;
 		}
 	}
@@ -402,6 +406,32 @@ public class AdminController {
 		}
 	}
 
+	@GetMapping("/orders/replaceStaff")
+	public String editStaffInOrder(@RequestParam int id, Model model) {
+		model.addAttribute("staffs", rep.getCurrentStaff(id));
+		model.addAttribute("detailId", id);
+		return Views.ADMIN_ORDERS_REPLACE_STAFF;
+	}
+
+	@GetMapping("/orders/staffToReplaceWith")
+	public String editschedultstaff(@RequestParam int detailId, @RequestParam int staffId, Model model) {
+		model.addAttribute("staffs", rep.getAvailableStaffForReplacement(detailId, staffId));
+		model.addAttribute("currentStaff", staffId);
+		model.addAttribute("detailId", detailId);
+		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
+	}
+	
+	@GetMapping("/ReplaceStaff")
+	public String replaceaction(@RequestParam int detailId, @RequestParam int currentStaff, @RequestParam int newStaff, Model model) {
+		String result = rep.ReplaceStaff(currentStaff, newStaff, detailId);
+		if(result.equals("success")) {
+			return "redirect:/admin/orders/list";
+		}
+		model.addAttribute("error", "Replace failed due to some errors");
+		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
+	}
+	
+
 	// -------------------- STAFFS -------------------- //
 
 	@GetMapping("/staffs/list")
@@ -419,7 +449,6 @@ public class AdminController {
 	@GetMapping("/staffs/create_account")
 	public String create_account_view(Model model) {
 		model.addAttribute("new_item", new Staff());
-
 		return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
 	}
 
@@ -433,8 +462,6 @@ public class AdminController {
 				return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
 			}
 			if (result.equals("success")) {
-				emailService.SendMail(staff.getEmail(), "Your staff Account",
-						"Username: " + staff.getUsername() + "\n Password: " + staff.getPassword());
 				return "redirect:/admin/staffs/list";
 			}
 			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
@@ -452,16 +479,6 @@ public class AdminController {
 	public String staff_accounts(int id, Model model) {
 		model.addAttribute("staffs", rep.getStaffById(id));
 		return Views.ADMIN_STAFFS_INFO;
-	}
-
-	@PostMapping("/staffs/assignJob")
-	public String assign_job() {
-		return "";
-	}
-
-	@PostMapping("/staffs/replaceStaff")
-	public String replace_staff() {
-		return "";
 	}
 
 	@PostMapping("/staffs/disabledAccount")

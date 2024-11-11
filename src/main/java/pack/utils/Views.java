@@ -31,6 +31,8 @@ public class Views {
 	// ADMIN/ORDERS
 	public static String ADMIN_ORDERS_LIST = "admin/orders/list";
 	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
+	public static String ADMIN_ORDERS_REPLACE_STAFF = "admin/orders/replaceStaff";
+	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/StaffForReplace";
 
 	// -------------------- STAFF -------------------- //
 
@@ -40,6 +42,7 @@ public class Views {
 	public static String STAFF_ACCOUNTS = "staff/accounts";
 	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
 	public static String STAFF_VALIDATE = "staff/validate_otp";
+	public static String STAFF_ORDER_LIST = "staff/order_list";
 
 	// -------------------- USER -------------------- //
 

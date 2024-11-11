@@ -63,7 +63,7 @@
 		}
 
 		body.no-scroll {
-			overflow: hidden;
+			overflow: hidden !important;
 		}
 	</style>
 </head>
@@ -186,8 +186,10 @@
 					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
 						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
-							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}" />
-							<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
+							<img th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+								style="width: 16rem; height: 16rem; object-fit: cover;" />
+							<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'"
+								style="width: 16rem; height: 16rem; object-fit: cover;" />
 							<h3 th:text="${item.serName}"></h3>
 							<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
 							<p th:text="${item.description}"></p>

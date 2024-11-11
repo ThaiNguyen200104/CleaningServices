@@ -1,10 +1,13 @@
 package pack.controllers;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,32 +60,32 @@ public class AdminRest {
 
 	@CrossOrigin
 	@GetMapping("/createAdmin")
-	public String createAdmin(@RequestParam("token") String token, RedirectAttributes ra) {
+	public ResponseEntity<String> createAdmin(@RequestParam("token") String token) {
 		try {
 			TokenRecord tokenRecord = tokenRepository.findToken(token);
 
 			if (tokenRecord == null || tokenRecord.isUsed()) {
-				ra.addFlashAttribute("message", "Token is invalid or already used.");
-				return "Token is invalid or already used.";
+				return ResponseEntity.badRequest().body("Token is invalid or already used.");
 			}
 
 			if (tokenRecord.getExpirationTime().isBefore(LocalDateTime.now())) {
-				ra.addFlashAttribute("message", "Token has expired.");
-				return "Token has expired.";
+				return ResponseEntity.badRequest().body("Token has expired.");
 			}
 
-			// Thực hiện tạo tài khoản admin ở đây
+			// Create admin account
 			String result = adminRepository.newAdmin("admin", "123");
 
-			// Đánh dấu token đã được sử dụng
+			// Mark token as used
 			tokenRepository.markTokenAsUsed(token);
-
 			if ("success".equals(result)) {
-				return "Enter admin login page: http://www.localhost:8080/admin/login";
+				// Redirect to login page
+				URI loginUri = URI.create("http://localhost:8080/admin/login");
+				return ResponseEntity.status(HttpStatus.FOUND).location(loginUri).build();
 			}
 		} catch (Exception e) {
 			e.getMessage();
 		}
-		return "failed to create account";
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Failed to create account. Please try again.");
 	}
 }

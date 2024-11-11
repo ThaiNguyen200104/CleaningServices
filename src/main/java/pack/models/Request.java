@@ -6,23 +6,21 @@ public class Request {
 	private int id;
 	private int scheduleId;
 	private Date dateAdjust;
-	private double priceAdjust;
+	private String title;
 	private String reason;
-	private String dateStatus;
-	private String priceStatus;
+	private String status;
 
 	public Request() {
 	}
 
-	public Request(int id, int scheduleId, Date dateAdjust, double priceAdjust, String reason, String dateStatus,
-			String priceStatus) {
+	public Request(int id, int scheduleId, Date dateAdjust, String title, String reason, String status) {
+		super();
 		this.id = id;
 		this.scheduleId = scheduleId;
 		this.dateAdjust = dateAdjust;
-		this.priceAdjust = priceAdjust;
+		this.title = title;
 		this.reason = reason;
-		this.dateStatus = dateStatus;
-		this.priceStatus = priceStatus;
+		this.status = status;
 	}
 
 	public int getId() {
@@ -49,12 +47,12 @@ public class Request {
 		this.dateAdjust = dateAdjust;
 	}
 
-	public double getPriceAdjust() {
-		return priceAdjust;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setPriceAdjust(double priceAdjust) {
-		this.priceAdjust = priceAdjust;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getReason() {
@@ -65,20 +63,11 @@ public class Request {
 		this.reason = reason;
 	}
 
-	public String getDateStatus() {
-		return dateStatus;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setDateStatus(String dateStatus) {
-		this.dateStatus = dateStatus;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-
-	public String getPriceStatus() {
-		return priceStatus;
-	}
-
-	public void setPriceStatus(String priceStatus) {
-		this.priceStatus = priceStatus;
-	}
-
 }

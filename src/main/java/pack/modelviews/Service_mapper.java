@@ -19,7 +19,6 @@ public class Service_mapper implements RowMapper<Service> {
 		item.setStaffRequired(rs.getInt(Views.COL_SERVICES_STAFF_REQUIRED));
 		item.setImage(rs.getString(Views.COL_SERVICES_IMAGES));
 		item.setStatus(rs.getString(Views.COL_SERVICES_STATUS));
-		item.setStaffRequired(rs.getInt(Views.COL_SERVICES_STAFF_REQUIRED));
 		return item;
 	}
 }
