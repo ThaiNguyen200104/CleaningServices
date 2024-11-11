@@ -40,15 +40,15 @@ public class AdminRest {
 	// http://localhost:8080/api/generateAdmin?email=hieuminh091304@gmail.com&apikey=7ed9b7ef600ce7544841cd061cf27b2493b7da5c78644ebe7920ef02c76939d9
 	public String generateAdmin(@RequestParam String email, @RequestParam String apikey, RedirectAttributes ra) {
 		if (apiKey.equals(apikey)) {
-			// Tạo token và thời gian hết hạn (3 giờ từ hiện tại)
+			// Create token & expired time (3 hours)
 			String token = UUID.randomUUID().toString();
 			LocalDateTime expirationTime = LocalDateTime.now().plusHours(3);
 
-			// Lưu token vào cơ sở dữ liệu
+			// Insert token into database
 			tokenRepository.saveToken(token, expirationTime);
 
-			// Gửi email với đường link chứa token
-			String emailBody = "Username: admin\\nPassword: 123\\n\\nClick here to create your admin account: http://localhost:8080/api/createAdmin?token="
+			// Send email with the link that contains token
+			String emailBody = "Username: admin\nPassword: 123\n\nClick here to create your admin account: http://localhost:8080/api/createAdmin?token="
 					+ token;
 			emailService.SendMail(email, "Admin Account Creation", emailBody);
 
@@ -75,7 +75,7 @@ public class AdminRest {
 			// Create admin account
 			String result = adminRepository.newAdmin("admin", "123");
 
-			// Mark token as used
+			// Mark used token
 			tokenRepository.markTokenAsUsed(token);
 			if ("success".equals(result)) {
 				// Redirect to login page

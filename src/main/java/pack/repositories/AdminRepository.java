@@ -296,7 +296,7 @@ public class AdminRepository {
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
-			return e.getMessage();
+			return "Error: " + e.getMessage();
 		}
 	}
 
@@ -397,17 +397,13 @@ public class AdminRepository {
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
-			String str_query = String.format(
-					"SELECT od.*, o.*, u.fullname AS customer_name, "
-							+ "       CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
-							+ "            THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od "
-							+ "JOIN %s o ON od.order_id = o.id " + "JOIN %s u ON o.user_id = u.id "
-							+ "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+			String str_query = String.format("SELECT od.*, o.*, u.fullname AS customer_name, "
+					+ "CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
+					+ "THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od " + "JOIN %s o ON od.order_id = o.id "
+					+ "JOIN %s u ON o.user_id = u.id " + "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
-
 			return db.query(str_query, new Detail_mapper(), (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(),
 					pageItem.getPageSize());
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

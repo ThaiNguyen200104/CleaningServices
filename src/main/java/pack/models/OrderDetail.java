@@ -12,6 +12,7 @@ public class OrderDetail {
 	private Date completeDate;
 	private Date createDate;
 	private String status;
+
 	private String customerName;
 	private int hasAssignedStaff;
 

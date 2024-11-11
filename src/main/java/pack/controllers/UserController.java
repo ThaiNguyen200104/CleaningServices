@@ -2,13 +2,10 @@ package pack.controllers;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -225,16 +222,32 @@ public class UserController {
 	@GetMapping("/confirmOrder")
 	public String confirmOrder(@RequestParam int detailId, @RequestParam double price, Model model) {
 		String result = rep.confirmOrder(detailId, price);
-		if(result.equals("success")) {
+		if (result.equals("success")) {
 			return "redirect:/user/orders";
 		}
 		model.addAttribute("error", "Confirm failed due to some errors");
 		return Views.USER_ORDERS;
 	}
 
+	@PostMapping("/user/cancelOrder")
+	public String cancel_order(int id, HttpServletRequest req, Model model) {
+		try {
+			OrderDetail get = rep.getDetailById(id);
+			if (get != null) {
+				rep.cancelOrder(id);
+				return "redirect:/user/accounts";
+			}
+			model.addAttribute("error", "Failed to confirm order, please try again.");
+			return "redirect:/user/orders";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@GetMapping("/orderDetails")
-	public String order_details(@RequestParam int id, Model model) {
-		List<OrderDetail> detail = rep.getDetails(id);
+	public String order_details(Model model) {
+		List<OrderDetail> detail = rep.getDetails();
 		model.addAttribute("details", detail);
 
 		return Views.USER_ORDER_DETAILS;

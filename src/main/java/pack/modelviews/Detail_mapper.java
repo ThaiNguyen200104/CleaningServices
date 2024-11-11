@@ -21,8 +21,10 @@ public class Detail_mapper implements RowMapper<OrderDetail> {
 		item.setCompleteDate(rs.getDate(Views.COL_ORDER_DETAIL_COMPLETEDATE));
 		item.setCreateDate(rs.getDate(Views.COL_ORDER_DETAIL_CREATEDATE));
 		item.setStatus(rs.getString(Views.COL_ORDER_DETAIL_STATUS));
+
 		item.setCustomerName(rs.getString("customer_name"));
 		item.setHasAssignedStaff(rs.getInt("hasAssignedStaff"));
+
 		return item;
 	}
 }

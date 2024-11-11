@@ -362,6 +362,12 @@ public class AdminController {
 		return Views.ADMIN_ORDERS_LIST;
 	}
 
+	@GetMapping("/orders/request")
+	public String order_request() {
+
+		return Views.ADMIN_ORDERS_REQUEST;
+	}
+
 	@GetMapping("/orders/assignStaff")
 	public String orderlisttoassign(@RequestParam int id, Model model) {
 		model.addAttribute("staffs", rep.staffListForAssign(id));
@@ -397,7 +403,6 @@ public class AdminController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 				}
 			}
-
 			return ResponseEntity.ok("Staff assigned successfully.");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -14,7 +14,6 @@ public class Schedule {
 	}
 
 	public Schedule(int id, int staffId, int detailId, LocalDateTime startDate, LocalDateTime endDate, String status) {
-		super();
 		this.id = id;
 		this.staffId = staffId;
 		this.detailId = detailId;

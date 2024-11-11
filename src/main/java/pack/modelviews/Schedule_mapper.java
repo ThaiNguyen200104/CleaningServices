@@ -15,8 +15,8 @@ public class Schedule_mapper implements RowMapper<Schedule> {
 		item.setId(rs.getInt(Views.COL_SCHEDULES_ID));
 		item.setStaffId(rs.getInt(Views.COL_SCHEDULES_STAFF_ID));
 		item.setDetailId(rs.getInt(Views.COL_SCHEDULES_DETAIL_ID));
-		item.setStartDate(rs.getTimestamp(Views.COL_SCHEDULES_START_AT).toLocalDateTime());
-		item.setEndDate(rs.getTimestamp(Views.COL_SCHEDULES_END_AT).toLocalDateTime());
+		item.setStartDate(rs.getTimestamp(Views.COL_SCHEDULES_START_DATE).toLocalDateTime());
+		item.setEndDate(rs.getTimestamp(Views.COL_SCHEDULES_END_DATE).toLocalDateTime());
 		item.setStatus(rs.getString(Views.COL_SCHEDULES_STATUS));
 		return item;
 	}

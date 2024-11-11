@@ -3,10 +3,11 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Cleanex - Home Cleaning Service</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Home Cleaning Service</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,6 +17,7 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+
 	<style>
 		#bookingModal {
 			position: fixed;
@@ -110,11 +112,10 @@
 									Login
 								</a>
 								<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link">
-									Order <span class="badge badge-light">2</span>
+									Order
 								</a>
 								<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
-									class="nav-item nav-link">
-									Your Account
+									class="nav-item nav-link">Your Account
 								</a>
 								<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
 									Logout
