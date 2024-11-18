@@ -30,6 +30,7 @@
 		<div class="mx-5 mt-5">
 			<div class="col-12">
 				<h2 class="mb-4">Staff list</h2>
+				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<div class="table-responsive border-1">
 					<table class="table table-hover">
 						<thead>
@@ -37,17 +38,20 @@
 								<th>No.</th>
 								<th>Name</th>
 								<th>Expected Start Date</th>
-								<th>Status</th>
+								<th>Job Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="staff : ${staffs}">
 								<td th:text="${staff.id}"></td>
-								<!--<td th:text="${staff.fullName}"></td>-->
+								<td th:text="${staff.fullname}"></td>
+								<!--<td th:text="${detail.startDate}"></td>-->
 								<td th:text="${staff.jobOccupied}"></td>
-								<td><button type="button" onclick="selectStaff(event)"
-										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button></td>
+								<td>
+									<button type="button" onclick="selectStaff(event)"
+										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>

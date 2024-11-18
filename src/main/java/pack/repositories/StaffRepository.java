@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import pack.models.OrderDetail;
-import pack.models.Request;
 import pack.models.Staff;
 import pack.modelviews.Detail_mapper;
 import pack.modelviews.Staff_mapper;
@@ -18,16 +17,26 @@ public class StaffRepository {
 	@Autowired
 	JdbcTemplate db;
 
-	public Staff getStaffByUsernameOrPhone(String acc) {
+	public Staff findStaffById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s = ? or %s = ?", Views.TBL_STAFFS,
-					Views.COL_STAFFS_USERNAME, Views.COL_STAFFS_PHONE);
-			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { acc, acc});
+			String str_query = String.format("select * from %s where %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_ID);
+			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
+	public Staff getStaffByUsernameOrPhone(String acc) {
+		try {
+			String str_query = String.format("select * from %s where %s = ? or %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_USERNAME, Views.COL_STAFFS_PHONE);
+			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { acc, acc });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Staff checkEmailExists(String email) {
 		try {
 			String str_query = String.format("select * from %s where %s = ?", Views.TBL_STAFFS, Views.COL_STAFFS_EMAIL);
@@ -36,16 +45,17 @@ public class StaffRepository {
 			return null;
 		}
 	}
-	
-	//orders
-	public List<OrderDetail> pendingOrderList(){
+
+	// orders
+	public List<OrderDetail> pendingOrderList() {
 		try {
-			String str_query = String.format("select * from %s where %s = 'pending'", Views.TBL_ORDER_DETAIL, Views.COL_ORDER_DETAIL_STATUS);
+			String str_query = String.format("select * from %s where %s = 'pending'", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_STATUS);
 			return db.query(str_query, new Detail_mapper());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 }

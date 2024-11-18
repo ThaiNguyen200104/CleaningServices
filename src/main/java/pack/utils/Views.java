@@ -33,7 +33,7 @@ public class Views {
 	public static String ADMIN_ORDERS_REQUEST = "admin/orders/request";
 	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
 	public static String ADMIN_ORDERS_REPLACE_STAFF = "admin/orders/replaceStaff";
-	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/StaffForReplace";
+	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/staffForReplace";
 
 	// -------------------- STAFF -------------------- //
 

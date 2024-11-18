@@ -3,7 +3,7 @@ package pack.models;
 public class Order {
 	private int id;
 	private int usrId;
-	private String status;
+	private String orderStatus;
 
 	public Order() {
 	}
@@ -29,12 +29,12 @@ public class Order {
 		this.usrId = usrId;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getOrderStatus() {
+		return orderStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setOrderStatus(String status) {
+		this.orderStatus = status;
 	}
 
 }

@@ -17,7 +17,7 @@ public class ServiceOrderDetail_mapper implements RowMapper<ServiceOrderDetail> 
 		item.setSerName(rs.getString(Views.COL_SERVICES_NAME));
 		item.setBasePrice(rs.getDouble(Views.COL_SERVICES_BASE_PRICE));
 		item.setStartDate(rs.getDate("startDate"));
-		item.setOrderStatus(rs.getString("Ordstatus"));
+		item.setOrderStatus(rs.getString("orderStatus"));
 		return item;
 	}
 }

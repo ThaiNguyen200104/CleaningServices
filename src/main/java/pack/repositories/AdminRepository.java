@@ -299,11 +299,11 @@ public class AdminRepository {
 
 	public String newStaff(Staff staff) {
 		try {
-			String str_query = String.format("insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)",
-					Views.TBL_STAFFS);
+			String str_query = String.format(
+					"insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)", Views.TBL_STAFFS);
 			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
-			int rowaccept = db.update(str_query,
-					new Object[] { staff.getUsername(), hashpassword, staff.getEmail(), staff.getPhone(), staff.getFullname()});
+			int rowaccept = db.update(str_query, new Object[] { staff.getUsername(), hashpassword, staff.getEmail(),
+					staff.getPhone(), staff.getFullname() });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
@@ -373,17 +373,17 @@ public class AdminRepository {
 		}
 	}
 
-	public List<Staff> getCurrentStaff(int detailId){
+	public List<Staff> getCurrentStaff(int detailId) {
 		try {
-			String str_query ="select s.* from staffs s join schedules sd on s.id = sd.staff_id"
+			String str_query = "select s.* from staffs s join schedules sd on s.id = sd.staff_id"
 					+ " join order_details od on sd.detail_id = od.id where od.id = ?";
-			return db.query(str_query, new Staff_mapper(), new Object[] {detailId});
+			return db.query(str_query, new Staff_mapper(), new Object[] { detailId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public List<Staff> getAvailableStaffForReplacement(int orderId, int excludeStaffId) {
 		String query = "SELECT * FROM staffs WHERE id != ? "
 				+ "AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
@@ -394,7 +394,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("update %s set %s =? where %s = ? and %s = ?", Views.TBL_SCHEDULES,
 					Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_DETAIL_ID);
-			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff , orderId});
+			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff, orderId });
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -418,6 +418,16 @@ public class AdminRepository {
 					pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public OrderDetail getDetailById(int id) {
+		try {
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_ID);
+			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
+		} catch (Exception e) {
 			return null;
 		}
 	}

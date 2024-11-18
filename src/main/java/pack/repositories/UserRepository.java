@@ -16,6 +16,7 @@ import pack.models.Service;
 import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.modelviews.Detail_mapper;
+import pack.modelviews.Order_mapper;
 import pack.modelviews.ServiceOrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
@@ -135,12 +136,21 @@ public class UserRepository {
 		}
 	}
 
-	// ORDER
-	public List<ServiceOrderDetail> getOrders(int id) {
+	public List<Order> getOrders(int usrId) {
 		try {
 			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, s.base_price, od.start_date AS startDate, od.status AS orderStatus "
-					+ "FROM services s " + "JOIN order_details od ON s.id = od.service_id "
-					+ "JOIN orders o ON od.order_id = o.id " + "WHERE o.user_id = ?";
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
+			return db.query(str_query, new Order_mapper(), new Object[] { usrId });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	// ORDER
+	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
+		try {
+			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, s.base_price, od.start_date AS startDate, od.status AS orderStatus "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
 			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -190,16 +200,6 @@ public class UserRepository {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_ORDER_DETAIL);
 			return db.query(str_query, new Detail_mapper());
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public OrderDetail getDetailById(int id) {
-		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDER_DETAIL_ID);
-			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
 		}

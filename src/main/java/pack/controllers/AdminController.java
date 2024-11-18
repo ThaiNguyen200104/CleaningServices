@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
 import pack.models.Blog;
+import pack.models.OrderDetail;
 import pack.models.PageView;
 import pack.models.Schedule;
 import pack.models.Service;
@@ -389,6 +390,7 @@ public class AdminController {
 	public String orderlisttoassign(@RequestParam int id, Model model) {
 		model.addAttribute("staffs", rep.staffListForAssign(id));
 		model.addAttribute("Ord_id", id);
+		model.addAttribute("detail", rep.getDetailById(id));
 		return Views.ADMIN_ORDERS_ASSIGN_STAFF;
 	}
 
@@ -441,17 +443,17 @@ public class AdminController {
 		model.addAttribute("detailId", detailId);
 		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
 	}
-	
-	@GetMapping("/ReplaceStaff")
-	public String replaceaction(@RequestParam int detailId, @RequestParam int currentStaff, @RequestParam int newStaff, Model model) {
+
+	@GetMapping("/replaceStaff")
+	public String replaceaction(@RequestParam int detailId, @RequestParam int currentStaff, @RequestParam int newStaff,
+			Model model) {
 		String result = rep.ReplaceStaff(currentStaff, newStaff, detailId);
-		if(result.equals("success")) {
+		if (result.equals("success")) {
 			return "redirect:/admin/orders/list";
 		}
 		model.addAttribute("error", "Replace failed due to some errors");
 		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
 	}
-	
 
 	// -------------------- STAFFS -------------------- //
 

@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
-import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -110,7 +109,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<ServiceOrderDetail> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
+		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("user", user);
 		model.addAttribute("orders", list);
 		model.addAttribute("currentPage", "accounts");
@@ -214,7 +213,7 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getOrders((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getServiceOrderDetail((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 

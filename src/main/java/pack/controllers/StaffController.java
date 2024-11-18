@@ -24,10 +24,13 @@ public class StaffController {
 	@Autowired
 	OtpService otpService;
 
-	// -------------------- INDEX & ACCOUNT --------------------//
+	// -------------------- INDEX --------------------//
 
 	@GetMapping("")
-	public String index() {
+	public String index(HttpServletRequest req, Model model) {
+		Staff st = rep.findStaffById((int) req.getSession().getAttribute("staffId"));
+		model.addAttribute("staff", st);
+
 		return Views.STAFF_INDEX;
 	}
 
@@ -36,7 +39,7 @@ public class StaffController {
 		return Views.STAFF_LOGIN;
 	}
 
-	@PostMapping("/checklogin")
+	@PostMapping("/checkLogin")
 	public String chklogin(@RequestParam("acc") String acc, @RequestParam("pw") String password,
 			HttpServletRequest request, Model model) {
 		Staff staff = rep.getStaffByUsernameOrPhone(acc);
@@ -44,8 +47,8 @@ public class StaffController {
 			model.addAttribute("loginError", "Account doesn't exists, please check again!");
 			return Views.STAFF_LOGIN;
 		}
-		
-		if(staff.getStatus().equals("disabled")) {
+
+		if (staff.getStatus().equals("disabled")) {
 			model.addAttribute("loginError", "Your account has been disabled.");
 			return Views.STAFF_LOGIN;
 		}
@@ -59,9 +62,17 @@ public class StaffController {
 		return "redirect:/staff";
 	}
 
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest req) {
+		req.getSession().invalidate();
+		return "redirect:/staff/login";
+	}
+
+	// -------------------- ACCOUNT --------------------//
+
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
-		Staff st = rep.getStaffByUsernameOrPhone(req.getSession().getAttribute("username").toString());
+		Staff st = rep.findStaffById((int) req.getSession().getAttribute("staffId"));
 		model.addAttribute("staff", st);
 
 		return Views.STAFF_ACCOUNTS;
@@ -114,14 +125,12 @@ public class StaffController {
 		return "redirect:/staff/accounts";
 	}
 
-	//ORDERS
-	
+	// ORDERS
+
 	@GetMapping("/orders/list")
 	public String getMethodName(Model model) {
 		model.addAttribute("orders", rep.pendingOrderList());
 		return Views.STAFF_ORDER_LIST;
 	}
-	
-	
-	
+
 }

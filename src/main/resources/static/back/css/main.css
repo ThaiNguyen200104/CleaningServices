@@ -6565,3 +6565,16 @@ to {
 .input-group .input-group-text {
 	background-color: lightgrey;
 }
+
+.acc-container {
+	margin: 0 40px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	padding: 30px;
+}
+
+.acc-container h2 {
+	color: #000;
+	border-bottom: 2px solid #00539C;
+	padding-bottom: 10px;
+}

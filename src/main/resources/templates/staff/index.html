@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	
 	<title>Cleanex - Staff Dashboard</title>
 
 	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
@@ -19,7 +20,7 @@
 		<div class="spinner"></div>
 	</div>
 	<!-- ASIDE -->
-	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
 
 	<div class="overlay"></div>
 	<main class="main-wrapper">
@@ -32,7 +33,7 @@
 				<div class="title-wrapper pt-30">
 					<div class=" align-items-center">
 						<div class="title">
-							<h2>Welcome, staff</h2>
+							<h2>Welcome, <span th:text="${staff.fullname}"></span></h2>
 						</div>
 					</div>
 				</div>
