@@ -220,8 +220,8 @@ public class UserController {
 	}
 
 	@GetMapping("/confirmOrder")
-	public String confirmOrder(@RequestParam int detailId, @RequestParam double price, Model model) {
-		String result = rep.confirmOrder(detailId, price);
+	public String confirmOrder(@RequestParam int detailId, Model model) {
+		String result = rep.confirmOrder(detailId);
 		if (result.equals("success")) {
 			return "redirect:/user/orders";
 		}
@@ -253,18 +253,6 @@ public class UserController {
 		return Views.USER_ORDER_DETAILS;
 	}
 
-	private String generate_code(String usrId, String serId, Date startDate) {
-		String formattedStartDate = new SimpleDateFormat("yyMMdd").format(startDate);
-		// Adding + "" + between usrId & serId for Java wouldn't add them numerically
-		String combinedCode = usrId + "" + serId + formattedStartDate;
-
-		// Add randomly one number from 100 to 999 for not duplicate the detail_code
-		int randomSuffix = (int) (Math.random() * 900) + 100;
-		combinedCode += randomSuffix;
-
-		return combinedCode.length() > 10 ? combinedCode.substring(combinedCode.length() - 10) : combinedCode;
-	}
-
 	@GetMapping("/cancelOrder")
 	public String cancleOrder(@RequestParam int id, Model model) {
 		String result = rep.cancleOrder(id);
@@ -278,7 +266,7 @@ public class UserController {
 	// Service
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
-			@RequestParam Date startDate) {
+			@RequestParam Date startDate, @RequestParam double price) {
 		try {
 			Order order = new Order();
 			order.setUsrId(userId);
@@ -300,7 +288,7 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body("Start date cannot be more than 5 years from now.");
 			}
-			String result = rep.newOrder(order, serviceId, startDate);
+			String result = rep.newOrder(order, serviceId, startDate, price);
 
 			if ("success".equals(result)) {
 				return ResponseEntity.ok("Order created successfully.");

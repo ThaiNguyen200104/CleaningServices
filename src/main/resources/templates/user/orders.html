@@ -44,7 +44,6 @@
 	<div class="wrapper">
 		<div class="mx-2 my-5">
 			<h1 class="mb-4">Confirm your Orders</h1>
-<<<<<<< HEAD
 			<div class="mb-5 table-responsive">
 				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<table class="table table-hover">
@@ -60,12 +59,12 @@
 						<tr th:each="item : ${orders}">
 							<td th:text="${item.orderId}"></td>
 							<td th:text="${item.serName}"></td>
-							<td th:text="${item.basePrice} + '$'"></td>
+							<td th:text="${item.price} + '$'"></td>
 							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 							<td th:text="${item.orderStatus}"></td>
 							<td>
 								<a class="btn btn-success"
-									th:href="@{/user/confirmOrder(detailId=${item.detailId}, price=${item.basePrice})}"
+									th:href="@{/user/confirmOrder(detailId=${item.detailId})}"
 									th:if="${item.orderStatus == 'pending'}">Confirm</a>
 								<a class="btn btn-danger" th:href="@{/user/cancelOrder(id=${item.detailId})}"
 									th:if="${item.orderStatus == 'pending'}">Cancel</a>
@@ -74,33 +73,6 @@
 					</tbody>
 				</table>
 			</div>
-=======
-			<form th:action="@{/user/confirmOrder}" method="post">
-				<div class="mb-5 table-responsive">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Service Name</th>
-								<th>Base Price</th>
-								<th>Start Date</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${orders}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.serName}"></td>
-								<td th:text="${item.basePrice} + '$'"></td>
-								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="d-flex justify-content-between" th:if="${item.status == 'reviewing'}">
-					<button type="submit" class="btn btn-success">Confirm Order</button>
-				</div>
-			</form>
->>>>>>> 19b845bbeab7c84fbe35886cfa3f5df7381c93fa
 		</div>
 	</div>
 

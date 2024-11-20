@@ -140,7 +140,7 @@ public class UserRepository {
 	// ORDER
 	public List<ServiceOrderDetail> getOrders(int id) {
 		try {
-			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, s.base_price, od.start_date AS startDate, od.status AS Ordstatus "
+			String str_query = "SELECT od.*, od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS Ordstatus "
 					+ "FROM services s " + "JOIN order_details od ON s.id = od.service_id "
 					+ "JOIN orders o ON od.order_id = o.id " + "WHERE o.user_id = ?";
 			return db.query(str_query, new ServiceOrderDetailMapper(), new Object[] { id });
@@ -150,7 +150,7 @@ public class UserRepository {
 		}
 	}
 
-	public String newOrder(Order item, int serId, Date startDate) {
+	public String newOrder(Order item, int serId, Date startDate, double price) {
 		try {
 			// Insert into order table
 			String order_query = String.format("INSERT INTO %s OUTPUT INSERTED.id VALUES (?)", Views.TBL_ORDER);
@@ -164,10 +164,10 @@ public class UserRepository {
 
 				// Insert into order_details table
 				String orderDetail_query = String.format(
-						"INSERT INTO %s (order_id, service_id, start_date, detail_code) VALUES (?,?,?,?)",
+						"INSERT INTO %s (order_id, service_id, start_date, detail_code, price) VALUES (?,?,?,?,?)",
 						Views.TBL_ORDER_DETAIL);
 				int rowsAffectedOrderDetail = db.update(orderDetail_query,
-						new Object[] { order_id, serId, startDate, detail_code });
+						new Object[] { order_id, serId, startDate, detail_code, price });
 
 				return rowsAffectedOrderDetail == 1 ? "success" : "failed";
 			} else {

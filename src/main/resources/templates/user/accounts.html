@@ -68,12 +68,12 @@
 						</thead>
 						<tbody th:each="item: ${orders}">
 							<tr th:if="${item != null}">
-								<td th:text="${item.id}"></td>
+								<td th:text="${item.detailId}"></td>
 								<td th:text="${item.price}"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.status}"></td>
+								<td th:text="${item.orderStatus}"></td>
 								<td>
-									<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info">
+									<a th:href="@{/user/orderDetails(id=${item.detailId})}" class="btn btn-outline-info">
 										See More
 									</a>
 								</td>
