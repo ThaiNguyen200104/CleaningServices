@@ -18,19 +18,6 @@
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
 
-	<style>
-		.table td {
-			vertical-align: middle;
-		}
-
-		.startDate {
-			margin-left: 15px;
-			border: 1px solid #dee2e6;
-			border-radius: 5px;
-			height: 2rem;
-			width: 12rem;
-		}
-	</style>
 </head>
 
 <body>
@@ -56,15 +43,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="item : ${orders}">
+						<tr th:each="item : ${orders}" th:if="${item.orderStatus != 'canceled'}">
 							<td th:text="${item.orderId}"></td>
 							<td th:text="${item.serName}"></td>
 							<td th:text="${item.price} + '$'"></td>
 							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 							<td th:text="${item.orderStatus}"></td>
 							<td>
-								<a class="btn btn-success"
-									th:href="@{/user/confirmOrder(detailId=${item.detailId})}"
+								<a class="btn btn-success" th:href="@{/user/confirmOrder(detailId=${item.detailId})}"
 									th:if="${item.orderStatus == 'pending'}">Confirm</a>
 								<a class="btn btn-danger" th:href="@{/user/cancelOrder(id=${item.detailId})}"
 									th:if="${item.orderStatus == 'pending'}">Cancel</a>
@@ -75,7 +61,6 @@
 			</div>
 		</div>
 	</div>
-
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>

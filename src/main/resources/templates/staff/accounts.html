@@ -8,103 +8,66 @@
 
 	<title>Cleanex - Staff Account</title>
 
-	<link rel="stylesheet" href="../back/vendors/mdi/css/materialdesignicons.min.css" />
-	<link rel="stylesheet" href="../back/vendors/css/vendor.bundle.base.css" />
-	<link rel="stylesheet" href="../back/vendors/flag-icon-css/css/flag-icon.min.css" />
-	<link rel="stylesheet" href="../back/vendors/jvectormap/jquery-jvectormap.css" />
-	<link rel="stylesheet" href="../back/css/demo/style.css" />
-
-	<style>
-		.acc-container {
-			border-radius: 10px;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-			padding: 30px;
-		}
-
-		h2 {
-			color: #000;
-			border-bottom: 2px solid #007bff;
-			padding-bottom: 10px;
-		}
-
-		.btn-primary {
-			transition: all 0.3s ease;
-		}
-
-		.btn-primary:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-		}
-
-		.table {
-			animation: fadeIn 0.5s ease-out;
-		}
-
-		.badge {
-			font-size: 0.8rem;
-			padding: 0.4em 0.6em;
-		}
-
-		.table-responsive {
-			max-height: 400px;
-			overflow-y: auto;
-		}
-
-		@media (max-width : 768px) {
-			.col-md-3 {
-				margin-bottom: 30px;
-			}
-		}
-	</style>
+	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../back/css/main.css" />
 </head>
 
 <body>
 	<div id="preloader">
 		<div class="spinner"></div>
 	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
 
-	<!-- Header -->
-	<div th:replace="~{user/fragments/header::userHeader}"></div>
+	<div class="overlay"></div>
+	<main class="main-wrapper">
 
-	<div class="wrapper">
-		<div class="acc-container mt-5">
-			<div class="row">
-				<div class="col-3 text-center">
-					<img th:if="${staff.image == null}" src="../front/img/none-user.png"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<img th:unless="${staff.image == null}" th:src="'/upload/' + ${staff.image}"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<h3 th:text="${staff.fullname}"></h3>
-					<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
-				</div>
-				<div class="col-9">
-					<h2 class="mb-4">Profile</h2>
-					<dl class="row">
-						<dt class="col-3">Username:</dt>
-						<dd class="col-9" th:text="${staff.username}"></dd>
-						<dt class="col-3">Email:</dt>
-						<dd class="col-9" th:text="${staff.email}"></dd>
-						<dt class="col-3">Phone:</dt>
-						<dd class="col-9" th:text="${staff.phone}"></dd>
-						<dt class="col-3">Job Occupied:</dt>
-						<dd class="col-9" th:text="${staff.jobOccupied}"></dd>
-					</dl>
+		<!-- HEADER -->
+		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
+
+		<div class="wrapper">
+			<div class="acc-container mt-5">
+				<div class="row">
+					<div class="col-3 text-center">
+						<img th:if="${staff.image == null}" src="../front/img/none-user.png"
+							class="img-fluid rounded-circle mb-3" width="150" height="150" />
+						<img th:unless="${staff.image == null}" th:src="'/upload/' + ${staff.image}"
+							class="img-fluid rounded-circle mb-3" width="150" height="150" />
+						<h3 th:text="${staff.fullname}"></h3>
+						<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
+					</div>
+					<div class="col-9">
+						<h2 class="mb-4">Profile</h2>
+						<dl class="row">
+							<dt class="col-3">Username:</dt>
+							<dd class="col-9" th:text="${staff.username}"></dd>
+							<dt class="col-3">Email:</dt>
+							<dd class="col-9" th:text="${staff.email}"></dd>
+							<dt class="col-3">Phone:</dt>
+							<dd class="col-9" th:text="${staff.phone}"></dd>
+							<dt class="col-3">Job Occupied:</dt>
+							<dd class="col-9" th:text="${staff.jobOccupied}"></dd>
+						</dl>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</main>
 
-	<!-- Footer -->
-	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+	<script src="../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../back/js/Chart.min.js"></script>
+	<script src="../back/js/dynamic-pie-chart.js"></script>
+	<script src="../back/js/moment.min.js"></script>
+	<script src="../back/js/fullcalendar.js"></script>
+	<script src="../back/js/jvectormap.min.js"></script>
+	<script src="../back/js/world-merc.js"></script>
+	<script src="../back/js/polyfill.js"></script>
+	<script src="../back/js/main.js"></script>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
 </body>
 
 </html>

@@ -20,6 +20,7 @@ import pack.models.Staff;
 import pack.modelviews.Admin_mapper;
 import pack.modelviews.Blog_mapper;
 import pack.modelviews.Detail_mapper;
+import pack.modelviews.OrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.Staff_mapper;
 import pack.utils.SecurityUtility;
@@ -95,6 +96,15 @@ public class AdminRepository {
 		}
 	}
 
+	public Service getServiceName() {
+		try {
+			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
+			return db.queryForObject(str_query, new Service_mapper());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Service getServiceById(int id) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
@@ -144,8 +154,13 @@ public class AdminRepository {
 			List<Object> params = new ArrayList<>();
 
 			if (ser.getSerName() != null && !ser.getSerName().isEmpty()) {
-				queryBuilder.append("serName = ?, ");
+				queryBuilder.append("service_name = ?, ");
 				params.add(ser.getSerName());
+			}
+
+			if (ser.getImage() != null && !ser.getImage().isEmpty()) {
+				queryBuilder.append("image = ?, ");
+				params.add(ser.getImage());
 			}
 
 			if (ser.getDescription() != null && !ser.getDescription().isEmpty()) {
@@ -153,29 +168,27 @@ public class AdminRepository {
 				params.add(ser.getDescription());
 			}
 
-			if (ser.getBasePrice() != 0) {
-				queryBuilder.append("basePrice = ?, ");
+			if (ser.getBasePrice() > 0) {
+				queryBuilder.append("base_price = ?, ");
 				params.add(ser.getBasePrice());
 			}
 
-			if (ser.getStaffRequired() != 0) {
-				queryBuilder.append("staffRequired = ?");
+			if (ser.getStaffRequired() > 0) {
+				queryBuilder.append("staff_required = ?, ");
 				params.add(ser.getStaffRequired());
 			}
 
-			if (ser.getStatus() == null) {
-				queryBuilder.append("status = ?");
-				params.add(ser.getStatus());
+			if (queryBuilder.toString().endsWith(", ")) {
+				queryBuilder.setLength(queryBuilder.length() - 2);
 			}
 
-			queryBuilder.setLength(queryBuilder.length() - 2);
 			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
 			return rowsAffected == 1 ? "success" : "failed";
-
 		} catch (Exception e) {
+			e.printStackTrace();
 			return e.getMessage();
 		}
 	}
@@ -287,11 +300,11 @@ public class AdminRepository {
 
 	public String newStaff(Staff staff) {
 		try {
-			String str_query = String.format("insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)",
-					Views.TBL_STAFFS);
+			String str_query = String.format(
+					"insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)", Views.TBL_STAFFS);
 			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
-			int rowaccept = db.update(str_query,
-					new Object[] { staff.getUsername(), hashpassword, staff.getEmail(), staff.getPhone(), staff.getFullname()});
+			int rowaccept = db.update(str_query, new Object[] { staff.getUsername(), hashpassword, staff.getEmail(),
+					staff.getPhone(), staff.getFullname() });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
@@ -315,7 +328,7 @@ public class AdminRepository {
 	public List<Staff> staffListForAssign(int detailId) {
 		try {
 			String str_query = String.format(
-					"select * from %s where %s = ? and %s < 3 and id not in (select staff_id from %s where detail_id = ?)",
+					"SELECT * FROM %s WHERE %s = ? AND %s < 3 AND id NOT IN (SELECT staff_id FROM %s WHERE detail_id = ?)",
 					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_JOB_OCCUPIED, Views.TBL_SCHEDULES);
 			return db.query(str_query, new Staff_mapper(), new Object[] { "available", detailId });
 		} catch (Exception e) {
@@ -361,17 +374,17 @@ public class AdminRepository {
 		}
 	}
 
-	public List<Staff> getCurrentStaff(int detailId){
+	public List<Staff> getCurrentStaff(int detailId) {
 		try {
-			String str_query ="select s.* from staffs s join schedules sd on s.id = sd.staff_id"
+			String str_query = "select s.* from staffs s join schedules sd on s.id = sd.staff_id"
 					+ " join order_details od on sd.detail_id = od.id where od.id = ?";
-			return db.query(str_query, new Staff_mapper(), new Object[] {detailId});
+			return db.query(str_query, new Staff_mapper(), new Object[] { detailId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public List<Staff> getAvailableStaffForReplacement(int orderId, int excludeStaffId) {
 		String query = "SELECT * FROM staffs WHERE id != ? "
 				+ "AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
@@ -382,7 +395,7 @@ public class AdminRepository {
 		try {
 			String str_query = String.format("update %s set %s =? where %s = ? and %s = ?", Views.TBL_SCHEDULES,
 					Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_DETAIL_ID);
-			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff , orderId});
+			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff, orderId });
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -402,8 +415,19 @@ public class AdminRepository {
 					+ "THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od " + "JOIN %s o ON od.order_id = o.id "
 					+ "JOIN %s u ON o.user_id = u.id " + "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
-			return db.query(str_query, new Detail_mapper(), (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(),
-					pageItem.getPageSize());
+			return db.query(str_query, new OrderDetail_mapper(),
+					(pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public OrderDetail getDetailById(int id) {
+		try {
+			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
+					Views.COL_ORDER_DETAIL_ID);
+			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

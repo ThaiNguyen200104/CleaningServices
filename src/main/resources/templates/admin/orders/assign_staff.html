@@ -30,6 +30,7 @@
 		<div class="mx-5 mt-5">
 			<div class="col-12">
 				<h2 class="mb-4">Staff list</h2>
+				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<div class="table-responsive border-1">
 					<table class="table table-hover">
 						<thead>
@@ -37,26 +38,31 @@
 								<th>No.</th>
 								<th>Name</th>
 								<th>Expected Start Date</th>
-								<th>Status</th>
+								<th>Job Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="staff : ${staffs}">
 								<td th:text="${staff.id}"></td>
-								<!--<td th:text="${staff.fullName}"></td>-->
+								<td th:text="${staff.fullname}"></td>
+								<td th:text="${detail.startDate}"></td>
 								<td th:text="${staff.jobOccupied}"></td>
-								<td><button type="button" onclick="selectStaff(event)"
-										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button></td>
+								<td>
+									<button class="btn btn-primary" type="button" onclick="selectStaff(event)"
+										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div>
-					<h4>Selected Staff for Assignment:</h4>
+				<div class="mt-4">
+					<h4 class="mb-3">Selected Staff for Assignment:</h4>
 					<ul id="selectedStaffList"></ul>
-					<input type="datetime-local" id="startDate" required>
-					<button type="button" onclick="assignStaff()">Assign</button>
+					<div style="display: inline-flex;">
+						<input class="form-control" type="datetime-local" id="startDate" required />
+						<button class="btn btn-success mx-2" onclick="assignStaff()">Assign</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -81,11 +87,18 @@
 			var item = event.target;
 			var staffId = item.getAttribute("staffid");
 			ordId = parseInt(item.getAttribute("ordId"));
+
 			if (!selectedStaffIds.includes(staffId)) {
 				selectedStaffIds.push(parseInt(staffId));
 				updateSelectedStaffDisplay(staffId);
+
+				item.setAttribute("disabled", "true");
+				item.textContent = "Selected";
+				item.classList.remove("btn-primary");
+				item.classList.add("btn-secondary");
 			}
 		}
+
 
 		function updateSelectedStaffDisplay(staffId) {
 			var selectedStaffList = document.getElementById("selectedStaffList");
@@ -115,14 +128,10 @@
 					staffIds: selectedStaffIds,
 					startDate: startDateTime,
 					orderId: ordId
-
 				}),
 				success: function (response) {
 					alert(response);
-					selectedStaffIds = [];
-					document.getElementById("selectedStaffList").innerHTML = "";
-					document.getElementById("startDate").value = "";
-					location.reload();
+					window.location.href = '/admin/orders/list';
 				},
 				error: function (xhr) {
 					if (xhr.responseText) {

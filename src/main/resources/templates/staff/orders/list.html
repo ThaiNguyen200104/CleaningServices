@@ -20,13 +20,13 @@
 		<div class="spinner"></div>
 	</div>
 	<!-- ASIDE -->
-	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
 
 	<div class="overlay"></div>
 	<main class="main-wrapper">
 
 		<!-- HEADER -->
-		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
 		<div class="mx-5 mt-5">
 			<div class="col-12">
 				<h2 class="mb-4">Order List</h2>
@@ -48,12 +48,8 @@
 								<td th:text="${item.startDate}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
-										th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign Staff</a>
-									<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
-										class="btn btn-warning" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
-										Replace Staff
-									</a>
+									<a class="btn btn-success" th:href="@{/staff/orders/confirmOrder(id=${item.id})}"
+										th:if="${item.status == 'pending'}">Confirm</a>
 								</td>
 							</tr>
 						</tbody>

@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import pack.models.OrderDetail;
 import pack.utils.Views;
 
-public class Detail_mapper implements RowMapper<OrderDetail> {
+public class OrderDetail_mapper implements RowMapper<OrderDetail> {
 	@Override
 	public OrderDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
 		OrderDetail item = new OrderDetail();
@@ -21,6 +21,8 @@ public class Detail_mapper implements RowMapper<OrderDetail> {
 		item.setCompleteDate(rs.getDate(Views.COL_ORDER_DETAIL_COMPLETEDATE));
 		item.setCreateDate(rs.getDate(Views.COL_ORDER_DETAIL_CREATEDATE));
 		item.setStatus(rs.getString(Views.COL_ORDER_DETAIL_STATUS));
+		item.setCustomerName(rs.getString("customer_name"));
+		item.setHasAssignedStaff(rs.getInt("hasAssignedStaff"));
 		return item;
 	}
 }

@@ -6,19 +6,16 @@ public class Request {
 	private int id;
 	private int scheduleId;
 	private Date dateAdjust;
-	private String title;
 	private String reason;
 	private String status;
 
 	public Request() {
 	}
 
-	public Request(int id, int scheduleId, Date dateAdjust, String title, String reason, String status) {
-		super();
+	public Request(int id, int scheduleId, Date dateAdjust, String reason, String status) {
 		this.id = id;
 		this.scheduleId = scheduleId;
 		this.dateAdjust = dateAdjust;
-		this.title = title;
 		this.reason = reason;
 		this.status = status;
 	}
@@ -45,14 +42,6 @@ public class Request {
 
 	public void setDateAdjust(Date dateAdjust) {
 		this.dateAdjust = dateAdjust;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getReason() {

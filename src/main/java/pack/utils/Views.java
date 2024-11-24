@@ -33,7 +33,7 @@ public class Views {
 	public static String ADMIN_ORDERS_REQUEST = "admin/orders/request";
 	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
 	public static String ADMIN_ORDERS_REPLACE_STAFF = "admin/orders/replaceStaff";
-	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/StaffForReplace";
+	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/staffForReplace";
 
 	// -------------------- STAFF -------------------- //
 
@@ -43,7 +43,7 @@ public class Views {
 	public static String STAFF_ACCOUNTS = "staff/accounts";
 	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
 	public static String STAFF_VALIDATE = "staff/validate_otp";
-	public static String STAFF_ORDER_LIST = "staff/order_list";
+	public static String STAFF_ORDER_LIST = "staff/orders/order_list";
 
 	// -------------------- USER -------------------- //
 
@@ -160,10 +160,8 @@ public class Views {
 	public static String COL_REQUESTS_ID = "id";
 	public static String COL_REQUESTS_SCHEDULE_ID = "schedule_id";
 	public static String COL_REQUESTS_DATE_ADJUST = "date_adjust";
-	public static String COL_REQUESTS_PRICE_ADJUST = "price_adjust";
 	public static String COL_REQUESTS_REASON = "reason";
-	public static String COL_REQUESTS_DATE_STATUS = "date_status";
-	public static String COL_REQUESTS_PRICE_STATUS = "price_status";
+	public static String COL_REQUESTS_STATUS = "status";
 
 	// PAYMENT_ACCOUNTS
 	public static String TBL_PAYMENT_ACCOUNTS = "payment_accounts";

@@ -1,7 +1,6 @@
 package pack.controllers;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Order;
 import pack.models.OrderDetail;
-import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -110,10 +108,8 @@ public class UserController {
 
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
-		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<ServiceOrderDetail> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
-		model.addAttribute("user", user);
-		model.addAttribute("orders", list);
+		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
+		model.addAttribute("orders", rep.getOrders((int) req.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "accounts");
 
 		return Views.USER_ACCOUNTS;
@@ -128,9 +124,9 @@ public class UserController {
 
 	@PostMapping("/updateProflie")
 	public String update_profile(@RequestParam(required = false) MultipartFile image, @ModelAttribute User user,
-			Model model, RedirectAttributes ra, HttpServletRequest request) {
+			Model model, RedirectAttributes ra, HttpServletRequest req) {
 		try {
-			User oldUserInfo = rep.findUserById((int) request.getSession().getAttribute("usrId"));
+			User oldUserInfo = rep.findUserById((int) req.getSession().getAttribute("usrId"));
 
 			if (user.getPassword() != null && !user.getPassword().equals(user.getConfirmPassword())) {
 				model.addAttribute("error", "Password and Confirm Password are not match.");
@@ -215,7 +211,7 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getOrders((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getServiceOrderDetail((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
@@ -229,22 +225,6 @@ public class UserController {
 		return Views.USER_ORDERS;
 	}
 
-	@PostMapping("/user/cancelOrder")
-	public String cancel_order(int id, HttpServletRequest req, Model model) {
-		try {
-			OrderDetail get = rep.getDetailById(id);
-			if (get != null) {
-				rep.cancelOrder(id);
-				return "redirect:/user/accounts";
-			}
-			model.addAttribute("error", "Failed to confirm order, please try again.");
-			return "redirect:/user/orders";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	@GetMapping("/orderDetails")
 	public String order_details(Model model) {
 		List<OrderDetail> detail = rep.getDetails();
@@ -254,12 +234,12 @@ public class UserController {
 	}
 
 	@GetMapping("/cancelOrder")
-	public String cancleOrder(@RequestParam int id, Model model) {
-		String result = rep.cancleOrder(id);
+	public String cancel_order(@RequestParam int id, Model model) {
+		String result = rep.cancelOrder(id);
 		if (result.equals("success")) {
 			return "redirect:/user/orders";
 		}
-		model.addAttribute("error", "Cancle failed due to some errors.");
+		model.addAttribute("error", "Cancel failed. Please try again.");
 		return Views.USER_ORDERS;
 	}
 

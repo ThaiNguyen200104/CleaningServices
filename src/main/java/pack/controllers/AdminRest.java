@@ -37,22 +37,22 @@ public class AdminRest {
 
 	@CrossOrigin
 	@GetMapping("/generateAdmin")
-	// http://localhost:8080/api/generateAdmin?email=hieuminh091304@gmail.com&apikey=7ed9b7ef600ce7544841cd061cf27b2493b7da5c78644ebe7920ef02c76939d9
+	// http://localhost:8080/api/generateAdmin?email=YourEmail@gmail.com&apikey=7ed9b7ef600ce7544841cd061cf27b2493b7da5c78644ebe7920ef02c76939d9
 	public String generateAdmin(@RequestParam String email, @RequestParam String apikey, RedirectAttributes ra) {
 		if (apiKey.equals(apikey)) {
-			// Create token & expired time (3 hours)
+			// Create a token and expire time (3 hours)
 			String token = UUID.randomUUID().toString();
 			LocalDateTime expirationTime = LocalDateTime.now().plusHours(3);
 
 			// Insert token into database
 			tokenRepository.saveToken(token, expirationTime);
 
-			// Send email with the link that contains token
+			// Send an email with the link that contains the token
 			String emailBody = "Username: admin\nPassword: 123\n\nClick here to create your admin account: http://localhost:8080/api/createAdmin?token="
 					+ token;
 			emailService.SendMail(email, "Admin Account Creation", emailBody);
 
-			return "Token and email sent!";
+			return "Token and email are sent!";
 		} else {
 			return "Invalid API key.";
 		}
@@ -75,7 +75,7 @@ public class AdminRest {
 			// Create admin account
 			String result = adminRepository.newAdmin("admin", "123");
 
-			// Mark used token
+			// Mark token as used
 			tokenRepository.markTokenAsUsed(token);
 			if ("success".equals(result)) {
 				// Redirect to login page
@@ -88,4 +88,5 @@ public class AdminRest {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body("Failed to create account. Please try again.");
 	}
+
 }

@@ -15,7 +15,6 @@ public class ServiceOrderDetail {
 
 	public ServiceOrderDetail(int detailId, int orderId, String serName, double price, Date startDate,
 			String orderStatus) {
-		super();
 		this.detailId = detailId;
 		this.orderId = orderId;
 		this.serName = serName;

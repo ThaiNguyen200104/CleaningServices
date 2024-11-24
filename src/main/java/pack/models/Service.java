@@ -14,7 +14,6 @@ public class Service {
 
 	public Service(int id, String serName, String description, double basePrice, int staffRequired, String image,
 			String status) {
-		super();
 		this.id = id;
 		this.serName = serName;
 		this.description = description;

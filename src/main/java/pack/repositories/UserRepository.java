@@ -12,13 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import pack.models.Order;
 import pack.models.OrderDetail;
-import pack.models.Request;
 import pack.models.Service;
 import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.modelviews.Detail_mapper;
 import pack.modelviews.Order_mapper;
-import pack.modelviews.ServiceOrderDetailMapper;
+import pack.modelviews.ServiceOrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
 import pack.utils.SecurityUtility;
@@ -137,13 +136,23 @@ public class UserRepository {
 		}
 	}
 
-	// ORDER
-	public List<ServiceOrderDetail> getOrders(int id) {
+	public List<ServiceOrderDetail> getOrders(int usrId) {
 		try {
-			String str_query = "SELECT od.*, od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS Ordstatus "
-					+ "FROM services s " + "JOIN order_details od ON s.id = od.service_id "
-					+ "JOIN orders o ON od.order_id = o.id " + "WHERE o.user_id = ?";
-			return db.query(str_query, new ServiceOrderDetailMapper(), new Object[] { id });
+			String str_query = "SELECT top 5 od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ? ORDER BY od.start_date DESC";
+			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { usrId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// ORDER
+	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
+		try {
+			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
+			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -197,27 +206,6 @@ public class UserRepository {
 		}
 	}
 
-	public OrderDetail getDetailById(int id) {
-		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDER_DETAIL_ID);
-			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public String confirmOrder(int id) {
-		try {
-			String str_query = String.format("update %s set %s = 'confirmed' where %s = ?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
-			int rowaccept = db.update(str_query, new Object[] { id });
-			return rowaccept == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	public String cancelOrder(int id) {
 		try {
 			String str_query = String.format("update %s set %s = 'canceled' where %s = ?", Views.TBL_ORDER_DETAIL,
@@ -229,24 +217,11 @@ public class UserRepository {
 		}
 	}
 
-	public String cancleOrder(int id) {
+	public String confirmOrder(int detailId) {
 		try {
-			String str_query = String.format("update %s set %s = 'canceled' where %s=?", Views.TBL_ORDER_DETAIL,
+			String str_query = String.format("update %s set %s = 'confirmed' where %s = ?", Views.TBL_ORDER_DETAIL,
 					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
-			int rowaccepted = db.update(str_query, new Object[] { id });
-			return rowaccepted == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public String confirmOrder(int detailId, double price) {
-		try {
-			String str_query = String.format("update %s set %s = 'confirmed', %s = ? where %s = ?",
-					Views.TBL_ORDER_DETAIL, Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_PRICE,
-					Views.COL_ORDER_DETAIL_ID);
-			int accepted = db.update(str_query, new Object[] { price, detailId });
+			int accepted = db.update(str_query, new Object[] { detailId });
 			return accepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();

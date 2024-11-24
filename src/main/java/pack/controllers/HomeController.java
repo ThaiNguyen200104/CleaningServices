@@ -57,14 +57,6 @@ public class HomeController {
 		return Views.MAIN_BLOG;
 	}
 
-	@GetMapping("/orders")
-	public String order_list(Model model) {
-
-		model.addAttribute("currentPage", "orders");
-
-		return Views.USER_ORDERS;
-	}
-
 	@GetMapping("/about")
 	public String about(Model model) {
 		model.addAttribute("currentPage", "about");
