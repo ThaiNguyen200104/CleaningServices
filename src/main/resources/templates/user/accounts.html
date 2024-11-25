@@ -54,7 +54,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="acc-container mt-5">
 			<div class="account-content">
 				<h2 class="mb-4">Order History</h2>
@@ -69,19 +69,19 @@
 								<th>Actions</th>
 							</tr>
 						</thead>
-						<tbody th:each="item: ${orders}">
-							<tr th:if="${item != null}">
+						<tbody th:each="item: ${orders}" th:if="${item != null}">
+							<tr>
 								<td th:text="${item.detailId}"></td>
 								<td th:text="${item.basePrice}"></td>
 								<td th:text="${item.startDate}"></td>
 								<td th:text="${item.status}"></td>
-								<td>
-									<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info">
-										See More
-									</a>
-								</td>
 							</tr>
-							<tr th:unless="${item != null}">
+							<tr>
+								<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info"
+									style="text-align: center; font-weight: 700;">Browse More
+								</a>
+							</tr>
+							<tr th:if="${item == null}">
 								<p colspan="6" style="text-align: center; font-weight: 700;">
 									You have not booked any service yet.
 								</p>

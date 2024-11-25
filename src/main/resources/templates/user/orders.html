@@ -46,7 +46,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item : ${orders}">
+							<tr th:each="item : ${orders}" th:if="${item.orderStatus == 'canceled'}">
 								<td th:text="${item.orderId}"></td>
 								<td th:text="${item.serName}"></td>
 								<td th:text="${item.basePrice} + '$'"></td>

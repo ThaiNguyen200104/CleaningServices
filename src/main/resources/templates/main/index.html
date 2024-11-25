@@ -197,11 +197,10 @@
 								onclick="showBookingPopup(event)"
 								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
 						</div>
+						<div th:unless="${item != null}">
+							<p>We are re-organizing our services to better meet your house cleaning demands.</p>
+						</div>
 					</div>
-					<!-- Message when no services are available -->
-					<p th:unless="${services != null}" class="col-12 mb-5">
-						We are re-organizing our services to better meet your house cleaning demands.
-					</p>
 				</div>
 			</div>
 		</div>
