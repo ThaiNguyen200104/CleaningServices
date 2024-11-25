@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Orders Management</title>
+
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
+	<style>
+		#priceModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+
+		.modal-content {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			text-align: center;
+			width: 25vw;
+			z-index: 10000;
+			position: relative;
+		}
+
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 9999;
+		}
+
+		.success {
+			background-color: #4CAF50;
+			z-index: 10000;
+		}
+
+		.error {
+			background-color: #f44336;
+			z-index: 10000;
+		}
+
+		body.no-scroll {
+			overflow: hidden !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
+		<div class="mx-5 mt-5">
+			<div class="col-12">
+				<h2 class="mb-4">Order List</h2>
+				<div class="table-responsive border-1">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>SerName</th>
+								<th>Price</th>
+								<th>Expected Start Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item, iterStat: ${orders}">
+								<td th:text="${item.id}"></td>
+								<td th:text="${serviceNames[iterStat.index]}"></td>
+								<td th:text="${item.price}"></td>
+								<td th:text="${item.startDate}"></td>
+								<td th:text="${item.status}"></td>
+								<td>
+									<a class="btn btn-success" th:if="${item.status == 'pending'}"
+										href="javascript:void(0);" onclick="showPopup(event)"
+										th:attr="detailId=${item.id}">Adjust</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- Popup Modal -->
+				<div id="priceModal" style="display: none;">
+					<div class="modal-content">
+						<h3>Adjust The Price</h3>
+						<input class="form-control my-4" type="text" id="price" required />
+						<div class="d-flex justify-content-between">
+							<button class="btn btn-success" onclick="confirm()">Confirm</button>
+							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+		let selectedDetailId = null;
+
+		function showPopup(event) {
+			var item = event.target
+			selectedDetailId = item.getAttribute("detailId");
+			document.getElementById("priceModal").style.display = "flex";
+			document.body.classList.add("no-scroll");
+		}
+
+		function closePopup() {
+			document.getElementById("priceModal").style.display = "none";
+			document.body.classList.remove("no-scroll");
+		}
+
+		function confirm() {
+			const priceInput = document.getElementById("price");
+			const newPrice = priceInput.value;
+			const priceRegex = /^[0-9]*\.?[0-9]+$/;
+
+			if (!priceRegex.test(newPrice)) {
+				showNotification("Please input a valid price (numeric value).", "error");
+				priceInput.focus();
+				return;
+			}
+
+			if (!newPrice) {
+				alert("Please input a price.");
+				return;
+			}
+
+			console.log("Detail ID: ", selectedDetailId);
+			console.log("New Price: ", newPrice);
+
+			$.ajax({
+				url: '/staff/orders/priceAdjust',
+				type: 'GET',
+				data: {
+					detailId: selectedDetailId,
+					price: newPrice
+				},
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						let row = $('a[detailId="' + selectedDetailId + '"]').closest("tr");
+						row.find("td:nth-child(3)").text(newPrice);
+						showNotification(response, "success");
+						closePopup();
+					} else {
+						showNotification("Failed to implement action: " + response, "error");
+					}
+				},
+				error: function (xhr) {
+					if (xhr.status === 409) {
+						showNotification("Please try again later.", "warning");
+					} else {
+						console.error('Error:', xhr.responseText);
+						showNotification("Error: " + xhr.responseText, "error");
+					}
+				}
+			});
+		}
+
+		function showNotification(message, type) {
+			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
+			$('body').append(notification);
+			notification.fadeIn('slow').delay(3000).fadeOut('slow', function () {
+				$(this).remove();
+			});
+		}
+	</script>
+</body>
+
+</html>

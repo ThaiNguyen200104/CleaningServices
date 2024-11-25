@@ -50,7 +50,7 @@
 								<td>
 									<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
 										th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign Staff</a>
-									<a th:if="${item.status == 'pending' || item.status == 'confirmed' && item.hasAssignedStaff == 1}"
+									<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
 										class="btn btn-warning" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
 										Replace Staff
 									</a>

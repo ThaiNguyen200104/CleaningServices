@@ -2,29 +2,29 @@ package pack.models;
 
 import java.sql.Date;
 
-public class OrderDetail {
+public class UserRequestDetail {
 	private int id;
-	private int orderId;
+	private int usrReqId;
+	private int userId;
 	private int serId;
-	private String detailCode;
+	private String serName;
 	private double price;
 	private Date startDate;
-	private Date completeDate;
 	private Date createDate;
 	private String status;
 
-	public OrderDetail() {
+	public UserRequestDetail() {
 	}
 
-	public OrderDetail(int id, int orderId, int serId, String detailCode, double price, Date startDate,
-			Date completeDate, Date createDate, String status) {
+	public UserRequestDetail(int id, int usrReqId, int userId, int serId, String serName, double price, Date startDate,
+			Date createDate, String status) {
 		this.id = id;
-		this.orderId = orderId;
+		this.usrReqId = usrReqId;
+		this.userId = userId;
 		this.serId = serId;
-		this.detailCode = detailCode;
+		this.serName = serName;
 		this.price = price;
 		this.startDate = startDate;
-		this.completeDate = completeDate;
 		this.createDate = createDate;
 		this.status = status;
 	}
@@ -37,12 +37,20 @@ public class OrderDetail {
 		this.id = id;
 	}
 
-	public int getOrderId() {
-		return orderId;
+	public int getUsrReqId() {
+		return usrReqId;
 	}
 
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
+	public void setUsrReqId(int usrReqId) {
+		this.usrReqId = usrReqId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getSerId() {
@@ -53,12 +61,12 @@ public class OrderDetail {
 		this.serId = serId;
 	}
 
-	public String getDetailCode() {
-		return detailCode;
+	public String getSerName() {
+		return serName;
 	}
 
-	public void setDetailCode(String detailCode) {
-		this.detailCode = detailCode;
+	public void setSerName(String serName) {
+		this.serName = serName;
 	}
 
 	public double getPrice() {
@@ -75,14 +83,6 @@ public class OrderDetail {
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
-	}
-
-	public Date getCompleteDate() {
-		return completeDate;
-	}
-
-	public void setCompleteDate(Date completeDate) {
-		this.completeDate = completeDate;
 	}
 
 	public Date getCreateDate() {

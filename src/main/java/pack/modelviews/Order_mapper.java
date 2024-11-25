@@ -13,8 +13,8 @@ public class Order_mapper implements RowMapper<Order> {
 	public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Order item = new Order();
 		item.setId(rs.getInt(Views.COL_ORDERS_ID));
-		item.setUsrId(rs.getInt(Views.COL_ORDERS_USER_ID));
-		item.setOrderStatus("orderStatus");
+		item.setUsrReqId(rs.getInt(Views.COL_ORDERS_USRREQID));
+
 		return item;
 	}
 }

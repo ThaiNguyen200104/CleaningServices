@@ -43,7 +43,7 @@ public class Views {
 	public static String STAFF_ACCOUNTS = "staff/accounts";
 	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
 	public static String STAFF_VALIDATE = "staff/validate_otp";
-	public static String STAFF_ORDER_LIST = "staff/order_list";
+	public static String STAFF_ORDER_LIST = "staff/orders/order_list";
 
 	// -------------------- USER -------------------- //
 
@@ -111,7 +111,7 @@ public class Views {
 	// ORDERS
 	public static String TBL_ORDER = "orders";
 	public static String COL_ORDERS_ID = "id";
-	public static String COL_ORDERS_USER_ID = "user_id";
+	public static String COL_ORDERS_USRREQID = "usrReq_id";
 
 	// ORDER_DETAILS
 	public static String TBL_ORDER_DETAIL = "order_details";
@@ -125,13 +125,21 @@ public class Views {
 	public static String COL_ORDER_DETAIL_CREATEDATE = "create_date";
 	public static String COL_ORDER_DETAIL_STATUS = "status";
 
-	// CONFIRM_IMAGES
-	public static String TBL_CONFIRM_IMAGES = "confirm_images";
-	public static String COL_CONFIRM_IMAGES_ID = "id";
-	public static String COL_CONFIRM_IMAGES_DETAIL_ID = "detail_id";
-	public static String COL_CONFIRM_IMAGES_IMAGES = "image";
-	public static String COL_CONFIRM_IMAGES_CAPTUREDATE = "capture_date";
-	public static String COL_CONFIRM_IMAGES_UPDATEDATE = "uploade_date";
+	// USER_REQUESTS
+	public static String TBL_USER_REQUEST = "user_requests";
+	public static String COL_UR_ID = "id";
+	public static String COL_UR_USRID = "user_id";
+
+	// USER_REQUEST_DETAILS
+	public static String TBL_USER_REQUEST_DETAILS = "user_request_details";
+	public static String COL_URD_USRID = "user_id";
+	public static String COL_URD_SERID = "service_id";
+	public static String COL_URD_USRREQID = "usrReq_id";
+	public static String COL_URD_SERNAME = "service_name";
+	public static String COL_URD_PRICE = "price";
+	public static String COL_URD_STARTDATE = "start_date";
+	public static String COL_URD_CREATEDATE = "create_date";
+	public static String COL_URD_STATUS = "status";
 
 	// STAFFS
 	public static String TBL_STAFFS = "staffs";
@@ -146,6 +154,22 @@ public class Views {
 	public static String COL_STAFFS_CREATEDATE = "create_date";
 	public static String COL_STAFFS_STATUS = "status";
 
+	// STAFF_REQUESTS
+	public static String TBL_STAFF_REQUESTS = "staff_requests";
+	public static String COL_SR_ID = "id";
+	public static String COL_SR_TITLE = "title";
+	public static String COL_SR_REASON = "reason";
+	public static String COL_SR_CREATEDATE = "create_date";
+	public static String COL_SR_STATUS = "status";
+
+	// CONFIRM_IMAGES
+	public static String TBL_CONFIRM_IMAGES = "confirm_images";
+	public static String COL_CONFIRM_IMAGES_ID = "id";
+	public static String COL_CONFIRM_IMAGES_DETAIL_ID = "detail_id";
+	public static String COL_CONFIRM_IMAGES_IMAGES = "image";
+	public static String COL_CONFIRM_IMAGES_CAPTUREDATE = "capture_date";
+	public static String COL_CONFIRM_IMAGES_UPLOAD_DATE = "upload_date";
+
 	// SCHEDULES
 	public static String TBL_SCHEDULES = "schedules";
 	public static String COL_SCHEDULES_ID = "id";
@@ -155,13 +179,15 @@ public class Views {
 	public static String COL_SCHEDULES_END_DATE = "end_date";
 	public static String COL_SCHEDULES_STATUS = "status";
 
-	// REQUESTS
-	public static String TBL_REQUESTS = "requests";
-	public static String COL_REQUESTS_ID = "id";
-	public static String COL_REQUESTS_SCHEDULE_ID = "schedule_id";
-	public static String COL_REQUESTS_DATE_ADJUST = "date_adjust";
-	public static String COL_REQUESTS_REASON = "reason";
-	public static String COL_REQUESTS_STATUS = "status";
+	// SCHEDULE_REQUESTS
+	public static String TBL_SCHEDULE_REQUESTS = "schedule_requests";
+	public static String COL_SCHEDULE_REQUESTS_ID = "id";
+	public static String COL_SCHEDULE_REQUESTS_SCHEDULE_ID = "schedule_id";
+	public static String COL_SCHEDULE_REQUESTS_DATE_ADJUST = "date_adjust";
+	public static String COL_SCHEDULE_REQUESTS_TYPE = "type";
+	public static String COL_SCHEDULE_REQUESTS_REASON = "reason";
+	public static String COL_SCHEDULE_REQUESTS_CREATEDATE = "create_date";
+	public static String COL_SCHEDULE_REQUESTS_STATUS = "status";
 
 	// PAYMENT_ACCOUNTS
 	public static String TBL_PAYMENT_ACCOUNTS = "payment_accounts";

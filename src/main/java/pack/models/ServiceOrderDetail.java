@@ -6,19 +6,19 @@ public class ServiceOrderDetail {
 	private int detailId;
 	private int orderId;
 	private String serName;
-	private double basePrice;
+	private double price;
 	private Date startDate;
 	private String orderStatus;
 
 	public ServiceOrderDetail() {
 	}
 
-	public ServiceOrderDetail(int detailId, int orderId, String serName, double basePrice, Date startDate,
+	public ServiceOrderDetail(int detailId, int orderId, String serName, double price, Date startDate,
 			String orderStatus) {
 		this.detailId = detailId;
 		this.orderId = orderId;
 		this.serName = serName;
-		this.basePrice = basePrice;
+		this.price = price;
 		this.startDate = startDate;
 		this.orderStatus = orderStatus;
 	}
@@ -39,12 +39,12 @@ public class ServiceOrderDetail {
 		this.serName = serName;
 	}
 
-	public double getBasePrice() {
-		return basePrice;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setBasePrice(double basePrice) {
-		this.basePrice = basePrice;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public Date getStartDate() {

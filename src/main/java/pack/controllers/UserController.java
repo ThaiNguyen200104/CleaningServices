@@ -108,10 +108,8 @@ public class UserController {
 
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
-		User user = rep.findUserByUsername(req.getSession().getAttribute("username").toString());
-		List<Order> list = rep.getOrders((int) req.getSession().getAttribute("usrId"));
-		model.addAttribute("user", user);
-		model.addAttribute("orders", list);
+		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
+		model.addAttribute("orderDetails", rep.getOrderDetails((int) req.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "accounts");
 
 		return Views.USER_ACCOUNTS;
@@ -218,8 +216,8 @@ public class UserController {
 	}
 
 	@GetMapping("/confirmOrder")
-	public String confirmOrder(@RequestParam int detailId, @RequestParam double price, Model model) {
-		String result = rep.confirmOrder(detailId, price);
+	public String confirmOrder(@RequestParam int detailId, Model model) {
+		String result = rep.confirmOrder(detailId);
 		if (result.equals("success")) {
 			return "redirect:/user/orders";
 		}
@@ -229,7 +227,7 @@ public class UserController {
 
 	@GetMapping("/orderDetails")
 	public String order_details(Model model) {
-		List<OrderDetail> detail = rep.getDetails();
+		List<OrderDetail> detail = rep.getOrderDetails();
 		model.addAttribute("details", detail);
 
 		return Views.USER_ORDER_DETAILS;
@@ -246,40 +244,40 @@ public class UserController {
 	}
 
 	// Service
-	@PostMapping("/bookService")
-	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
-			@RequestParam Date startDate) {
-		try {
-			Order order = new Order();
-			order.setUsrId(userId);
-			Date currentDate = new Date(System.currentTimeMillis());
-			if (startDate.before(currentDate)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
-			}
-
-			if (rep.isServiceInOrder(userId, serviceId)) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
-			}
-
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(currentDate);
-			cal.add(Calendar.YEAR, 5);
-			java.util.Date dateLimit = cal.getTime();
-
-			if (startDate.after(dateLimit)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body("Start date cannot be more than 5 years from now.");
-			}
-			String result = rep.newOrder(order, serviceId, startDate);
-
-			if ("success".equals(result)) {
-				return ResponseEntity.ok("Order created successfully.");
-			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
-		}
-	}
+//	@PostMapping("/bookService")
+//	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
+//			@RequestParam Date startDate, @RequestParam double price) {
+//		try {
+//			Order order = new Order();
+//			order.setUsrId(userId);
+//			Date currentDate = new Date(System.currentTimeMillis());
+//			if (startDate.before(currentDate)) {
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+//			}
+//
+//			if (rep.isServiceInOrder(userId, serviceId)) {
+//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+//			}
+//
+//			Calendar cal = Calendar.getInstance();
+//			cal.setTime(currentDate);
+//			cal.add(Calendar.YEAR, 5);
+//			java.util.Date dateLimit = cal.getTime();
+//
+//			if (startDate.after(dateLimit)) {
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//						.body("Start date cannot be more than 5 years from now.");
+//			}
+//			String result = rep.newOrder(order, serviceId, startDate, price);
+//
+//			if ("success".equals(result)) {
+//				return ResponseEntity.ok("Order created successfully.");
+//			} else {
+//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+//		}
+//	}
 }

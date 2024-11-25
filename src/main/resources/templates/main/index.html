@@ -195,7 +195,8 @@
 							<p th:text="${item.description}"></p>
 							<a class="btn justify-content-end" href="javascript:void(0);"
 								onclick="showBookingPopup(event)"
-								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
+								th:attr="serId=${item.id}, userId=${session.usrId}, serPrice=${item.basePrice}">Book
+								Now</a>
 						</div>
 						<div th:unless="${item != null}">
 							<p>We are re-organizing our services to better meet your house cleaning demands.</p>
@@ -516,6 +517,7 @@
 	<script>
 		let selectedServiceId = null;
 		let UserId = null;
+		let price = null;
 		const inputDate = document.getElementById("serviceDate");
 		const currentYear = new Date().getFullYear();
 		inputDate.max = `${currentYear + 2}-12-31`;
@@ -524,6 +526,7 @@
 			var item = event.target
 			selectedServiceId = item.getAttribute("serId");
 			UserId = item.getAttribute("userId");
+			price = item.getAttribute("serPrice");
 			document.getElementById("bookingModal").style.display = "flex";
 			document.body.classList.add("no-scroll");
 		}
@@ -551,7 +554,8 @@
 				data: {
 					userId: UserId,
 					serviceId: selectedServiceId,
-					startDate: date
+					startDate: date,
+					price: price
 				},
 				success: function (response, textStatus, xhr) {
 					if (xhr.status === 200) {

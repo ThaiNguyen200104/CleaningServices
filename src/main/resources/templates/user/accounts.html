@@ -63,21 +63,29 @@
 						<thead>
 							<tr>
 								<th>No.</th>
+								<th>Service Name</th>
 								<th>Price</th>
 								<th>Expected Start Date</th>
 								<th>Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
-						<tbody th:each="item: ${orders}" th:if="${item != null}">
+						<tbody th:each="item: ${orderDetails}" th:if="${item != null}">
 							<tr>
 								<td th:text="${item.detailId}"></td>
-								<td th:text="${item.basePrice}"></td>
+								<td th:text="${item.serName}"></td>
+								<td th:text="${item.price} + '$'"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.status}"></td>
+								<td th:text="${item.completeDate}" th:if="${item.orderStatus == 'completed'}"></td>
+								<td th:text="${item.orderStatus}"></td>
+								<td>
+									<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info"
+										style="text-align: center; font-weight: 700;">See More
+									</a>
+								</td>
 							</tr>
 							<tr>
-								<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info"
+								<a th:if="${item.size() > 5}" th:href="@{/user/orderDetails}" class="btn btn-outline-info"
 									style="text-align: center; font-weight: 700;">Browse More
 								</a>
 							</tr>

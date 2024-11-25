@@ -1,6 +1,11 @@
 package pack.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
+import pack.models.OrderDetail;
 import pack.models.Staff;
 import pack.repositories.StaffRepository;
 import pack.services.OtpService;
@@ -128,9 +134,44 @@ public class StaffController {
 	// ORDERS
 
 	@GetMapping("/orders/list")
-	public String getMethodName(Model model) {
+	public String pendingOrder(Model model, HttpServletRequest request) {
+		List<OrderDetail> orders = rep.pendingOrderList();
+
+		// Sử dụng stream API để lấy danh sách serviceName
+		List<String> serviceNames = orders.stream().map(order -> rep.getServiceNameByDetailId(order.getId()))
+				.collect(Collectors.toList());
+		Staff st = rep.findStaffById((int) request.getSession().getAttribute("staffId"));
+		model.addAttribute("staff", st);
 		model.addAttribute("orders", rep.pendingOrderList());
+		model.addAttribute("serviceNames", serviceNames);
 		return Views.STAFF_ORDER_LIST;
+	}
+
+	@GetMapping("/orders/priceAdjust")
+	public ResponseEntity<String> priceDeal(@RequestParam String price, @RequestParam int detailId) {
+		try {
+			if (!price.matches("^[0-9]*\\.?[0-9]+$")) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Invalid price format. Please enter a valid number.");
+			}
+
+			double validPrice = Double.parseDouble(price);
+
+			OrderDetail detail = new OrderDetail();
+			detail.setId(detailId);
+			detail.setPrice(validPrice);
+
+			String result = rep.priceAdjust(detail);
+
+			if (result.equals("success")) {
+				return ResponseEntity.ok("Succeed");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Action failed.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to adjust the price.");
+		}
 	}
 
 }

@@ -128,14 +128,10 @@
 					staffIds: selectedStaffIds,
 					startDate: startDateTime,
 					orderId: ordId
-
 				}),
 				success: function (response) {
 					alert(response);
-					selectedStaffIds = [];
-					document.getElementById("selectedStaffList").innerHTML = "";
-					document.getElementById("startDate").value = "";
-					location.reload();
+					window.location.href = '/admin/orders/list';
 				},
 				error: function (xhr) {
 					if (xhr.responseText) {

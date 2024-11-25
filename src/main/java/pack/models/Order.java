@@ -2,15 +2,14 @@ package pack.models;
 
 public class Order {
 	private int id;
-	private int usrId;
-	private String orderStatus;
+	private int usrReqId;
 
 	public Order() {
 	}
 
-	public Order(int id, int usrId) {
+	public Order(int id, int usrReqId) {
 		this.id = id;
-		this.usrId = usrId;
+		this.usrReqId = usrReqId;
 	}
 
 	public int getId() {
@@ -21,20 +20,12 @@ public class Order {
 		this.id = id;
 	}
 
-	public int getUsrId() {
-		return usrId;
+	public int getUsrReqId() {
+		return usrReqId;
 	}
 
-	public void setUsrId(int usrId) {
-		this.usrId = usrId;
-	}
-
-	public String getOrderStatus() {
-		return orderStatus;
-	}
-
-	public void setOrderStatus(String status) {
-		this.orderStatus = status;
+	public void setUsrReqId(int usrReqId) {
+		this.usrReqId = usrReqId;
 	}
 
 }

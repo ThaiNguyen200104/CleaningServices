@@ -20,6 +20,7 @@ import pack.models.Staff;
 import pack.modelviews.Admin_mapper;
 import pack.modelviews.Blog_mapper;
 import pack.modelviews.Detail_mapper;
+import pack.modelviews.OrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.Staff_mapper;
 import pack.utils.SecurityUtility;
@@ -414,8 +415,8 @@ public class AdminRepository {
 					+ "THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od " + "JOIN %s o ON od.order_id = o.id "
 					+ "JOIN %s u ON o.user_id = u.id " + "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
-			return db.query(str_query, new Detail_mapper(), (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(),
-					pageItem.getPageSize());
+			return db.query(str_query, new OrderDetail_mapper(),
+					(pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -428,6 +429,7 @@ public class AdminRepository {
 					Views.COL_ORDER_DETAIL_ID);
 			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
