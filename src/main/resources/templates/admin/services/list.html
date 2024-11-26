@@ -50,34 +50,34 @@
 					<thead>
 						<tr>
 							<th>No.</th>
-							<th>Image</th>
+							<th class="hide-sm">Image</th>
 							<th>Service Name</th>
-							<th>Description</th>
+							<th class="hide-sm hide-md">Description</th>
 							<th>Price</th>
-							<th>Staff Required</th>
-							<th>Status</th>
+							<th class="hide-sm">Staff Required</th>
+							<th class="hide-sm">Status</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="item : ${services}">
 							<td th:text="${item.id}"></td>
-							<td>
+							<td class="hide-sm">
 								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}"
 									style="width: 75px; height: 92px;" />
 								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'"
 									style="width: 75px; height: 92px;" />
 							</td>
 							<td th:text="${item.serName}"></td>
-							<td>
+							<td class="hide-sm hide-md">
 								<button type="button" data-bs-toggle="popover" title="Description"
 									class="btn btn-outline-info" th:data-bs-content="${item.description}">
 									Show Description
 								</button>
 							</td>
 							<td th:text="${item.basePrice} + '$'"></td>
-							<td th:text="${item.staffRequired}"></td>
-							<td th:text="${item.status}"></td>
+							<td class="hide-sm" th:text="${item.staffRequired}"></td>
+							<td class="hide-sm" th:text="${item.status}"></td>
 							<td>
 								<a class="btn btn-warning" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
 								<form th:action="@{/admin/services/disable(id=${item.id})}" method="post"

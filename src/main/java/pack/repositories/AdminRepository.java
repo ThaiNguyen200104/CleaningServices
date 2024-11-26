@@ -31,7 +31,7 @@ public class AdminRepository {
 	@Autowired
 	JdbcTemplate db;
 
-	// Admin Region
+	// -------------------- ACCOUNTS -------------------- //
 	public Admin getAdminByUsername(String username) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
@@ -80,6 +80,8 @@ public class AdminRepository {
 			return e.getMessage();
 		}
 	}
+
+	// -------------------- SERVICES -------------------- //
 
 	public List<Service> getServices(PageView pageItem) {
 		try {
@@ -215,7 +217,7 @@ public class AdminRepository {
 		}
 	}
 
-	// Blog region
+	// -------------------- BLOGS -------------------- //
 	public List<Blog> getBlogs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("select count(*) from blogs", Integer.class);
@@ -272,7 +274,7 @@ public class AdminRepository {
 		}
 	}
 
-	// Staff region
+	// -------------------- STAFFS -------------------- //
 	public List<Staff> getStaffs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("select count(*) from staffs where status != 'disabled'", Integer.class);
@@ -403,7 +405,7 @@ public class AdminRepository {
 		}
 	}
 
-	// Order region
+	// -------------------- ORDERS -------------------- //
 	public List<OrderDetail> getOrders(PageView pageItem) {
 		try {
 			int count = db.queryForObject("select count(*) from order_details", Integer.class);

@@ -20,6 +20,7 @@ public class HomeController {
 	@Autowired
 	HomeRepository rep;
 
+	// -------------------- INDEX -------------------- //
 	@ModelAttribute
 	public void addCurrentPath(HttpServletRequest req, Model model) {
 		model.addAttribute("currentPath", req.getRequestURI());

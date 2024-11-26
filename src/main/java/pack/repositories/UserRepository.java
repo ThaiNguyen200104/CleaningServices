@@ -1,21 +1,23 @@
 package pack.repositories;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import pack.models.Order;
 import pack.models.OrderDetail;
+import pack.models.OrdersHistory;
+import pack.models.PageView;
+import pack.models.SeeMoreOrders;
 import pack.models.Service;
 import pack.models.ServiceOrderDetail;
 import pack.models.User;
 import pack.modelviews.Detail_mapper;
+import pack.modelviews.OrdersHistory_mapper;
+import pack.modelviews.SeeMoreOrders_mapper;
 import pack.modelviews.ServiceOrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
@@ -27,6 +29,7 @@ public class UserRepository {
 	@Autowired
 	JdbcTemplate db;
 
+	// -------------------- ACCOUNTS -------------------- //
 	public User findUserByUsername(String username) {
 		try {
 			String str_query = String.format("select * from %s where %s=?", Views.TBL_USER, Views.COL_USER_USERNAME);
@@ -117,6 +120,7 @@ public class UserRepository {
 		}
 	}
 
+	// -------------------- SERVICES -------------------- //
 	public List<Service> getServices() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
@@ -135,17 +139,7 @@ public class UserRepository {
 		}
 	}
 
-	// ORDER
-	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
-		try {
-			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
-			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	// -------------------- ORDERS -------------------- //
 
 	public List<OrderDetail> getOrderDetails() {
 		try {
@@ -156,13 +150,50 @@ public class UserRepository {
 		}
 	}
 
-	public List<ServiceOrderDetail> getOrderDetails(int usrId) {
+	public List<OrdersHistory> getAllOrdersHistory(PageView pageItem) {
 		try {
-			String str_query = "SELECT top 5 od.id as detailId, o.id as orderId, s.service_name, od.price, "
-					+ "od.start_date AS startDate, complete_date AS completeDate, od.status AS orderStatus "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
-					+ "WHERE o.user_id = ? ORDER BY od.start_date DESC";
-			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { usrId });
+			int count = db.queryForObject("select count(*) from order_details", Integer.class);
+			int total_page = (int) Math.ceil((double) count / pageItem.getPageSize());
+			pageItem.setTotalPage(total_page);
+
+			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
+			        + "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.orders_id = o.id "
+			        + "ORDER BY od.start_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+			return db.query(str_query, new OrdersHistory_mapper(),
+			        new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<OrdersHistory> getOrdersHistory(int orderId) {
+		try {
+			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.orders_id = o.id WHERE o.orderId = ?";
+			return db.query(str_query, new OrdersHistory_mapper(), new Object[] { orderId });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<SeeMoreOrders> getSeeMoreOrders(int detailId) {
+		try {
+			String str_query = "SELECT od.id as detailId, od.price, od.start_date AS startDate, od.complete_date as completeDate, "
+					+ "od.status, s.service_name AS serName, st.username as staffs "
+					+ "FROM staff st JOIN schedule sch ON sch.staff_id = st.id JOIN order_details od ON sch.detail_id = od.id "
+					+ "JOIN services s ON od.service_id = s.id WHERE o.detailId = ?";
+			return db.query(str_query, new SeeMoreOrders_mapper(), new Object[] { detailId });
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
+		try {
+			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
+			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -229,4 +260,5 @@ public class UserRepository {
 			return null;
 		}
 	}
+
 }

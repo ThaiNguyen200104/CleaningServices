@@ -130,7 +130,6 @@ a:hover, a:active, a:focus {
 
 .header .header-top {
 	padding-bottom: 15px;
-	border-bottom: 1px solid rgba(255, 255, 255, .1);
 }
 
 .header .brand {
@@ -141,6 +140,10 @@ a:hover, a:active, a:focus {
 	color: #ffffff;
 	font-size: 60px;
 	font-weight: 100;
+}
+
+.header .brand a:hover {
+	color: #FFD662;
 }
 
 .header .brand img {
@@ -218,6 +221,9 @@ a:hover, a:active, a:focus {
 	.header .dropdown-menu {
 		box-shadow: none;
 	}
+	.hide-md {
+		display: none;
+	}
 }
 
 .header .navbar .btn {
@@ -241,16 +247,6 @@ a:hover, a:active, a:focus {
 .header .navbar .btn i {
 	font-size: 16px;
 	margin-right: 8px;
-}
-
-.badge {
-	padding: .25rem .4rem;
-	background: #FFD662;
-	color: #00539C;
-}
-
-.badge:hover {
-	scale: 1.5;
 }
 
 @media ( max-width : 992px) {
@@ -360,6 +356,9 @@ a:hover, a:active, a:focus {
 @media ( max-width : 767.98px) {
 	.header .hero .form {
 		margin-top: 45px;
+	}
+	.hide-sm {
+		display: none;
 	}
 }
 

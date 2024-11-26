@@ -14,10 +14,13 @@ public class ServiceOrderDetail_mapper implements RowMapper<ServiceOrderDetail> 
 		ServiceOrderDetail item = new ServiceOrderDetail();
 		item.setDetailId(rs.getInt("detailId"));
 		item.setOrderId(rs.getInt("orderId"));
+		
 		item.setSerName(rs.getString(Views.COL_SERVICES_NAME));
 		item.setPrice(rs.getDouble(Views.COL_ORDER_DETAIL_PRICE));
+		
 		item.setStartDate(rs.getDate("startDate"));
 		item.setOrderStatus(rs.getString("orderStatus"));
+		
 		return item;
 	}
 }

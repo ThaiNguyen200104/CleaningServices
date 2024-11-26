@@ -1,12 +1,8 @@
 package pack.controllers;
 
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
-import pack.models.Order;
-import pack.models.OrderDetail;
+import pack.models.PageView;
+import pack.models.SeeMoreOrders;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -109,7 +105,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		model.addAttribute("orderDetails", rep.getOrderDetails((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("ordersHistory", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "accounts");
 
 		return Views.USER_ACCOUNTS;
@@ -207,36 +203,49 @@ public class UserController {
 		return "redirect:/user/accounts";
 	}
 
-	// -------------------- SERVICES -------------------- //
+	@GetMapping("/seeMore")
+	public String see_more(Model model, int detailId) {
+		List<SeeMoreOrders> get = rep.getSeeMoreOrders(detailId);
+		model.addAttribute("seeMore", get);
+		return Views.USER_SEE_MORE;
+	}
+
+	@GetMapping("/browseMore")
+	public String browse_more(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("browseMore", rep.getAllOrdersHistory(pv));
+
+		return Views.USER_BROWSE_MORE;
+	}
+
+	// -------------------- ORDERS -------------------- //
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
 		model.addAttribute("orders", rep.getServiceOrderDetail((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("currentPage", "orders");
+
 		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/confirmOrder")
 	public String confirmOrder(@RequestParam int detailId, Model model) {
-		String result = rep.confirmOrder(detailId);
-		if (result.equals("success")) {
+		String confirm = rep.confirmOrder(detailId);
+		if (confirm.equals("success")) {
 			return "redirect:/user/orders";
 		}
 		model.addAttribute("error", "Confirm failed due to some errors");
 		return Views.USER_ORDERS;
 	}
 
-	@GetMapping("/orderDetails")
-	public String order_details(Model model) {
-		List<OrderDetail> detail = rep.getOrderDetails();
-		model.addAttribute("details", detail);
-
-		return Views.USER_ORDER_DETAILS;
-	}
-
 	@GetMapping("/cancelOrder")
 	public String cancel_order(@RequestParam int id, Model model) {
-		String result = rep.cancelOrder(id);
-		if (result.equals("success")) {
+		String cancel = rep.cancelOrder(id);
+		if (cancel.equals("success")) {
 			return "redirect:/user/orders";
 		}
 		model.addAttribute("error", "Cancel failed. Please try again.");

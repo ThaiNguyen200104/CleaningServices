@@ -48,7 +48,7 @@
 						<tr>
 							<th>No.</th>
 							<th>Username</th>
-							<th>Status</th>
+							<th class="hide-sm">Status</th>
 							<th>Job Occupied</th>
 							<th>Actions</th>
 						</tr>
@@ -57,7 +57,7 @@
 						<tr th:each="item : ${staffs}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.username}"></td>
-							<td th:text="${item.status}"></td>
+							<td class="hide-sm" th:text="${item.status}"></td>
 							<td th:text="${item.jobOccupied}"></td>
 							<td>
 								<a class="btn btn-warning"

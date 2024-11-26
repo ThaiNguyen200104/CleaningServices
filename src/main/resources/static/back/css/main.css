@@ -18,6 +18,14 @@ body {
 	background: #f1f5f9;
 }
 
+body::-webkit-scrollbar {
+	width: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+	background: #365cf5;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -93,6 +101,9 @@ p {
 @media ( max-width : 767px) {
 	.container {
 		padding: 0 30px;
+	}
+	.hide-sm {
+		display: none;
 	}
 }
 
@@ -4442,6 +4453,12 @@ h6, .h6 {
 	.main-wrapper .footer .terms {
 		margin-bottom: 10px;
 		text-align: center;
+	}
+}
+
+@media ( max-width : 929px ) {
+	.hide-md {
+		display: none;
 	}
 }
 

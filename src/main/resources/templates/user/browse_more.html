@@ -28,42 +28,39 @@
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
-		<div class="account-container">
-			<div class="account-content">
-				<h2>Order Details</h2>
-				<div class="table-container">
-					<table class="booking-table">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Series Number</th>
-								<th>Order Id</th>
-								<th>Service Id</th>
-								<th>Price</th>
-								<th>Dates</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${details}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.detailCode}"></td>
-								<td th:text="${item.orderId"></td>
-								<td th:text="${item.serId}"></td>
-								<td th:text="${item.price}"></td>
-								<td>
-									<button type="button" data-toggle="popover" title="Dates"
-										data-content="Start: ${item.startDate}&#10;Complete: ${item.completeDate}"
-										class="btn btn-outline-info">Show Dates
-									</button>
-								</td>
-								<td th:text="${item.status}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+	<div class="acc-container mt-5">
+		<div class="account-content">
+			<h2 class="mb-4">All Orders</h2>
+
+			<div th:if="${#lists.isEmpty(ordersHistory)}" class="text-center mt-5">
+				<p>You have not booked any services.</p>
+			</div>
+
+			<div th:if="${!#lists.isEmpty(ordersHistory)}" class="table-container">
+				<table class="booking-table">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Service Name</th>
+							<th>Start Date</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody th:each="item: ${ordersHistory}">
+						<tr>
+							<td th:text="${item.orderId}"></td>
+							<td th:text="${item.serName}"></td>
+							<td th:text="${item.startDate}"></td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a th:href="@{/user/seeMore(id=${item.id})}" class="btn btn-outline-info">
+									See More
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

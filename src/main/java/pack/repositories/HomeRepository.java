@@ -16,6 +16,7 @@ public class HomeRepository {
 	@Autowired
 	JdbcTemplate db;
 
+	// -------------------- ORDERS -------------------- //
 	public List<Service> getServices(PageView pageItem) {
 		try {
 			int count = db.queryForObject("select count(*) from services", Integer.class);
@@ -31,7 +32,14 @@ public class HomeRepository {
 		}
 	}
 
-	
-	
-	
+	public boolean getOrderedOrders() {
+		try {
+			String str_query = String.format("SELECT COUNT(*) > 0 FROM %s WHERE %s != 'canceled' AND %s = 'completed'",
+					Views.TBL_ORDER_DETAIL, Views.COL_ORDER_DETAIL_STATUS);
+			return db.queryForObject(str_query, Boolean.class);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }

@@ -26,23 +26,28 @@
 							<a th:href="@{/}" class="nav-item nav-link">Home</a>
 							<a th:href="@{/service}" class="nav-item nav-link">Service</a>
 							<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
-							<a th:href="@{/about}" class="nav-item nav-link">About</a>
-							<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
-							<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link"
-								th:classappend="${currentPage == 'login' ? 'active' : ''}">
-								Login
-							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link"
-								th:classappend="${currentPage == 'orders' ? 'active' : ''}">
-								Order
-							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}" class="nav-item nav-link"
-								th:classappend="${currentPage == 'accounts' ? 'active' : ''}">
-								Your Account
-							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
-								Logout
-							</a>
+							<div class="nav-item dropdown">
+								<a href="#menu2" class="nav-link dropdown-toggle" data-toggle="dropdown">More</a>
+								<div class="dropdown-menu">
+									<a th:href="@{/about}" class="dropdown-item">About Us</a>
+									<a th:href="@{/contact}" class="dropdown-item">Contact Us</a>
+								</div>
+							</div>
+							<div class="nav-item dropdown" th:if="${session.usrId != null}">
+								<a href="#menu1" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
+								<div class="dropdown-menu">
+									<a th:href="@{/user/accounts}" class="dropdown-item"
+										th:classappend="${currentPage == 'accounts' ? 'active' : ''}">
+										Your Account
+									</a>
+									<a th:href="@{/user/orders}" class="dropdown-item"
+										th:classappend="${currentPage == 'orders' ? 'active' : ''}">
+										Orders
+									</a>
+									<a th:href="@{/user/logout}" class="dropdown-item">Logout</a>
+								</div>
+							</div>
+
 						</div>
 					</div>
 				</div>

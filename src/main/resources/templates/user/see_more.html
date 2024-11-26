@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Account</title>
+	<title>Cleanex - Order Details</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,65 +29,36 @@
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="acc-container mt-3">
-			<div class="row">
-				<div class="col-3 text-center">
-					<img th:if="${user.image == null}" src="../front/img/none-user.png"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<img th:unless="${user.image == null}" th:src="'/upload/' + ${user.image}"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<h3 th:text="${user.fullname}"></h3>
-					<a class="btn btn-primary mt-3" th:href="@{/user/editProfile}">Edit Profile</a>
-				</div>
-				<div class="col-9">
-					<h2 class="mb-4">Profile</h2>
-					<dl class="row">
-						<dt class="col-3">Username:</dt>
-						<dd class="col-9" th:text="${user.username}"></dd>
-						<dt class="col-3">Email:</dt>
-						<dd class="col-9" th:text="${user.email}"></dd>
-						<dt class="col-3">Phone:</dt>
-						<dd class="col-9" th:text="${user.phone}"></dd>
-						<dt class="col-3">Address:</dt>
-						<dd class="col-9" th:text="${user.address}"></dd>
-					</dl>
-				</div>
-			</div>
-		</div>
-
-		<div class="acc-container mt-5">
+		<div class="account-container">
 			<div class="account-content">
-				<h2 class="mb-4">Orders History</h2>
-
-				<div th:if="${#lists.isEmpty(ordersHistory)}" class="text-center mt-5">
-					<p>You have not booked any services.</p>
-				</div>
-
-				<div th:if="${!#lists.isEmpty(ordersHistory)}" class="table-container">
+				<h2 th:text="${seeMore.serName}"></h2>
+				<div class="table-container">
 					<table class="booking-table">
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Service Name</th>
-								<th>Start Date</th>
+								<th>Staffs</th>
+								<th>Price</th>
+								<th th:if="${seeMore[0].status != 'completed'}">Start Date</th>
+								<th th:if="${#lists.isEmpty(seeMore) or seeMore[0].status == 'completed'}">
+									Complete Date
+								</th>
 								<th>Status</th>
-								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item: ${ordersHistory}">
-								<td th:text="${item.orderId}"></td>
-								<td th:text="${item.serName}"></td>
-								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.status}"></td>
+							<tr th:each="item : ${seeMore}">
+								<td th:text="${item.detailId}"></td>
 								<td>
-									<a th:href="@{/user/seeMore(id=${item.id})}" class="btn btn-outline-info">
-										See More
-									</a>
+									<button type="button" data-bs-toggle="popover" title="Staffs Name"
+										class="btn btn-info" th:data-bs-content="${item.${item.staffs}}">
+										Staffs
+									</button>
 								</td>
-							</tr>
-							<tr>
-								<a th:href="@{/user/browseMore}" class="btn btn-info">Browse More</a>
+								<td th:text="${item.price + '$'"></td>
+								<td th:if="${item.status != 'completed'}" th:text="${item.startDate}"></td>
+								<td th:if="${item.status == 'completed'}" th:text="${item.completeDate}"></td>
+								<td th:text="${item.status}"></td>
 							</tr>
 						</tbody>
 					</table>
