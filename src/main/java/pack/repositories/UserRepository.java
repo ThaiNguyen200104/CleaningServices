@@ -2,23 +2,16 @@ package pack.repositories;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import pack.models.OrderDetail;
-import pack.models.OrdersHistory;
 import pack.models.PageView;
-import pack.models.SeeMoreOrders;
 import pack.models.Service;
-import pack.models.ServiceOrderDetail;
 import pack.models.User;
-import pack.modelviews.Detail_mapper;
-import pack.modelviews.OrdersHistory_mapper;
-import pack.modelviews.SeeMoreOrders_mapper;
-import pack.modelviews.ServiceOrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
 import pack.utils.SecurityUtility;
@@ -140,60 +133,70 @@ public class UserRepository {
 	}
 
 	// -------------------- ORDERS -------------------- //
-
-	public List<OrderDetail> getOrderDetails() {
+	public boolean countOrdersToBrowseMore(int userId) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_ORDER_DETAIL);
-			return db.query(str_query, new Detail_mapper());
+			// Đếm số lượng order_details theo user_id
+			String countQuery = "SELECT COUNT(*) FROM order_details od JOIN orders o ON od.order_id = o.id "
+					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
+			int count = db.queryForObject(countQuery, Integer.class, new Object[] { userId });
+
+			return count > 4;
 		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public List<Map<String, Object>> getOrdersHistory(int userId) {
+		try {
+			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
+					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
+			return db.queryForList(str_query, new Object[] { userId });
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<OrdersHistory> getAllOrdersHistory(PageView pageItem) {
+	public List<Map<String, Object>> getAllOrdersHistory(PageView pageItem, int userId) {
 		try {
-			int count = db.queryForObject("select count(*) from order_details", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
 			int total_page = (int) Math.ceil((double) count / pageItem.getPageSize());
 			pageItem.setTotalPage(total_page);
 
-			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
-			        + "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.orders_id = o.id "
-			        + "ORDER BY od.start_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-			return db.query(str_query, new OrdersHistory_mapper(),
-			        new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
-
+			String str_query = "SELECT o.id AS orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
+					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id "
+					+ "WHERE u.id = ? ORDER BY od.start_date ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+			return db.queryForList(str_query, new Object[] { userId,
+					(pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<OrdersHistory> getOrdersHistory(int orderId) {
+	public List<Map<String, Object>> getSeeMoreOrderDetails(int orderId) {
 		try {
-			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.orders_id = o.id WHERE o.orderId = ?";
-			return db.query(str_query, new OrdersHistory_mapper(), new Object[] { orderId });
+			String str_query = "SELECT o.id AS orderId, od.price, od.start_date AS startDate, od.complete_date AS completeDate, "
+					+ "od.status, s.service_name AS serName, st.username AS staffsName FROM orders o "
+					+ "JOIN order_details od ON o.id = od.order_id JOIN services s ON od.service_id = s.id "
+					+ "LEFT JOIN schedules sch ON od.id = sch.detail_id LEFT JOIN staffs st ON sch.staff_id = st.id "
+					+ "WHERE o.id = ?";
+			return db.queryForList(str_query, new Object[] { orderId });
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<SeeMoreOrders> getSeeMoreOrders(int detailId) {
+	public List<Map<String, Object>> getOrderDetails(int userId) {
 		try {
-			String str_query = "SELECT od.id as detailId, od.price, od.start_date AS startDate, od.complete_date as completeDate, "
-					+ "od.status, s.service_name AS serName, st.username as staffs "
-					+ "FROM staff st JOIN schedule sch ON sch.staff_id = st.id JOIN order_details od ON sch.detail_id = od.id "
-					+ "JOIN services s ON od.service_id = s.id WHERE o.detailId = ?";
-			return db.query(str_query, new SeeMoreOrders_mapper(), new Object[] { detailId });
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
-		try {
-			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
-			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
+			String str_query = "SELECT od.id AS detailId, o.id AS orderId, s.service_name AS serName, od.price, od.start_date AS startDate, od.status "
+					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
+					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
+			return db.queryForList(str_query, new Object[] { userId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

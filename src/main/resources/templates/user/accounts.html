@@ -59,11 +59,12 @@
 			<div class="account-content">
 				<h2 class="mb-4">Orders History</h2>
 
-				<div th:if="${#lists.isEmpty(ordersHistory)}" class="text-center mt-5">
+				<div th:if="${#lists.isEmpty(orders)}" class="text-center mt-5">
 					<p>You have not booked any services.</p>
 				</div>
 
-				<div th:if="${!#lists.isEmpty(ordersHistory)}" class="table-container">
+				<div th:if="${!#lists.isEmpty(orders)}" class="table-container">
+					<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 					<table class="booking-table">
 						<thead>
 							<tr>
@@ -75,22 +76,22 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item: ${ordersHistory}">
+							<tr th:each="item: ${orders}">
 								<td th:text="${item.orderId}"></td>
 								<td th:text="${item.serName}"></td>
-								<td th:text="${item.startDate}"></td>
+								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a th:href="@{/user/seeMore(id=${item.id})}" class="btn btn-outline-info">
+									<a th:href="@{/user/seeMore(id=${item.orderId})}" class="btn btn-outline-info">
 										See More
 									</a>
 								</td>
 							</tr>
-							<tr>
-								<a th:href="@{/user/browseMore}" class="btn btn-info">Browse More</a>
-							</tr>
 						</tbody>
 					</table>
+					<div class="text-center mt-3">
+						<a th:if="${browseMore}" th:href="@{/user/browseMore}" class="btn btn-primary">Browse More</a>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -4,8 +4,6 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Home Cleaning Service</title>
 
@@ -118,12 +116,9 @@
 								<div class="nav-item dropdown" th:if="${session.usrId != null}">
 									<a href="#menu1" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
 									<div class="dropdown-menu">
-										<a th:href="@{/user/accounts}" class="dropdown-item">Your Account
-										</a>
-										<a th:href="@{/user/orders}" class="dropdown-item">Orders
-										</a>
-										<a th:href="@{/user/logout}" class="dropdown-item">Logout
-										</a>
+										<a th:href="@{/user/accounts}" class="dropdown-item">Your Account</a>
+										<a th:href="@{/user/orders}" class="dropdown-item">Orders</a>
+										<a th:href="@{/user/logout}" class="dropdown-item">Logout</a>
 									</div>
 								</div>
 							</div>
@@ -204,8 +199,9 @@
 							<p th:text="${item.description}"></p>
 							<a class="btn justify-content-end" href="javascript:void(0);"
 								onclick="showBookingPopup(event)"
-								th:attr="serId=${item.id}, userId=${session.usrId}, serPrice=${item.basePrice}">Book
-								Now</a>
+								th:attr="serId=${item.id}, userId=${session.usrId}, serPrice=${item.basePrice}">
+								Book Now
+							</a>
 						</div>
 					</div>
 				</div>

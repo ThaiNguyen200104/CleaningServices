@@ -39,18 +39,81 @@
 				<div id="editor"></div>
 				<button type="submit" class="btn btn-success mt-3">Submit</button>
 			</form>
+
+			<div>
+				<textarea class="form-control" id="editor"></textarea>
+			</div>
+
+			<div>
+				<input class="form-control" type="text" id="image" placeholder="Chosen file URL" readonly />
+				<button class="btn btn-primary" id="choose">Choose file</button>
+				<div id="ckbox"></div>
+			</div>
 		</div>
 	</main>
 
-	<script type="importmap">
-	{
-		"imports": {
-			"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.js",
-			"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.2.0/"
-		}
-	}
-	</script>
+	<script type="module">
+		import {
+			ClassicEditor,
+			CKBox,
+			Essentials,
+			Bold,
+			Italic,
+			Font,
+			Paragraph
+		} from 'ckeditor5';
 
+		// Function to initialize CKEditor
+		async function initializeEditor() {
+			try {
+				await ClassicEditor.create(document.querySelector('#editor'), {
+					plugins: [CKBox, Essentials, Bold, Italic, Font, Paragraph],
+					ckbox: {
+						tokenUrl: `${location.origin}/ckbox/auth`, // Endpoint to fetch CKBox token
+						theme: 'lark',
+						allowExternalImagesEditing: [/^data:/, 'origin', /ckbox/]
+					},
+					toolbar: [
+						'ckbox', '|', 'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
+				});
+			} catch (error) {
+				console.error('Error initializing CKEditor:', error);
+			}
+		}
+
+		// Function to initialize CKBox file chooser
+		function initializeFileChooser() {
+			document.getElementById('choose').addEventListener('click', function () {
+				CKBox.mount(document.querySelector('#ckbox'), {
+					tokenUrl: `${location.origin}/ckbox/auth`, // Endpoint to fetch CKBox token
+					dialog: true,
+					assets: {
+						onChoose: (assets) => {
+							// Populate the input field with the chosen file's URL
+							const fileInput = document.getElementById('file-url');
+							if (assets.length > 0) {
+								fileInput.value = assets[0].data.url;
+								assets.forEach(asset => {
+									console.log('Chosen asset URL:', asset.data.url);
+								});
+							} else {
+								console.log('No assets chosen.');
+							}
+						}
+					}
+				});
+			});
+		}
+
+		// Initialize both CKEditor and CKBox when the DOM is ready
+		document.addEventListener('DOMContentLoaded', () => {
+			initializeEditor();
+			initializeFileChooser();
+		});
+	</script>
+	
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
 	<script src="../../back/js/dynamic-pie-chart.js"></script>

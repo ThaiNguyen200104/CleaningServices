@@ -1,6 +1,7 @@
 package pack.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.PageView;
-import pack.models.SeeMoreOrders;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
@@ -105,10 +105,37 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		model.addAttribute("ordersHistory", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("browseMore", rep.countOrdersToBrowseMore((int) req.getSession().getAttribute("usrId")));
+
 		model.addAttribute("currentPage", "accounts");
 
 		return Views.USER_ACCOUNTS;
+	}
+
+	@GetMapping("/seeMore")
+	public String seeMore(@RequestParam("id") int orderId, Model model) {
+		List<Map<String, Object>> details = rep.getSeeMoreOrderDetails(orderId);
+		model.addAttribute("seeMore", details);
+
+		if (details.isEmpty()) {
+			model.addAttribute("error", "Something went wrong. Please try again later.");
+			return "redirect:/user/accounts";
+		}
+		return Views.USER_SEE_MORE;
+	}
+
+	@GetMapping("/browseMore")
+	public String browse_more(HttpServletRequest req, Model model,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("browseMore", rep.getAllOrdersHistory(pv, (int) req.getSession().getAttribute("usrId")));
+
+		return Views.USER_BROWSE_MORE;
 	}
 
 	@GetMapping("/editProfile")
@@ -203,30 +230,11 @@ public class UserController {
 		return "redirect:/user/accounts";
 	}
 
-	@GetMapping("/seeMore")
-	public String see_more(Model model, int detailId) {
-		List<SeeMoreOrders> get = rep.getSeeMoreOrders(detailId);
-		model.addAttribute("seeMore", get);
-		return Views.USER_SEE_MORE;
-	}
-
-	@GetMapping("/browseMore")
-	public String browse_more(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
-		PageView pv = new PageView();
-		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
-
-		model.addAttribute("pv", pv);
-		model.addAttribute("browseMore", rep.getAllOrdersHistory(pv));
-
-		return Views.USER_BROWSE_MORE;
-	}
-
 	// -------------------- ORDERS -------------------- //
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getServiceOrderDetail((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orderDetails", rep.getOrderDetails((int) request.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "orders");
 
 		return Views.USER_ORDERS;
@@ -252,7 +260,7 @@ public class UserController {
 		return Views.USER_ORDERS;
 	}
 
-	// Service
+	// -------------------- SERVICES -------------------- //
 //	@PostMapping("/bookService")
 //	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 //			@RequestParam Date startDate, @RequestParam double price) {

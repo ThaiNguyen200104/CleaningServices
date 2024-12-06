@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Order Details</title>
+	<title>Cleanex - Order's Detail</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,41 +29,39 @@
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="account-container">
-			<div class="account-content">
-				<h2 th:text="${seeMore.serName}"></h2>
-				<div class="table-container">
-					<table class="booking-table">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Staffs</th>
-								<th>Price</th>
-								<th th:if="${seeMore[0].status != 'completed'}">Start Date</th>
-								<th th:if="${#lists.isEmpty(seeMore) or seeMore[0].status == 'completed'}">
-									Complete Date
-								</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${seeMore}">
-								<td th:text="${item.detailId}"></td>
-								<td>
-									<button type="button" data-bs-toggle="popover" title="Staffs Name"
-										class="btn btn-info" th:data-bs-content="${item.${item.staffs}}">
-										Staffs
-									</button>
-								</td>
-								<td th:text="${item.price + '$'"></td>
-								<td th:if="${item.status != 'completed'}" th:text="${item.startDate}"></td>
-								<td th:if="${item.status == 'completed'}" th:text="${item.completeDate}"></td>
-								<td th:text="${item.status}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
+		<div class="section-header mb-5">
+			<h2>Order Details</h2>
+		</div>
+		<div th:if="${seeMore != null}">
+			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
+			<table class="booking-table">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Service Name</th>
+						<th>Staffs Name</th>
+						<th>Price</th>
+						<th th:if="${status != 'completed'}">Start Date</th>
+						<th th:if="${status == 'completed'}">Complete Date</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${seeMore}">
+						<td th:text="${item.orderId}"></td>
+						<td th:text="${item.serName}"></td>
+						<td th:text="${item.staffsName != null ? item.staffsName : 'None'}"></td>
+						<td th:text="${item.price + '$'}"></td>
+						
+						<td th:if="${item.status != 'completed'}"
+							th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+						<td th:if="${item.status == 'completed'}"
+							th:text="${#dates.format(item.completeDate, 'yyyy-MM-dd')}"></td>
+							
+						<td th:text="${item.status}"></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 

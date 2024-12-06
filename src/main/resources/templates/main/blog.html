@@ -2,11 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8" />
-	<title>Cleanex - Blogs</title>
+	<meta charset="UTF-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Blog</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,6 +15,7 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -27,17 +27,27 @@
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
 
 	<div class="wrapper">
-		
-		<h1>Our Blog page is currently maintaining. Thanks for using our service!</h1>
+		<div class="service">
+			<div class="container">
+				<div class="section-header">
+					<p>Blogs</p>
+					<h2>Where clients give feedbacks</h2>
+				</div>
+				
+			</div>
+		</div>
 	</div>
 
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 
+	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 	<script src="../front/lib/easing/easing.min.js"></script>
 	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
