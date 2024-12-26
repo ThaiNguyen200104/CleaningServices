@@ -34,7 +34,7 @@ public class AdminRepository {
 	// -------------------- ACCOUNTS -------------------- //
 	public Admin getAdminByUsername(String username) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
 			return db.queryForObject(str_query, new Admin_mapper(), new Object[] { username });
 		} catch (Exception e) {
 			return null;
@@ -43,7 +43,7 @@ public class AdminRepository {
 
 	public Admin getAdminById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_ID);
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_ID);
 			return db.queryForObject(str_query, new Admin_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
@@ -52,7 +52,7 @@ public class AdminRepository {
 
 	public String newAdmin(String username, String password) {
 		try {
-			String str_query = String.format("insert into %s (username, password) values(?,?)", Views.TBL_ADMIN);
+			String str_query = String.format("INSERT INTO %s (username, password) VALUES (?,?)", Views.TBL_ADMIN);
 			int rowaccept = db.update(str_query, new Object[] { username, SecurityUtility.encryptBcrypt(password) });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
@@ -62,7 +62,7 @@ public class AdminRepository {
 
 	public Admin checkEmailExists(String email) {
 		try {
-			String str_query = String.format("select * from %s where %s = ?", Views.TBL_ADMIN, Views.COL_ADMIN_EMAIL);
+			String str_query = String.format("SELECT * FROM %s WHERE %s = ?", Views.TBL_ADMIN, Views.COL_ADMIN_EMAIL);
 			return db.queryForObject(str_query, new Admin_mapper(), new Object[] { email });
 		} catch (Exception e) {
 			return null;
@@ -71,7 +71,7 @@ public class AdminRepository {
 
 	public String changePass(String password) {
 		try {
-			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_ADMIN,
+			String str_query = String.format("update %s set %s = ? WHERE %s = ?", Views.TBL_ADMIN,
 					Views.COL_ADMIN_PASSWORD, Views.COL_ADMIN_ID);
 			String hashpassword = SecurityUtility.encryptBcrypt(password);
 			int rowaccept = db.update(str_query, new Object[] { hashpassword });
@@ -85,11 +85,11 @@ public class AdminRepository {
 
 	public List<Service> getServices(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from services", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM services", Integer.class);
 			int total_page = count / pageItem.getPageSize();
 			pageItem.setTotalPage(total_page);
 
-			String str_query = String.format("select * from %s order by %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+			String str_query = String.format("SELECT * FROM %s order by %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_SERVICES, Views.COL_SERVICES_ID);
 			return db.query(str_query, new Service_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
@@ -100,7 +100,7 @@ public class AdminRepository {
 
 	public Service getServiceName() {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
+			String str_query = String.format("SELECT * FROM %s", Views.TBL_SERVICES);
 			return db.queryForObject(str_query, new Service_mapper());
 		} catch (Exception e) {
 			return null;
@@ -109,7 +109,7 @@ public class AdminRepository {
 
 	public Service getServiceById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
 			return db.queryForObject(str_query, new Service_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
@@ -118,9 +118,9 @@ public class AdminRepository {
 
 	public String newService(Service ser) {
 		try {
-			StringBuilder queryBuilder = new StringBuilder("insert into ");
+			StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
 			queryBuilder.append(Views.TBL_SERVICES).append(" (service_name, base_price, staff_required");
-			StringBuilder valuesBuilder = new StringBuilder(" values (?, ?, ?");
+			StringBuilder valuesBuilder = new StringBuilder(" VALUES (?, ?, ?");
 
 			List<Object> params = new ArrayList<>();
 			params.add(ser.getSerName());
@@ -184,7 +184,7 @@ public class AdminRepository {
 				queryBuilder.setLength(queryBuilder.length() - 2);
 			}
 
-			queryBuilder.append(" where " + Views.COL_SERVICES_ID + " = ?");
+			queryBuilder.append(" WHERE " + Views.COL_SERVICES_ID + " = ?");
 			params.add(ser.getId());
 
 			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
@@ -197,7 +197,7 @@ public class AdminRepository {
 
 	public String activateServiceStatus(int id) {
 		try {
-			String str_query = String.format("update %s set %s = 'activated' where %s = ?", Views.TBL_SERVICES,
+			String str_query = String.format("update %s set %s = 'activated' WHERE %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
 			int rowaccept = db.update(str_query, new Object[] { id });
 			return rowaccept == 1 ? "success" : "failed";
@@ -208,7 +208,7 @@ public class AdminRepository {
 
 	public String disableServiceStatus(int id) {
 		try {
-			String str_query = String.format("update %s set %s = 'disabled' where %s = ?", Views.TBL_SERVICES,
+			String str_query = String.format("update %s set %s = 'disabled' WHERE %s = ?", Views.TBL_SERVICES,
 					Views.COL_SERVICES_STATUS, Views.COL_SERVICES_ID);
 			int rowaccept = db.update(str_query, new Object[] { id });
 			return rowaccept == 1 ? "success" : "failed";
@@ -218,13 +218,14 @@ public class AdminRepository {
 	}
 
 	// -------------------- BLOGS -------------------- //
+
 	public List<Blog> getBlogs(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from blogs", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM blogs", Integer.class);
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
-			String str_query = String.format("select * from %s order by %s desc offset ? rows fetch next ? rows only",
+			String str_query = String.format("SELECT * FROM %s order by %s desc offset ? rows fetch next ? rows only",
 					Views.TBL_BLOG, Views.COL_BLOG_ID);
 			return db.query(str_query, new Blog_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
@@ -235,7 +236,7 @@ public class AdminRepository {
 
 	public Blog getBlogById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
 			return db.queryForObject(str_query, new Blog_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
@@ -244,45 +245,85 @@ public class AdminRepository {
 
 	public String newBlog(Blog blog) {
 		try {
-			String str_query = String.format("insert into %s (title, content, images) values(?,?,?)", Views.TBL_BLOG);
-			int rowaccept = db.update(str_query, new Object[] { blog.getTitle(), blog.getContent(), blog.getImage() });
-			return rowaccept == 1 ? "success" : "failed";
+			StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
+			queryBuilder.append(Views.TBL_BLOG).append(" (title, content");
+			StringBuilder valuesBuilder = new StringBuilder(" VALUES (?, ?");
+
+			List<Object> params = new ArrayList<>();
+			params.add(blog.getTitle());
+			params.add(blog.getContent());
+
+			if (blog.getImage() != null && !blog.getImage().isEmpty()) {
+				queryBuilder.append(", image");
+				valuesBuilder.append(", ?");
+				params.add(blog.getImage());
+			}
+
+			if (blog.getUpdateDate() != null) {
+				queryBuilder.append(", update_date");
+				valuesBuilder.append(", ?");
+				params.add(blog.getUpdateDate());
+			}
+
+			queryBuilder.append(")");
+			valuesBuilder.append(")");
+			queryBuilder.append(valuesBuilder);
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
+		} catch (DuplicateKeyException e) {
+			throw new IllegalArgumentException("Title may already exists.");
 		} catch (Exception e) {
-			return e.getMessage();
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	public String editBlog(Blog blog) {
 		try {
-			String str_query = String.format("update %s set %s=?, %s=?, %s=?, %s=GETDATE() where id=?", Views.TBL_BLOG,
-					Views.COL_BLOG_TITLE, Views.COL_BLOG_CONTENT, Views.COL_BLOG_IMAGES, Views.COL_BLOG_UPDATEDATE);
-			int rowaccept = db.update(str_query,
-					new Object[] { blog.getTitle(), blog.getContent(), blog.getImage(), blog.getUpdateDate() });
-			return rowaccept == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
+			StringBuilder queryBuilder = new StringBuilder("UPDATE blogs SET ");
+			List<Object> params = new ArrayList<>();
+			if (blog.getTitle() != null && !blog.getTitle().isEmpty()) {
+				queryBuilder.append("title = ?, ");
+				params.add(blog.getTitle());
+			}
 
-	public String deleteBlog(int id) {
-		try {
-			String str_query = String.format("delete from %s where %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
-			int rowaccept = db.update(str_query, new Object[] { id });
-			return rowaccept == 1 ? "success" : "failed";
+			if (blog.getContent() != null && !blog.getContent().isEmpty()) {
+				queryBuilder.append("content = ?, ");
+				params.add(blog.getContent());
+			}
+
+			if (blog.getImage() != null && !blog.getImage().isEmpty()) {
+				queryBuilder.append("image = ?, ");
+				params.add(blog.getImage());
+			}
+
+			queryBuilder.append("update_date = GETDATE(), ");
+			if (queryBuilder.toString().endsWith(", ")) {
+				queryBuilder.setLength(queryBuilder.length() - 2);
+			}
+
+			queryBuilder.append(" WHERE id = ?");
+			params.add(blog.getId());
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
 		} catch (Exception e) {
+			e.printStackTrace();
 			return e.getMessage();
 		}
 	}
 
 	// -------------------- STAFFS -------------------- //
+
 	public List<Staff> getStaffs(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from staffs where status != 'disabled'", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM staffs WHERE status != 'disabled'", Integer.class);
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
 			String str_query = String.format(
-					"select * from %s where %s != 'disabled' order by %s desc offset ? rows fetch next ? rows only",
+					"SELECT * FROM %s WHERE %s != 'disabled' order by %s desc offset ? rows fetch next ? rows only",
 					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
 			return db.query(str_query, new Staff_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
@@ -293,7 +334,7 @@ public class AdminRepository {
 
 	public Staff getStaffById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
 			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { id });
 		} catch (Exception e) {
 			return null;
@@ -303,7 +344,7 @@ public class AdminRepository {
 	public String newStaff(Staff staff) {
 		try {
 			String str_query = String.format(
-					"insert into %s (username, password, email, phone, fullname) values(?,?,?,?,?)", Views.TBL_STAFFS);
+					"INSERT INTO %s (username, password, email, phone, fullname) VALUES (?,?,?,?,?)", Views.TBL_STAFFS);
 			String hashpassword = SecurityUtility.encryptBcrypt(staff.getPassword());
 			int rowaccept = db.update(str_query, new Object[] { staff.getUsername(), hashpassword, staff.getEmail(),
 					staff.getPhone(), staff.getFullname() });
@@ -317,7 +358,7 @@ public class AdminRepository {
 
 	public String disableStaff(int id) {
 		try {
-			String str_query = String.format("update %s set %s = ? where %s = ?", Views.TBL_STAFFS,
+			String str_query = String.format("update %s set %s = ? WHERE %s = ?", Views.TBL_STAFFS,
 					Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
 			int rowaccepted = db.update(str_query, new Object[] { "disabled", id });
 			return rowaccepted == 1 ? "success" : "failed";
@@ -354,7 +395,7 @@ public class AdminRepository {
 					return "The new start date must be at least 5 hours after the latest assigned schedule for this staff member.";
 				}
 			}
-			String str_query = String.format("insert into %s (staff_id, detail_id, start_date) values(?,?,?)",
+			String str_query = String.format("INSERT INTO %s (staff_id, detail_id, start_date) VALUES (?,?,?)",
 					Views.TBL_SCHEDULES);
 			int rowaccepted = db.update(str_query,
 					new Object[] { item.getStaffId(), item.getDetailId(), item.getStartDate() });
@@ -367,7 +408,7 @@ public class AdminRepository {
 
 	public List<Staff> AssignedStaffList(int id) {
 		try {
-			String str_query = String.format("select s.* from %s s join %s ts on s.id = ts.staff_id where ts.%s = ?",
+			String str_query = String.format("SELECT s.* FROM %s s JOIN %s ts ON s.id = ts.staff_id WHERE ts.%s = ?",
 					Views.TBL_STAFFS, Views.TBL_SCHEDULES, Views.COL_SCHEDULES_DETAIL_ID);
 			return db.query(str_query, new Staff_mapper(), new Object[] { id });
 		} catch (Exception e) {
@@ -378,8 +419,8 @@ public class AdminRepository {
 
 	public List<Staff> getCurrentStaff(int detailId) {
 		try {
-			String str_query = "select s.* from staffs s join schedules sd on s.id = sd.staff_id"
-					+ " join order_details od on sd.detail_id = od.id where od.id = ?";
+			String str_query = "SELECT s.* FROM staffs s JOIN schedules sd ON s.id = sd.staff_id"
+					+ " JOIN order_details od ON sd.detail_id = od.id WHERE od.id = ?";
 			return db.query(str_query, new Staff_mapper(), new Object[] { detailId });
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -388,14 +429,13 @@ public class AdminRepository {
 	}
 
 	public List<Staff> getAvailableStaffForReplacement(int orderId, int excludeStaffId) {
-		String query = "SELECT * FROM staffs WHERE id != ? "
-				+ "AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
+		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
 		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
 	}
 
 	public String ReplaceStaff(int currentStaff, int newStaff, int orderId) {
 		try {
-			String str_query = String.format("update %s set %s =? where %s = ? and %s = ?", Views.TBL_SCHEDULES,
+			String str_query = String.format("update %s set %s =? WHERE %s = ? and %s = ?", Views.TBL_SCHEDULES,
 					Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_DETAIL_ID);
 			int rowaccepted = db.update(str_query, new Object[] { newStaff, currentStaff, orderId });
 			return rowaccepted == 1 ? "success" : "failed";
@@ -408,7 +448,7 @@ public class AdminRepository {
 	// -------------------- ORDERS -------------------- //
 	public List<OrderDetail> getOrders(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from order_details", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
 			int totalPage = count / pageItem.getPageSize();
 			pageItem.setTotalPage(totalPage);
 
@@ -427,7 +467,7 @@ public class AdminRepository {
 
 	public OrderDetail getDetailById(int id) {
 		try {
-			String str_query = String.format("select * from %s where %s=?", Views.TBL_ORDER_DETAIL,
+			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_ORDER_DETAIL,
 					Views.COL_ORDER_DETAIL_ID);
 			return db.queryForObject(str_query, new Detail_mapper(), new Object[] { id });
 		} catch (Exception e) {

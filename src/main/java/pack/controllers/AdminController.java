@@ -149,76 +149,94 @@ public class AdminController {
 
 	@GetMapping("/blogs/create")
 	public String create_blog_view(Model model) {
-		model.addAttribute("new_item", new Blog());
-
 		return Views.ADMIN_BLOGS_CREATE;
 	}
 
 	@PostMapping("/blogs/createBlog")
-	public String create_blog(@ModelAttribute("new_item") Blog blog, Model model) {
+	public String create_blog(@RequestParam String title, @RequestParam String content,
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
-			String create = rep.newBlog(blog);
+			Blog blog = new Blog();
+			blog.setTitle(title);
+			blog.setContent(content);
 
+			if (image != null && !image.isEmpty()) {
+				blog.setImage(FileUtility.uploadFileImage(image, "upload"));
+			} else {
+				blog.setImage(null);
+			}
+
+			String create = rep.newBlog(blog);
 			if (create.equals("success")) {
 				return "redirect:/admin/blogs/list";
 			}
-
 			model.addAttribute("catchError", "Failed to create blog, please try again.");
+			return Views.ADMIN_BLOGS_CREATE;
 
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("catchError", "Title may already exists.");
 			return Views.ADMIN_BLOGS_CREATE;
 		} catch (Exception e) {
-			System.out.println("System error: " + e.getMessage());
+			e.printStackTrace();
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
-
 			return Views.ADMIN_BLOGS_CREATE;
 		}
 	}
 
 	@GetMapping("/blogs/edit")
-	public String edit_blog_view(int id, Model model) {
+	public String edit_blog_view(@RequestParam int id, Model model) {
 		try {
 			Blog get = rep.getBlogById(id);
-
 			if (get != null) {
-				model.addAttribute("service", get);
-
+				model.addAttribute("edit_item", get);
 				return Views.ADMIN_BLOGS_EDIT;
-			} else {
-				return "redirect:/admin/blogs/list";
 			}
+			return "redirect:/admin/blogs/list";
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
-
 			return Views.ADMIN_BLOGS_EDIT;
 		}
 	}
 
 	@PostMapping("/blogs/editBlog")
-	public String edit_blog(@ModelAttribute("edit_item") Blog blog, Model model) {
+	public String edit_blog(@ModelAttribute("edit_item") Blog blog, BindingResult br,
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
-			String edit = rep.editBlog(blog);
+			if (blog.getTitle() == null && blog.getTitle().isEmpty()) {
+				model.addAttribute("catchError", "You must enter title.");
+				return Views.ADMIN_BLOGS_EDIT;
+			}
 
+			if (blog.getContent() == null && blog.getContent().isEmpty()) {
+				model.addAttribute("catchError", "You must enter content.");
+				return Views.ADMIN_BLOGS_EDIT;
+			}
+
+			if (image != null && !image.isEmpty()) {
+				blog.setImage(FileUtility.uploadFileImage(image, "upload"));
+			}
+
+			String edit = rep.editBlog(blog);
 			if (edit.equals("success")) {
 				return "redirect:/admin/blogs/list";
 			}
 
+			if (br.hasErrors()) {
+				model.addAttribute("catchError", "There was an error with your input.");
+				return Views.ADMIN_BLOGS_EDIT;
+			}
 			model.addAttribute("catchError", "Failed to edit blog, please try again.");
+			return Views.ADMIN_BLOGS_EDIT;
 
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("catchError", "The title may already exists.");
 			return Views.ADMIN_BLOGS_EDIT;
 		} catch (Exception e) {
 			System.out.println("System error: " + e.getMessage());
 			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
-
 			return Views.ADMIN_BLOGS_EDIT;
 		}
-	}
-
-	@PostMapping("/blogs/delete")
-	public String delete_blog(int id) {
-		rep.deleteBlog(id);
-
-		return "redirect:/admin/blogs/list";
 	}
 
 	// -------------------- SERVICES --------------------//

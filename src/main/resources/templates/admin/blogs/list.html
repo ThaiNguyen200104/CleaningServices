@@ -47,6 +47,8 @@
 						<tr>
 							<th>No.</th>
 							<th>Title</th>
+							<th>Content</th>
+							<th>Image</th>
 							<th>Created Date</th>
 							<th>Updated Date</th>
 							<th>Actions</th>
@@ -56,14 +58,22 @@
 						<tr th:each="item : ${blogs}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.title}"></td>
-							<td th:text="${item.createDate}"></td>
-							<td th:text="${item.updateDate}"></td>
 							<td>
-								<a class="btn-btn-outline-info" th:href="@{/admin/blogs/detail(id=${item.id})}">
-									Detail
-								</a>
-								<a class="btn btn-warning" th:href="@{/admin/blogs/edit(id=${item.id})}">Edit</a>
-								<a class="btn btn-danger" th:href="@{/admin/blogs/delete(id=${item.id})}">Delete</a>
+								<button type="button" data-bs-toggle="popover" title="Content"
+									class="btn btn-outline-info" th:data-bs-content="${item.content}">
+									Show Content
+								</button>
+							</td>
+							<td>
+								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}"
+									style="width: 75px; height: 92px;" />
+								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'"
+									style="width: 75px; height: 92px;" />
+							</td>
+							<td th:text="${item.createDate != null ? item.createDate : 'N/A'}"></td>
+							<td th:text="${item.updateDate != null ? item.updateDate : 'N/A'}"></td>
+							<td>
+								<a class="btn btn-warning edit" th:href="@{/admin/blogs/edit(id=${item.id})}">Edit</a>
 							</td>
 						</tr>
 					</tbody>

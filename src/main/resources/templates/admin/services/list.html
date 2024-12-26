@@ -50,44 +50,44 @@
 					<thead>
 						<tr>
 							<th>No.</th>
-							<th class="hide-sm">Image</th>
+							<th>Image</th>
 							<th>Service Name</th>
-							<th class="hide-sm hide-md">Description</th>
+							<th>Description</th>
 							<th>Price</th>
-							<th class="hide-sm">Staff Required</th>
-							<th class="hide-sm">Status</th>
+							<th>Staff Required</th>
+							<th>Status</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="item : ${services}">
 							<td th:text="${item.id}"></td>
-							<td class="hide-sm">
+							<td>
 								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}"
 									style="width: 75px; height: 92px;" />
 								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'"
 									style="width: 75px; height: 92px;" />
 							</td>
 							<td th:text="${item.serName}"></td>
-							<td class="hide-sm hide-md">
+							<td>
 								<button type="button" data-bs-toggle="popover" title="Description"
 									class="btn btn-outline-info" th:data-bs-content="${item.description}">
 									Show Description
 								</button>
 							</td>
 							<td th:text="${item.basePrice} + '$'"></td>
-							<td class="hide-sm" th:text="${item.staffRequired}"></td>
-							<td class="hide-sm" th:text="${item.status}"></td>
+							<td th:text="${item.staffRequired}"></td>
+							<td th:text="${item.status}"></td>
 							<td>
-								<a class="btn btn-warning" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
+								<a class="btn btn-warning edit" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
 								<form th:action="@{/admin/services/disable(id=${item.id})}" method="post"
 									class="form-inline" th:if="${item.status == 'activated'}">
-									<button class="btn btn-danger" type="submit">Disable</button>
+									<button class="btn btn-danger disable" type="submit">Disable</button>
 								</form>
 
 								<form th:action="@{/admin/services/activate(id=${item.id})}" method="post"
 									class="form-inline" th:if="${item.status == 'disabled'}">
-									<button class="btn btn-info" type="submit">Activate</button>
+									<button class="btn btn-info activate" type="submit">Activate</button>
 								</form>
 							</td>
 						</tr>

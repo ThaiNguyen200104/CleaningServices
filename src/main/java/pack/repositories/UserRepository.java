@@ -149,7 +149,7 @@ public class UserRepository {
 
 	public List<Map<String, Object>> getOrdersHistory(int userId) {
 		try {
-			String str_query = "SELECT o.id as orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
+			String str_query = "SELECT o.id AS orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
 					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
 					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
 			return db.queryForList(str_query, new Object[] { userId });
@@ -157,7 +157,7 @@ public class UserRepository {
 			e.printStackTrace();
 			return null;
 		}
-	}
+	} 
 
 	public List<Map<String, Object>> getAllOrdersHistory(PageView pageItem, int userId) {
 		try {

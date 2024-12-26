@@ -102,9 +102,6 @@ p {
 	.container {
 		padding: 0 30px;
 	}
-	.hide-sm {
-		display: none;
-	}
 }
 
 /* ========== cart style ========== */
@@ -4453,12 +4450,6 @@ h6, .h6 {
 	.main-wrapper .footer .terms {
 		margin-bottom: 10px;
 		text-align: center;
-	}
-}
-
-@media ( max-width : 929px ) {
-	.hide-md {
-		display: none;
 	}
 }
 

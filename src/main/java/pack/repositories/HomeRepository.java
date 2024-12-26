@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import pack.models.Blog;
 import pack.models.PageView;
 import pack.models.Service;
+import pack.modelviews.Blog_mapper;
 import pack.modelviews.Service_mapper;
 import pack.utils.Views;
 
@@ -19,15 +21,35 @@ public class HomeRepository {
 	// -------------------- ORDERS -------------------- //
 	public List<Service> getServices(PageView pageItem) {
 		try {
-			int count = db.queryForObject("select count(*) from services", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM services", Integer.class);
 			int total_page = count / pageItem.getPageSize();
 			pageItem.setTotalPage(total_page);
 
-			String str_query = String.format("select * from %s order by %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+			String str_query = String.format("SELECT * FROM %s ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_SERVICES, Views.COL_SERVICES_ID);
 			return db.query(str_query, new Service_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Blog> getBlogs() {
+		try {
+			String str_query = String.format("SELECT * FROM %s", Views.TBL_BLOG, Views.COL_BLOG_ID);
+			return db.query(str_query, new Blog_mapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Blog getBlogById(int id) {
+		try {
+			String str_query = String.format("SELECT * FROM %s WHERE %s = ?", Views.TBL_BLOG, Views.COL_BLOG_ID);
+			return db.queryForObject(str_query, new Blog_mapper(), new Object[] { id });
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

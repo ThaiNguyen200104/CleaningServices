@@ -13,7 +13,8 @@
 	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
-	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
+
+	<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 
 </head>
 
@@ -34,86 +35,30 @@
 		<div class="mx-5 mt-5">
 			<h2 class="mb-4">Write a blog</h2>
 			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
-			<form th:action="@{/admin/blogs/createBlog}" method="post" th:object="${new_item}"
-				enctype="multipart/form-data" class="mt-3">
-				<div id="editor"></div>
-				<button type="submit" class="btn btn-success mt-3">Submit</button>
+			<form th:action="@{/admin/blogs/createBlog}" method="post" enctype="multipart/form-data">
+				<div class="row mb-3">
+					<div class="col-5">
+						<label class="form-label " for="title">Title</label>
+						<input class="form-control" type="text" name="title" required />
+					</div>
+					<div class="col-7">
+						<label class="form-label" for="image">Upload Images</label>
+						<input class="form-control" type="file" name="image" accept="image/*" />
+					</div>
+					<div class="col-12 mt-4">
+						<label class="form-label" for="content">Content</label>
+						<textarea name="content" id="editor1" rows="10" cols="80"></textarea>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-success">Create</button>
 			</form>
-
-			<div>
-				<textarea class="form-control" id="editor"></textarea>
-			</div>
-
-			<div>
-				<input class="form-control" type="text" id="image" placeholder="Chosen file URL" readonly />
-				<button class="btn btn-primary" id="choose">Choose file</button>
-				<div id="ckbox"></div>
-			</div>
 		</div>
 	</main>
 
-	<script type="module">
-		import {
-			ClassicEditor,
-			CKBox,
-			Essentials,
-			Bold,
-			Italic,
-			Font,
-			Paragraph
-		} from 'ckeditor5';
-
-		// Function to initialize CKEditor
-		async function initializeEditor() {
-			try {
-				await ClassicEditor.create(document.querySelector('#editor'), {
-					plugins: [CKBox, Essentials, Bold, Italic, Font, Paragraph],
-					ckbox: {
-						tokenUrl: `${location.origin}/ckbox/auth`, // Endpoint to fetch CKBox token
-						theme: 'lark',
-						allowExternalImagesEditing: [/^data:/, 'origin', /ckbox/]
-					},
-					toolbar: [
-						'ckbox', '|', 'undo', 'redo', '|', 'bold', 'italic', '|',
-						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-					]
-				});
-			} catch (error) {
-				console.error('Error initializing CKEditor:', error);
-			}
-		}
-
-		// Function to initialize CKBox file chooser
-		function initializeFileChooser() {
-			document.getElementById('choose').addEventListener('click', function () {
-				CKBox.mount(document.querySelector('#ckbox'), {
-					tokenUrl: `${location.origin}/ckbox/auth`, // Endpoint to fetch CKBox token
-					dialog: true,
-					assets: {
-						onChoose: (assets) => {
-							// Populate the input field with the chosen file's URL
-							const fileInput = document.getElementById('file-url');
-							if (assets.length > 0) {
-								fileInput.value = assets[0].data.url;
-								assets.forEach(asset => {
-									console.log('Chosen asset URL:', asset.data.url);
-								});
-							} else {
-								console.log('No assets chosen.');
-							}
-						}
-					}
-				});
-			});
-		}
-
-		// Initialize both CKEditor and CKBox when the DOM is ready
-		document.addEventListener('DOMContentLoaded', () => {
-			initializeEditor();
-			initializeFileChooser();
-		});
+	<script>
+		CKEDITOR.replace('content');
 	</script>
-	
+
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
 	<script src="../../back/js/dynamic-pie-chart.js"></script>
@@ -123,7 +68,6 @@
 	<script src="../../back/js/world-merc.js"></script>
 	<script src="../../back/js/polyfill.js"></script>
 	<script src="../../back/js/main.js"></script>
-	<script src="../../back/js/blog-form.js" type="module"></script>
 
 </body>
 

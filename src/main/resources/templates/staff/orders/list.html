@@ -48,7 +48,7 @@
 								<td th:text="${item.startDate}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a class="btn btn-success" th:href="@{/staff/orders/confirmOrder(id=${item.id})}"
+									<a class="btn btn-success activate" th:href="@{/staff/orders/confirmOrder(id=${item.id})}"
 										th:if="${item.status == 'pending'}">Confirm</a>
 								</td>
 							</tr>
