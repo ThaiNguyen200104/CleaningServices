@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Order Management</title>
+
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
+	<style>
+		#DateModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		#CancelModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		#CompleteModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		.modal-content {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			text-align: center;
+			width: 25vw;
+			z-index: 10000;
+			position: relative;
+		}
+
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 9999;
+		}
+
+		.success {
+			background-color: #4CAF50;
+			z-index: 10000;
+		}
+
+		.error {
+			background-color: #f44336;
+			z-index: 10000;
+		}
+
+		body.no-scroll {
+			overflow: hidden !important;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
+		<div class="mx-5 mt-5">
+			<div class="col-12">
+				<h2 class="mb-4">Order List</h2>
+				<div class="table-responsive border-1">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Service Name</th>
+								<th>Request By</th>
+								<th>Price</th>
+								<th>Start Date</th>
+								<th>Create Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${orders}">
+								<td th:text="${item.id}"></td>
+								<td th:text="${item.service_name}"></td>
+								<td th:text="${item.fullname}"></td>
+								<td th:text="${item.price + '$'}"></td>
+								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+								<td th:text="${item.status}"></td>
+								<td>
+									<a class="btn btn-info" onclick="showDatePopup(event)"
+										th:attr="scheId=${item.scheId}"
+										th:if="${item.status == 'confirmed' && item.showReschedule}">Reschedule</a>
+									<a class="btn btn-danger" onclick="showCancelPopup(event)"
+										th:attr="scheId=${item.scheId}"
+										th:if="${item.status == 'confirmed' && item.showCancel}">Cancel</a>
+									<a class="btn btn-warning" th:if="${item.status == 'progressing'}"
+										onclick="showCompletePopup(event)" th:attr="detailId=${item.id}">Complete</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- Reschedule Modal -->
+				<div id="DateModal" style="display: none;">
+					<div class="modal-content">
+						<h3>Adjust Date</h3>
+						<input class="form-control my-4" type="date" id="date" required />
+						<input class="form-control my-4" type="text" id="reasonForDate" placeholder="Reason here"
+							required />
+						<div class="d-flex justify-content-between">
+							<button class="btn btn-success" onclick="confirmDate()">Confirm</button>
+							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Cancel Modal -->
+				<div id="CancelModal" style="display: none;">
+					<div class="modal-content">
+						<h3>Cancel Order</h3>
+						<input class="form-control my-4" type="text" id="reasonForCancel" placeholder="Reason here"
+							required />
+						<div class="d-flex justify-content-between">
+							<button class="btn btn-success" onclick="confirmCancel()">Confirm</button>
+							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Complete Modal -->
+				<div id="CompleteModal" style="display: none;">
+					<div class="modal-content">
+						<h3>Upload Images</h3>
+						<label>Before Pic</label>
+						<input class="form-control my-4" type="file" id="beforeImg" required />
+						<label>After Pic</label>
+						<input class="form-control my-4" type="file" id="afterImg" required />
+						<div class="d-flex justify-content-between">
+							<button class="btn btn-success" onclick="Complete()">Confirm</button>
+							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+		var scheId = null;
+		var detailId = null;
+
+		function showDatePopup(event) {
+			var item = event.target
+			scheId = item.getAttribute("scheId");
+			document.getElementById("DateModal").style.display = "flex";
+			document.body.classList.add("no-scroll");
+		}
+
+		function showCancelPopup(event) {
+			var item = event.target
+			scheId = item.getAttribute("scheId");
+			document.getElementById("CancelModal").style.display = "flex";
+			document.body.classList.add("no-scroll");
+		}
+
+		function showCompletePopup(event) {
+			var item = event.target
+			detailId = item.getAttribute("detailId");
+			document.getElementById("CompleteModal").style.display = "flex";
+			document.body.classList.add("no-scroll");
+		}
+
+		function closePopup() {
+			document.body.classList.remove("no-scroll");
+		}
+
+		window.addEventListener('click', function (event) {
+			const modals = ['DateModal', 'CancelModal', 'CompleteModal'];
+			modals.forEach((modalId) => {
+				if (event.target.id === modalId) {
+					closePopup();
+				}
+			});
+		});
+
+		//Date Section
+		function confirmDate() {
+			const date = document.getElementById("date").value;
+			const reason = document.getElementById("reasonForDate").value;
+
+			if (!date || !reason) {
+				alert("Please fill all required fields.");
+				return;
+			}
+
+			$.ajax({
+				url: '/staff/order/reschedule',
+				type: 'POST',
+				data: {
+					scheId: scheId,
+					date: date,
+					reason: reason
+				},
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						showNotification(response, "success");
+						closePopup();
+						location.reload();
+					} else {
+						showNotification(response, "error");
+					}
+				},
+				error: function (xhr) {
+					console.error('Error:', xhr.responseText);
+					showNotification("Error: " + xhr.responseText, "error");
+				}
+			});
+		}
+
+		//Cancel section
+		function confirmCancel() {
+			const reason = document.getElementById("reasonForCancel").value;
+
+			if (!reason) {
+				alert("Please fill all required fields.");
+				return;
+			}
+
+			$.ajax({
+				url: '/staff/order/cancel',
+				type: 'POST',
+				data: {
+					scheId: scheId,
+					reason: reason
+				},
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						showNotification(response, "success");
+						closePopup();
+						location.reload();
+					} else {
+						showNotification(response, "error");
+					}
+				},
+				error: function (xhr) {
+					console.error('Error:', xhr.responseText);
+					showNotification("Error: " + xhr.responseText, "error");
+				}
+			});
+		}
+
+		//Complete Order Section
+		function Complete() {
+			var formData = new FormData();
+			formData.append('detailId', detailId);
+			formData.append('before', document.getElementById("beforeImg").files[0]);
+			formData.append('after', document.getElementById("afterImg").files[0]);
+
+			$.ajax({
+				url: '/staff/order/completeOrder',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						showNotification(response, "success");
+						closePopup();
+						location.reload();
+					} else {
+						showNotification(response, "error");
+					}
+				},
+				error: function (xhr) {
+					console.error('Error:', xhr.responseText);
+					showNotification("Error: " + xhr.responseText, "error");
+				}
+			});
+		}
+
+		function showNotification(message, type) {
+			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
+			$('body').append(notification);
+			notification.fadeIn('slow').delay(3000).fadeOut('slow', function () {
+				$(this).remove();
+			});
+		}
+	</script>
+</body>
+
+</html>

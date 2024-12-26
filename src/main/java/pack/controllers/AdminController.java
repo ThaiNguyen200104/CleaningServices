@@ -1,10 +1,15 @@
 package pack.controllers;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -74,6 +79,8 @@ public class AdminController {
 			model.addAttribute("loginError", "Password incorrect!");
 			return Views.ADMIN_LOGIN;
 		}
+
+		rep.CheckOrderDetailUpToDate();
 
 		req.getSession().setAttribute("adminId", get.getId());
 		return "redirect:/admin";
@@ -375,15 +382,9 @@ public class AdminController {
 
 		model.addAttribute("pv", pv);
 		model.addAttribute("orders", rep.getOrders(pv));
-		model.addAttribute("staffs", rep.getStaffs(pv));
+		model.addAttribute("staffs", rep.getStaffsForOrder(pv));
 
 		return Views.ADMIN_ORDERS_LIST;
-	}
-
-	@GetMapping("/orders/request")
-	public String order_request() {
-
-		return Views.ADMIN_ORDERS_REQUEST;
 	}
 
 	@GetMapping("/orders/assignStaff")
@@ -455,6 +456,64 @@ public class AdminController {
 		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
 	}
 
+	// Schedule_Request
+	@PostMapping("/orders/request/approveDate")
+	public ResponseEntity<String> approveDate(@RequestParam int scheduleId,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate newDate, @RequestParam int scrId) {
+		try {
+			Date newParseDate = Date.valueOf(newDate);
+
+			String result = rep.approveDateRequest(scheduleId, newParseDate, scrId);
+			if ("success".equals(result)) {
+				return ResponseEntity.ok("Request approved successfully.");
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to implement action, please try again.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while processing the request");
+		}
+	}
+
+	@PostMapping("/orders/request/denyRequest")
+	public ResponseEntity<String> denyRequest(@RequestParam int scrId) {
+		try {
+			String result = rep.denyRequest(scrId);
+			if (result.equals("success")) {
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/admin/orders/request")
+						.body("");
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to implement action, please try again.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while processing the request.");
+		}
+	}
+
+	@GetMapping("/orders/request")
+	public String order_request(Model model) {
+		model.addAttribute("requests", rep.getRequestList());
+		return Views.ADMIN_ORDERS_REQUEST;
+	}
+
+	@GetMapping("/request/staffForReplace")
+	public String replaceStaffPage(@RequestParam int scrId, @RequestParam int oldStaff, Model model) {
+		model.addAttribute("scrId", scrId);
+		model.addAttribute("oldStaff", oldStaff);
+		model.addAttribute("staffs", rep.staffListForAssignRequest());
+		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
+	}
+
+	@GetMapping("/orders/request/replaceStaff")
+	public String replaceStaff(@RequestParam int scrId, @RequestParam int staffId, @RequestParam int oldStaff, Model model) {
+		String result = rep.approveCancelRequest(staffId, scrId, oldStaff);
+		if (result.equals("success")) {
+			return "redirect:/admin/orders/request";
+		}
+		model.addAttribute("error", "Fail to implement action, please try again later.");
+		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
+	}
+
 	// -------------------- STAFFS -------------------- //
 
 	@GetMapping("/staffs/list")
@@ -512,4 +571,29 @@ public class AdminController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
+
+	// USER_REQUEST
+	@GetMapping("/request/list")
+	public String requestList(Model model) {
+		model.addAttribute("requests", rep.getRequestDetails());
+		model.addAttribute("staffCheck", rep.countAvailableStaff());
+		return Views.ADMIN_REQUEST_LIST;
+	}
+
+	@GetMapping("/request/StaffsForAssign")
+	public String staffList(@RequestParam int urdId, Model model) {
+		model.addAttribute("staffs", rep.staffListForAssignRequest());
+		model.addAttribute("urdId", urdId);
+		return Views.ADMIN_REQUEST_ASSIGN;
+	}
+
+	@PostMapping("/request/Assign")
+	public ResponseEntity<String> assignForRequest(@RequestParam int staffId, @RequestParam int urdId) {
+		String result = rep.assignStaffIntoRequest(staffId, urdId);
+		if (result.equals("success")) {
+			return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/admin/request/list").body("");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to assign, please try again.");
+	}
+
 }

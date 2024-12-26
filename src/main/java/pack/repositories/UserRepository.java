@@ -3,7 +3,6 @@ package pack.repositories;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -13,11 +12,11 @@ import org.springframework.stereotype.Repository;
 import pack.models.Order;
 import pack.models.OrderDetail;
 import pack.models.Service;
-import pack.models.ServiceOrderDetail;
 import pack.models.User;
-import pack.modelviews.Detail_mapper;
-import pack.modelviews.ServiceOrderDetail_mapper;
+import pack.models.UserRequestDetail;
+import pack.modelviews.OrderDetail_mapper;
 import pack.modelviews.Service_mapper;
+import pack.modelviews.UserRequestDetail_mapper;
 import pack.modelviews.User_mapper;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
@@ -117,6 +116,7 @@ public class UserRepository {
 		}
 	}
 
+	// SERVICE
 	public List<Service> getServices() {
 		try {
 			String str_query = String.format("select * from %s", Views.TBL_SERVICES);
@@ -136,97 +136,141 @@ public class UserRepository {
 	}
 
 	// ORDER
-	public List<ServiceOrderDetail> getServiceOrderDetail(int id) {
+	public List<UserRequestDetail> getUserReqDetailById(int userId) {
 		try {
-			String str_query = "SELECT od.id as detailId, o.id as orderId, s.service_name, od.price, od.start_date AS startDate, od.status AS orderStatus "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id WHERE o.user_id = ?";
-			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { id });
+			String str_query = String.format(
+					"select urd.*, s.service_name from %s urd join %s ur on urd.usrReq_id = ur.id join %s s on urd.service_id = s.id where urd.user_id = ? and urd.status != 'canceled'",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_SERVICES);
+			return db.query(str_query, new UserRequestDetail_mapper(), new Object[] { userId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<OrderDetail> getOrderDetails() {
+	public OrderDetail getOrderDetailById(int requestId) {
 		try {
-			String str_query = String.format("select * from %s", Views.TBL_ORDER_DETAIL);
-			return db.query(str_query, new Detail_mapper());
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public List<ServiceOrderDetail> getOrderDetails(int usrId) {
-		try {
-			String str_query = "SELECT top 5 od.id as detailId, o.id as orderId, s.service_name, od.price, "
-					+ "od.start_date AS startDate, complete_date AS completeDate, od.status AS orderStatus "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
-					+ "WHERE o.user_id = ? ORDER BY od.start_date DESC";
-			return db.query(str_query, new ServiceOrderDetail_mapper(), new Object[] { usrId });
+			String str_query = String.format(
+					"select ord.*, s.service_name from %s ord join %s od on ord.order_id = od.id join %s s on ord.service_id = s.id where od.usrReq_id = ?",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_SERVICES);
+			return db.queryForObject(str_query, new OrderDetail_mapper(), new Object[] { requestId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-//	public String newOrder(Order item, int serId, Date startDate, double price) {
-//		try {
-//			// Insert into order table
-//			String order_query = String.format("INSERT INTO %s OUTPUT INSERTED.id VALUES (?)", Views.TBL_ORDER);
-//			Integer order_id = db.queryForObject(order_query, Integer.class, new Object[] { item.getUsrId() });
-//
-//			if (order_id != null) {
-//				// Generate unique detail code
-//				String detail_code = new Random().ints(10, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".length())
-//						.mapToObj(i -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(i))
-//						.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
-//
-//				// Insert into order_details table
-//				String orderDetail_query = String.format(
-//						"INSERT INTO %s (order_id, service_id, start_date, detail_code, price) VALUES (?,?,?,?,?)",
-//						Views.TBL_ORDER_DETAIL);
-//				int rowsAffectedOrderDetail = db.update(orderDetail_query,
-//						new Object[] { order_id, serId, startDate, detail_code, price });
-//
-//				return rowsAffectedOrderDetail == 1 ? "success" : "failed";
-//			} else {
-//				System.err.println("Order ID retrieval failed.");
-//				return "failed";
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-
-	public boolean isServiceInOrder(int userId, int serId) {
-		String str_query = "SELECT COUNT(*) FROM orders o " + "JOIN order_details od ON o.id = od.order_id "
-				+ "WHERE o.user_id = ? AND od.service_id = ?";
-
-		Integer count = db.queryForObject(str_query, Integer.class, new Object[] { userId, serId });
-		return count != null && count > 0;
+	public List<OrderDetail> getOrderDetailList() {
+		try {
+			String str_query = String.format(
+					"select s.service_name, ord.* from %s ord join %s s on ord.service_id = s.id",
+					Views.TBL_ORDER_DETAIL, Views.TBL_SERVICES);
+			return db.query(str_query, new OrderDetail_mapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public String cancelOrder(int id) {
+	public List<OrderDetail> getOrderDetailsForAccount(int usrId) {
 		try {
-			String str_query = String.format("update %s set %s = 'canceled' where %s = ?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
-			int rowaccept = db.update(str_query, new Object[] { id });
+			String str_query = String.format(
+					"select top 5 ord.*, s.service_name from %s ord " + "join %s o on ord.order_id = o.id "
+							+ "join user_requests ur on o.usrReq_id = ur.id " + "join %s s on ord.service_id = s.id "
+							+ "where ur.user_id = ? " + "order by ord.create_date desc",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_SERVICES);
+			return db.query(str_query, new OrderDetail_mapper(), new Object[] { usrId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String newOrder(int urdId, int serId, Date startDate, double price) {
+		try {
+			String order_query = String.format("INSERT INTO %s OUTPUT INSERTED.id VALUES (?)", Views.TBL_ORDER);
+			Integer order_id = db.queryForObject(order_query, Integer.class, new Object[] { urdId });
+
+			if (order_id != null) {
+				String orderDetail_query = String.format(
+						"INSERT INTO %s (order_id, service_id, start_date, price) VALUES (?,?,?,?)",
+						Views.TBL_ORDER_DETAIL);
+				int rowsAffectedOrderDetail = db.update(orderDetail_query,
+						new Object[] { order_id, serId, startDate, price });
+
+				return rowsAffectedOrderDetail == 1 ? "success" : "failed";
+			} else {
+				System.err.println("Order ID retrieval failed.");
+				return "failed";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String cancelOrder(int requestId) {
+		try {
+			String str_query = String.format("update %s set %s = 'canceled' where %s = ?",
+					Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_STATUS, Views.COL_URD_ID);
+			int rowaccept = db.update(str_query, new Object[] { requestId });
 			return rowaccept == 1 ? "success" : "failed";
 		} catch (Exception e) {
-			return null;
+			return "failed";
 		}
 	}
 
-	public String confirmOrder(int detailId) {
+	public String confirmOrder(int requestId) {
 		try {
-			String str_query = String.format("update %s set %s = 'confirmed' where %s = ?", Views.TBL_ORDER_DETAIL,
-					Views.COL_ORDER_DETAIL_STATUS, Views.COL_ORDER_DETAIL_ID);
-			int accepted = db.update(str_query, new Object[] { detailId });
+			String str_query = String.format("update %s set %s = 'confirmed' where %s = ?",
+					Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_STATUS, Views.COL_URD_ID);
+			int accepted = db.update(str_query, new Object[] { requestId });
 			return accepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public String updateStaffStatusToAvailable(int staffId) {
+		try {
+			String str_query = String.format("update %s set %s = 'available' where %s = ?", Views.TBL_STAFFS,
+					Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
+			int rowaccepted = db.update(str_query, new Object[] { staffId });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	public boolean isServiceInRequest(int userId, int serId) {
+		String str_query = String.format("select count(*) from %s where %s = ? and %s = ? and %s != 'canceled'",
+				Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_USRID, Views.COL_URD_SERID, Views.COL_URD_STATUS);
+		Integer count = db.queryForObject(str_query, Integer.class, new Object[] { userId, serId });
+		return count != null && count > 0;
+	}
+
+	public String newRequestDetail(int userId, int serId, Date startDate, double price) {
+		try {
+			String ur_query = String.format("INSERT INTO %s OUTPUT INSERTED.id VALUES (?)", Views.TBL_USER_REQUEST);
+			Integer ur_id = db.queryForObject(ur_query, Integer.class, new Object[] { userId });
+
+			if (ur_id != null) {
+				String requestDetail_query = String.format(
+						"INSERT INTO %s (usrReq_id, user_id, service_id, price, start_date) VALUES (?,?,?,?,?)",
+						Views.TBL_USER_REQUEST_DETAILS);
+				int rowsAffectedOrderDetail = db.update(requestDetail_query,
+						new Object[] { ur_id, userId, serId, price, startDate });
+
+				return rowsAffectedOrderDetail == 1 ? "success" : "failed";
+			} else {
+				System.err.println("userRequestId retrieval failed.");
+				return "failed";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
 		}
 	}
 }

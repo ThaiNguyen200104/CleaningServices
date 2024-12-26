@@ -38,22 +38,28 @@
 						<tr>
 							<th>No.</th>
 							<th>Service Name</th>
-							<th>Base Price</th>
+							<th>Price</th>
 							<th>Start Date</th>
+							<th>Status</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="item : ${orders}" th:if="${item.orderStatus != 'canceled'}">
-							<td th:text="${item.orderId}"></td>
+						<tr th:each="item : ${orders}">
+							<td th:text="${item.id}"></td>
 							<td th:text="${item.serName}"></td>
 							<td th:text="${item.price} + '$'"></td>
 							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-							<td th:text="${item.orderStatus}"></td>
+							<td th:text="${item.status}"></td>
 							<td>
-								<a class="btn btn-success" th:href="@{/user/confirmOrder(detailId=${item.detailId})}"
-									th:if="${item.orderStatus == 'pending'}">Confirm</a>
-								<a class="btn btn-danger" th:href="@{/user/cancelOrder(id=${item.detailId})}"
-									th:if="${item.orderStatus == 'pending'}">Cancel</a>
+								<a class="btn btn-success" onclick="confirmAction(event)"
+									th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
+									th:if="${item.status == 'reviewing'}">Confirm</a>
+								<a class="btn btn-danger" onclick="cancel(event)"
+									th:attr="requestId=${item.id}, staffId=${item.staffId}"
+									th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
+								<a class="btn btn-warning" th:href="@{/user/seeOrderDetail(id=${item.usrReqId})}"
+									th:if="${item.status == 'confirmed'}">See Details</a>
 							</td>
 						</tr>
 					</tbody>
@@ -73,7 +79,7 @@
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
-
+	<script src="../front/js/userOrder.js"></script>
 </body>
 
 </html>

@@ -108,3 +108,4 @@ function disableButton() {
 
 	event.target.closest('form').submit();
 }
+

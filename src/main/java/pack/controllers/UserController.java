@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
-import pack.models.Order;
 import pack.models.OrderDetail;
 import pack.models.User;
+import pack.models.UserRequestDetail;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
 import pack.utils.FileUtility;
@@ -109,7 +111,7 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		model.addAttribute("orderDetails", rep.getOrderDetails((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("orderDetails", rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId")));
 		model.addAttribute("currentPage", "accounts");
 
 		return Views.USER_ACCOUNTS;
@@ -211,73 +213,87 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getServiceOrderDetail((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
-	@GetMapping("/confirmOrder")
-	public String confirmOrder(@RequestParam int detailId, Model model) {
-		String result = rep.confirmOrder(detailId);
+	@PostMapping("/confirmOrder")
+	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
+			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
+		String result = rep.confirmOrder(urdId);
 		if (result.equals("success")) {
-			return "redirect:/user/orders";
+			String confirm = rep.newOrder(urdId, serId, startDate, price);
+			if (confirm.equals("success")) {
+				rep.updateStaffStatusToAvailable(staffId);
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
 		}
-		model.addAttribute("error", "Confirm failed due to some errors");
-		return Views.USER_ORDERS;
-	}
-
-	@GetMapping("/orderDetails")
-	public String order_details(Model model) {
-		List<OrderDetail> detail = rep.getOrderDetails();
-		model.addAttribute("details", detail);
-
-		return Views.USER_ORDER_DETAILS;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
 	}
 
 	@GetMapping("/cancelOrder")
-	public String cancel_order(@RequestParam int id, Model model) {
-		String result = rep.cancelOrder(id);
+	public ResponseEntity<String> cancel_order(@RequestParam int requestId,
+			@RequestParam(required = false) Integer staffId, Model model) {
+		String result = rep.cancelOrder(requestId);
 		if (result.equals("success")) {
-			return "redirect:/user/orders";
+			if (staffId != null && staffId != 0) {
+				String result1 = rep.updateStaffStatusToAvailable(staffId);
+				if (result1.equals("success")) {
+					return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders")
+							.body("");
+
+				}
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
+			}
+			return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
 		}
-		model.addAttribute("error", "Cancel failed. Please try again.");
-		return Views.USER_ORDERS;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
 	}
 
-	// Service
-//	@PostMapping("/bookService")
-//	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
-//			@RequestParam Date startDate, @RequestParam double price) {
-//		try {
-//			Order order = new Order();
-//			order.setUsrId(userId);
-//			Date currentDate = new Date(System.currentTimeMillis());
-//			if (startDate.before(currentDate)) {
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
-//			}
+//	@GetMapping("/orderDetails")
+//	public String order_details(Model model) {
+//		List<OrderDetail> detail = rep.getOrderDetails();
+//		model.addAttribute("details", detail);
 //
-//			if (rep.isServiceInOrder(userId, serviceId)) {
-//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
-//			}
-//
-//			Calendar cal = Calendar.getInstance();
-//			cal.setTime(currentDate);
-//			cal.add(Calendar.YEAR, 5);
-//			java.util.Date dateLimit = cal.getTime();
-//
-//			if (startDate.after(dateLimit)) {
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//						.body("Start date cannot be more than 5 years from now.");
-//			}
-//			String result = rep.newOrder(order, serviceId, startDate, price);
-//
-//			if ("success".equals(result)) {
-//				return ResponseEntity.ok("Order created successfully.");
-//			} else {
-//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
-//		}
+//		return Views.USER_ORDER_DETAILS;
 //	}
+
+	// Service
+	@PostMapping("/bookService")
+	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
+			@RequestParam Date startDate, @RequestParam double price) {
+		try {
+
+			Date currentDate = new Date(System.currentTimeMillis());
+			if (startDate.before(currentDate)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
+			}
+
+			if (rep.isServiceInRequest(userId, serviceId)) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service is already booked.");
+			}
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(currentDate);
+			cal.add(Calendar.YEAR, 5);
+			java.util.Date dateLimit = cal.getTime();
+
+			if (startDate.after(dateLimit)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Start date cannot be more than 5 years from now.");
+			}
+
+			String result = rep.newRequestDetail(userId, serviceId, startDate, price);
+
+			if (result.equals("success")) {
+				return ResponseEntity.ok("Order created successfully.");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
+		}
+	}
 }

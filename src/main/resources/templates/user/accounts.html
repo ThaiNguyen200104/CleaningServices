@@ -72,12 +72,12 @@
 						</thead>
 						<tbody th:each="item: ${orderDetails}" th:if="${item != null}">
 							<tr>
-								<td th:text="${item.detailId}"></td>
+								<td th:text="${item.id}"></td>
 								<td th:text="${item.serName}"></td>
 								<td th:text="${item.price} + '$'"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.completeDate}" th:if="${item.orderStatus == 'completed'}"></td>
-								<td th:text="${item.orderStatus}"></td>
+								<td th:text="${item.completeDate}" th:if="${item.status == 'completed'}"></td>
+								<td th:text="${item.status}"></td>
 								<td>
 									<a th:href="@{/user/orderDetails(id=${item.id})}" class="btn btn-outline-info"
 										style="text-align: center; font-weight: 700;">See More
@@ -85,9 +85,10 @@
 								</td>
 							</tr>
 							<tr>
-								<a th:if="${item.size() > 5}" th:href="@{/user/orderDetails}" class="btn btn-outline-info"
-									style="text-align: center; font-weight: 700;">Browse More
-								</a>
+								<!--<a th:if="${item.size() > 5}" th:href="@{/user/orderDetails}"
+									class="btn btn-outline-info" style="text-align: center; font-weight: 700;">Browse
+									More
+								</a>-->
 							</tr>
 							<tr th:if="${item == null}">
 								<p colspan="6" style="text-align: center; font-weight: 700;">

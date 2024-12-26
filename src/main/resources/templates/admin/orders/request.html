@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+	<title>Cleanex - Orders Management</title>
+
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
+</head>
+
+<body>
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
+	<!-- ASIDE -->
+	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
+
+	<div class="overlay"></div>
+	<main class="main-wrapper">
+
+		<!-- HEADER -->
+		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+		<div class="mx-5 mt-5">
+			<div class="col-12">
+				<h2 class="mb-4">Schedule Request List</h2>
+				<div class="table-responsive border-1">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Request By</th>
+								<th>Type</th>
+								<th>Expected Start Date</th>
+								<th>New Date</th>
+								<th>Reason</th>
+								<th>Create Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${requests}">
+								<td th:text="${item.scrId}"></td>
+								<td th:text="${item.fullname}"></td>
+								<td th:text="${item.type}"></td>
+								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+								<td th:text="${#dates.format(item.date_adjust, 'dd-MM-yyyy')}"
+									th:if="${item.date_adjust != null}"></td>
+								<td th:if="${item.date_adjust == null}">None</td>
+								<td th:text="${item.reason}"></td>
+								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+								<td th:text="${item.scrStatus}"></td>
+								<td>
+									<a class="btn btn-info" onclick="Approve(event)"
+										th:if="${item.type == 'adjustDate'}"
+										th:attr="scrId=${item.scrId}, scheId=${item.schedule_id},
+										 newDate=${#dates.format(item.date_adjust, 'yyyy-MM-dd')}, type=${item.type}">Approve</a>
+									<a class="btn btn-info" th:if="${item.type == 'cancel'}"
+										th:href="@{/admin/request/staffForReplace(scrId=${item.scrId}, oldStaff=${item.oldStaff})}">Approve</a>
+									<a class="btn btn-danger" onclick="DenyRequest(event)"
+										th:attr="scrId=${item.scrId}">Deny</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
+
+	<script>
+		function Approve(event) {
+			var item = event.target;
+			var scheduleId = item.getAttribute("scheId");
+			var newDate = item.getAttribute("newDate");
+			var type = item.getAttribute("type");
+			var scrId = item.getAttribute("scrId");
+
+			if (confirm("Are you sure you want to approve this request!")) {
+				const formData = new FormData();
+				formData.append('scheduleId', scheduleId);
+				formData.append('newDate', newDate);
+				formData.append('scrId', scrId);
+
+				fetch('/admin/orders/request/approveDate', {
+					method: 'POST',
+					body: formData
+				})
+					.then(response => {
+						if (response.redirected) {
+							window.location.href = response.url;
+							return;
+						}
+
+						if (!response.ok) {
+							return response.text().then(text => {
+								throw new Error(text || 'Request failed');
+							});
+						}
+						return response.text();
+					})
+					.then(data => {
+						if (data) {
+							alert(data);
+						} else {
+							alert("Request approved successfully.");
+						}
+						location.reload();
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						alert("An error occurred while processing the request: " + error.message);
+					});
+			}
+		}
+
+		function DenyRequest(event) {
+			var item = event.target;
+			var scrId = item.getAttribute("scrId");
+
+			if (confirm("Are you sure you want to deny this request!")) {
+				fetch(`/admin/orders/request/denyRequest?scrId=${scrId}`, {
+					method: 'POST'
+				}).then(response => {
+					if (response.redirected) {
+						window.location.href = response.url;
+					} else {
+						return response.text();
+					}
+				}).then(data => {
+					if (data) {
+						alert("Failed to cancel the request.");
+					}
+				}).catch(error => {
+					console.error('Error:', error);
+					alert("An error occurred while canceling the order.");
+				});
+			}
+		}
+	</script>
+</body>
+
+</html>
