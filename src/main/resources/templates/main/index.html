@@ -105,21 +105,27 @@
 								<a th:href="@{/}" class="nav-item nav-link active">Home</a>
 								<a th:href="@{/service}" class="nav-item nav-link">Service</a>
 								<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
-								<a th:href="@{/about}" class="nav-item nav-link">About</a>
-								<a th:href="@{/contact}" class="nav-item nav-link">Contact</a>
-
+								<div class="nav-item dropdown">
+									<a href="#menu2" class="nav-link dropdown-toggle" data-toggle="dropdown">More</a>
+									<div class="dropdown-menu">
+										<a th:href="@{/about}" class="dropdown-item">About Us</a>
+										<a th:href="@{/contact}" class="dropdown-item">Contact Us</a>
+									</div>
+								</div>
 								<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
 									Login
 								</a>
-								<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link">
-									Order
-								</a>
-								<a th:if="${session.usrId != null}" th:href="@{/user/accounts}"
-									class="nav-item nav-link">Your Account
-								</a>
-								<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
-									Logout
-								</a>
+								<div class="nav-item dropdown" th:if="${session.usrId != null}">
+									<a href="#menu1" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
+									<div class="dropdown-menu">
+										<a th:href="@{/user/accounts}" class="dropdown-item">Your Account
+										</a>
+										<a th:href="@{/user/orders}" class="dropdown-item">Orders
+										</a>
+										<a th:href="@{/user/logout}" class="dropdown-item">Logout
+										</a>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -183,7 +189,10 @@
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row">
+				<div th:if="${#lists.isEmpty(services)}" class="text-center mt-5">
+					<p>There are currently no services available.</p>
+				</div>
+				<div th:if="${!#lists.isEmpty(services)}" class="row">
 					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
 						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
@@ -197,9 +206,6 @@
 								onclick="showBookingPopup(event)"
 								th:attr="serId=${item.id}, userId=${session.usrId}, serPrice=${item.basePrice}">Book
 								Now</a>
-						</div>
-						<div th:unless="${item != null}">
-							<p>We are re-organizing our services to better meet your house cleaning demands.</p>
 						</div>
 					</div>
 				</div>
@@ -366,8 +372,7 @@
 								<div id="collapseOne" class="collapse show" data-parent="#accordion">
 									<div class="card-body">
 										We provide services across the city and its surrounding suburbs. Contact us
-										to
-										see if we cover your location.
+										to see if we cover your location.
 									</div>
 								</div>
 							</div>
@@ -380,8 +385,7 @@
 								<div id="collapseTwo" class="collapse" data-parent="#accordion">
 									<div class="card-body">
 										Yes, we prioritize the use of eco-friendly and non-toxic products to ensure
-										the
-										safety of our clients and the environment.
+										the safety of our clients and the environment.
 									</div>
 								</div>
 							</div>
@@ -394,13 +398,11 @@
 								<div id="collapseThree" class="collapse" data-parent="#accordion">
 									<div class="card-body">
 										You can book a service by calling us, visiting our website, or filling out
-										the
-										form online. We offer flexible scheduling to suit your needs.
+										the form online. We offer flexible scheduling to suit your needs.
 									</div>
 								</div>
 							</div>
 						</div>
-						<a class="btn" href="">Ask more</a>
 					</div>
 				</div>
 			</div>

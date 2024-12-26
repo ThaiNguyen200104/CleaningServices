@@ -28,23 +28,30 @@
 								th:classappend="${currentPage == 'service' ? 'active' : ''}">Service</a>
 							<a th:href="@{/blog}" class="nav-item nav-link"
 								th:classappend="${currentPage == 'blog' ? 'active' : ''}">Blog</a>
-							<a th:href="@{/about}" class="nav-item nav-link"
-								th:classappend="${currentPage == 'about' ? 'active' : ''}">About</a>
-							<a th:href="@{/contact}" class="nav-item nav-link"
-								th:classappend="${currentPage == 'contact' ? 'active' : ''}">Contact</a>
-
+							<div class="nav-item dropdown">
+								<a href="#menu2" class="nav-link dropdown-toggle" data-toggle="dropdown">More</a>
+								<div class="dropdown-menu">
+									<a th:href="@{/about}" th:classappend="${currentPage == 'about' ? 'active' : ''}"
+										class="dropdown-item">About Us
+									</a>
+									<a th:href="@{/contact}"
+										th:classappend="${currentPage == 'contact' ? 'active' : ''}"
+										class="dropdown-item">Contact Us
+									</a>
+								</div>
+							</div>
 							<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
 								Login
 							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/orders}" class="nav-item nav-link">
-								Order
-							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/accounts}" class="nav-item nav-link">
-								Your Account
-							</a>
-							<a th:if="${session.usrId != null}" th:href="@{/user/logout}" class="nav-item nav-link">
-								Logout
-							</a>
+							<div class="nav-item dropdown" th:if="${session.usrId != null}">
+								<a href="#menu1" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
+								<div class="dropdown-menu">
+									<a th:href="@{/user/accounts}" class="dropdown-item">Your Account</a>
+									<a th:href="@{/user/orders}" class="dropdown-item">Orders</a>
+									<a th:href="@{/user/logout}" class="dropdown-item">Logout</a>
+								</div>
+							</div>
+
 						</div>
 					</div>
 				</div>

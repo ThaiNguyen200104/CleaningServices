@@ -61,8 +61,9 @@ public class Views {
 	public static String USER_FORGOT_PASSWORD = "user/forgot_password";
 	public static String USER_VALIDATE = "user/validate_otp";
 	public static String USER_CHANGE_PASSWORD = "user/change_password";
-	public static String USER_ORDER_DETAILS = "user/order_details";
 	public static String USER_ORDERS = "user/orders";
+	public static String USER_SEE_MORE = "user/see_more";
+	public static String USER_BROWSE_MORE = "user/browse_more";
 
 	// -------------------- HOMEPAGE -------------------- //
 
@@ -83,7 +84,7 @@ public class Views {
 	public static String COL_ADMIN_EMAIL = "email";
 	public static String COL_ADMIN_CREATEDATE = "create_date";
 
-	// USER
+	// USERS
 	public static String TBL_USER = "users";
 	public static String COL_USER_ID = "id";
 	public static String COL_USER_FULLNAME = "fullname";

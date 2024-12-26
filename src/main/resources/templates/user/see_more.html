@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Confirm your Orders</title>
+	<title>Cleanex - Order Details</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,48 +29,40 @@
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="mx-2 my-5">
-			<div class="section-header mb-4">
-				<h2>Your Orders</h2>
-			</div>
-
-			<div th:if="${#lists.isEmpty(orders)}" class="text-center mt-5">
-				<p>You have not ordered any services.</p>
-			</div>
-
-			<div th:if="${!#lists.isEmpty(orders)}" class="mb-5 table-responsive">
-				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>Service Name</th>
-							<th>Price</th>
-							<th>Start Date</th>
-							<th>Status</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="item : ${orders}">
-							<td th:text="${item.id}"></td>
-							<td th:text="${item.serName}"></td>
-							<td th:text="${item.price} + '$'"></td>
-							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-							<td th:text="${item.status}"></td>
-							<td>
-								<a class="btn btn-success" onclick="confirmAction(event)"
-									th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
-									th:if="${item.status == 'reviewing'}">Confirm</a>
-								<a class="btn btn-danger" onclick="cancel(event)"
-									th:attr="requestId=${item.id}, staffId=${item.staffId}"
-									th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
-								<a class="btn btn-warning" th:href="@{/user/seeOrderDetail(id=${item.usrReqId})}"
-									th:if="${item.status == 'confirmed'}">See Details</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="account-container">
+			<div class="account-content">
+				<h2 th:text="${seeMore.serName}"></h2>
+				<div class="table-container">
+					<table class="booking-table">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Staffs</th>
+								<th>Price</th>
+								<th th:if="${seeMore[0].status != 'completed'}">Start Date</th>
+								<th th:if="${#lists.isEmpty(seeMore) or seeMore[0].status == 'completed'}">
+									Complete Date
+								</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${seeMore}">
+								<td th:text="${item.detailId}"></td>
+								<td>
+									<button type="button" data-bs-toggle="popover" title="Staffs Name"
+										class="btn btn-info" th:data-bs-content="${item.${item.staffs}}">
+										Staffs
+									</button>
+								</td>
+								<td th:text="${item.price + '$'"></td>
+								<td th:if="${item.status != 'completed'}" th:text="${item.startDate}"></td>
+								<td th:if="${item.status == 'completed'}" th:text="${item.completeDate}"></td>
+								<td th:text="${item.status}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -86,7 +78,6 @@
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
-	<script src="../front/js/userOrder.js"></script>
 </body>
 
 </html>

@@ -86,7 +86,10 @@
 					<p>Our Services</p>
 					<h2>Commit to Making Your Home Fresher</h2>
 				</div>
-				<div class="row">
+				<div th:if="${#lists.isEmpty(services)}" class="text-center mt-5">
+					<p>There are currently no services available.</p>
+				</div>
+				<div th:if="${!#lists.isEmpty(services)}" class="row">
 					<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}"
 						th:if="${item.status != 'disabled'}">
 						<div class="service-item">
@@ -101,9 +104,6 @@
 								th:attr="serId=${item.id}, userId=${session.usrId}">Book Now</a>
 						</div>
 					</div>
-					<p th:unless="${services != null}" class="col-12 mb-5">
-						We are re-organizing our services to better meet your house cleaning demands.
-					</p>
 				</div>
 			</div>
 		</div>
