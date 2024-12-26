@@ -6,27 +6,30 @@ public class UserRequestDetail {
 	private int id;
 	private int usrReqId;
 	private int userId;
+	private int staffId;
 	private int serId;
-	private String serName;
 	private double price;
 	private Date startDate;
 	private Date createDate;
 	private String status;
+	private String serName;
 
 	public UserRequestDetail() {
 	}
 
-	public UserRequestDetail(int id, int usrReqId, int userId, int serId, String serName, double price, Date startDate,
-			Date createDate, String status) {
+	public UserRequestDetail(int id, int usrReqId, int userId, int staffId, int serId, double price, Date startDate,
+			Date createDate, String status, String serName) {
+		super();
 		this.id = id;
 		this.usrReqId = usrReqId;
 		this.userId = userId;
+		this.staffId = staffId;
 		this.serId = serId;
-		this.serName = serName;
 		this.price = price;
 		this.startDate = startDate;
 		this.createDate = createDate;
 		this.status = status;
+		this.serName = serName;
 	}
 
 	public int getId() {
@@ -61,14 +64,6 @@ public class UserRequestDetail {
 		this.serId = serId;
 	}
 
-	public String getSerName() {
-		return serName;
-	}
-
-	public void setSerName(String serName) {
-		this.serName = serName;
-	}
-
 	public double getPrice() {
 		return price;
 	}
@@ -99,6 +94,22 @@ public class UserRequestDetail {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getSerName() {
+		return serName;
+	}
+
+	public void setSerName(String serName) {
+		this.serName = serName;
+	}
+
+	public int getStaffId() {
+		return staffId;
+	}
+
+	public void setStaffId(int staffId) {
+		this.staffId = staffId;
 	}
 
 }

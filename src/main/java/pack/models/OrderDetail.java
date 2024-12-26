@@ -6,27 +6,32 @@ public class OrderDetail {
 	private int id;
 	private int orderId;
 	private int serId;
-	private String detailCode;
 	private double price;
 	private Date startDate;
 	private Date completeDate;
 	private Date createDate;
 	private String status;
+	private String serName;
+	private String beforeImage;
+	private String afterImage;
 
 	public OrderDetail() {
 	}
 
-	public OrderDetail(int id, int orderId, int serId, String detailCode, double price, Date startDate,
-			Date completeDate, Date createDate, String status) {
+	public OrderDetail(int id, int orderId, int serId, double price, Date startDate, Date completeDate, Date createDate,
+			String status, String serName, String beforeImage, String afterImage) {
+		super();
 		this.id = id;
 		this.orderId = orderId;
 		this.serId = serId;
-		this.detailCode = detailCode;
 		this.price = price;
 		this.startDate = startDate;
 		this.completeDate = completeDate;
 		this.createDate = createDate;
 		this.status = status;
+		this.serName = serName;
+		this.beforeImage = beforeImage;
+		this.afterImage = afterImage;
 	}
 
 	public int getId() {
@@ -51,14 +56,6 @@ public class OrderDetail {
 
 	public void setSerId(int serId) {
 		this.serId = serId;
-	}
-
-	public String getDetailCode() {
-		return detailCode;
-	}
-
-	public void setDetailCode(String detailCode) {
-		this.detailCode = detailCode;
 	}
 
 	public double getPrice() {
@@ -99,6 +96,30 @@ public class OrderDetail {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getSerName() {
+		return serName;
+	}
+
+	public void setSerName(String serName) {
+		this.serName = serName;
+	}
+
+	public String getBeforeImage() {
+		return beforeImage;
+	}
+
+	public void setBeforeImage(String beforeImage) {
+		this.beforeImage = beforeImage;
+	}
+
+	public String getAfterImage() {
+		return afterImage;
+	}
+
+	public void setAfterImage(String afterImage) {
+		this.afterImage = afterImage;
 	}
 
 }

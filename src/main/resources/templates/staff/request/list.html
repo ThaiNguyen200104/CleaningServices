@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Orders Management</title>
+	<title>Cleanex - Request Management</title>
 
 	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../../back/css/lineicons.css" />
@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
 	<style>
-		#priceModal {
+		#bookingModal {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -85,34 +85,39 @@
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>SerName</th>
+								<th>Service Name</th>
+								<th>Request By</th>
 								<th>Price</th>
-								<th>Expected Start Date</th>
+								<th>Start Date</th>
+								<th>Create Date</th>
 								<th>Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item, iterStat: ${orders}">
+							<tr th:each="item : ${requests}">
 								<td th:text="${item.id}"></td>
-								<td th:text="${serviceNames[iterStat.index]}"></td>
-								<td th:text="${item.price}"></td>
-								<td th:text="${item.startDate}"></td>
+								<td th:text="${item.service_name}"></td>
+								<td th:text="${item.fullname}"></td>
+								<td th:text="${item.price + '$'}"></td>
+								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a class="btn btn-success" th:if="${item.status == 'pending'}"
-										href="javascript:void(0);" onclick="showPopup(event)"
-										th:attr="detailId=${item.id}">Adjust</a>
+									<a class="btn btn-info" onclick="showPopup(event)"
+										th:attr="urdId=${item.id}">Edit</a>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 				<!-- Popup Modal -->
-				<div id="priceModal" style="display: none;">
+				<div id="bookingModal" style="display: none;">
 					<div class="modal-content">
-						<h3>Adjust The Price</h3>
-						<input class="form-control my-4" type="text" id="price" required />
+						<h3>Edit Request</h3>
+						<input class="form-control my-4" type="text" pattern="^[0-9]*\.?[0-9]+$" id="price"
+							placeholder="Price" required />
+						<input class="form-control my-4" type="date" id="startDate" required />
 						<div class="d-flex justify-content-between">
 							<button class="btn btn-success" onclick="confirm()">Confirm</button>
 							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
@@ -135,63 +140,48 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<script>
-		let selectedDetailId = null;
-
+		var urdId = null;
 		function showPopup(event) {
 			var item = event.target
-			selectedDetailId = item.getAttribute("detailId");
-			document.getElementById("priceModal").style.display = "flex";
+			urdId = item.getAttribute("urdId");
+			document.getElementById("bookingModal").style.display = "flex";
 			document.body.classList.add("no-scroll");
 		}
 
 		function closePopup() {
-			document.getElementById("priceModal").style.display = "none";
+			document.getElementById("bookingModal").style.display = "none";
 			document.body.classList.remove("no-scroll");
 		}
 
 		function confirm() {
-			const priceInput = document.getElementById("price");
-			const newPrice = priceInput.value;
-			const priceRegex = /^[0-9]*\.?[0-9]+$/;
+			const date = document.getElementById("startDate").value;
+			const price = document.getElementById("price").value;
 
-			if (!priceRegex.test(newPrice)) {
-				showNotification("Please input a valid price (numeric value).", "error");
-				priceInput.focus();
+			if (!date || !price) {
+				alert("Please fill all required fields.");
 				return;
 			}
-
-			if (!newPrice) {
-				alert("Please input a price.");
-				return;
-			}
-
-			console.log("Detail ID: ", selectedDetailId);
-			console.log("New Price: ", newPrice);
 
 			$.ajax({
-				url: '/staff/orders/priceAdjust',
-				type: 'GET',
+				url: '/staff/request/edit',
+				type: 'POST',
 				data: {
-					detailId: selectedDetailId,
-					price: newPrice
+					urdId: urdId,
+					price: price,
+					startDate: date
 				},
 				success: function (response, textStatus, xhr) {
 					if (xhr.status === 200) {
-						let row = $('a[detailId="' + selectedDetailId + '"]').closest("tr");
-						row.find("td:nth-child(3)").text(newPrice);
 						showNotification(response, "success");
 						closePopup();
+						location.reload();
 					} else {
-						showNotification("Failed to implement action: " + response, "error");
+						showNotification(response, "error");
 					}
 				},
 				error: function (xhr) {
-					if (xhr.status === 409) {
-						showNotification("Please try again later.", "warning");
-					} else {
-						console.error('Error:', xhr.responseText);
-						showNotification("Error: " + xhr.responseText, "error");
-					}
+					console.error('Error:', xhr.responseText);
+					showNotification("Error: " + xhr.responseText, "error");
 				}
 			});
 		}

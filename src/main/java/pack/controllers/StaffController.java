@@ -1,10 +1,14 @@
 package pack.controllers;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +16,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.OrderDetail;
 import pack.models.Staff;
 import pack.repositories.StaffRepository;
 import pack.services.OtpService;
+import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RequestMapping("/staff")
 @Controller
@@ -131,46 +139,110 @@ public class StaffController {
 		return "redirect:/staff/accounts";
 	}
 
-	// ORDERS
+	// REQUEST
+	@GetMapping("/request/list")
+	public String getRequestlist(HttpServletRequest request, Model model) {
+		model.addAttribute("requests", rep.getStaffAssginedRequest((int) request.getSession().getAttribute("staffId")));
+		return Views.STAFF_REQUEST_LIST;
+	}
 
-	@GetMapping("/orders/list")
-	public String pendingOrder(Model model, HttpServletRequest request) {
-		List<OrderDetail> orders = rep.pendingOrderList();
+	@PostMapping("/request/edit")
+	public ResponseEntity<String> editRequest(@RequestParam int urdId, @RequestParam double price,
+			@RequestParam Date startDate) {
+		try {
+			String result = rep.editRequest(price, startDate, urdId);
+			if ("success".equals(result)) {
+				return ResponseEntity.ok("Succeed.");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to edit request.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed.");
+		}
+	}
 
-		// Sử dụng stream API để lấy danh sách serviceName
-		List<String> serviceNames = orders.stream().map(order -> rep.getServiceNameByDetailId(order.getId()))
-				.collect(Collectors.toList());
-		Staff st = rep.findStaffById((int) request.getSession().getAttribute("staffId"));
-		model.addAttribute("staff", st);
-		model.addAttribute("orders", rep.pendingOrderList());
-		model.addAttribute("serviceNames", serviceNames);
+	// ORDER
+	@GetMapping("/order/list")
+	public String getOrderOfStaff(Model model, HttpServletRequest request) {
+		int staffId = (int) request.getSession().getAttribute("staffId");
+		List<Map<String, Object>> orders = rep.getAssignedOrders(staffId);
+
+		for (Map<String, Object> order : orders) {
+			int scheId = (int) order.get("scheId");
+
+			boolean hasAdjustDateRequest = rep.hasScheduleRequestByType(scheId, "adjustDate");
+			boolean hasCancelRequest = rep.hasScheduleRequestByType(scheId, "cancel");
+
+			order.put("showReschedule", !hasAdjustDateRequest);
+			order.put("showCancel", !hasCancelRequest);
+		}
+
+		model.addAttribute("orders", orders);
 		return Views.STAFF_ORDER_LIST;
 	}
 
-	@GetMapping("/orders/priceAdjust")
-	public ResponseEntity<String> priceDeal(@RequestParam String price, @RequestParam int detailId) {
+	@PostMapping("/order/reschedule")
+	public ResponseEntity<String> newDate(@RequestParam int scheId, @RequestParam Date date,
+			@RequestParam String reason) {
 		try {
-			if (!price.matches("^[0-9]*\\.?[0-9]+$")) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body("Invalid price format. Please enter a valid number.");
+			String result = rep.AdjustDate(scheId, date, reason);
+
+			Date currentDate = new Date(System.currentTimeMillis());
+			if (date.before(currentDate)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
 			}
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(currentDate);
+			cal.add(Calendar.YEAR, 2);
+			java.util.Date dateLimit = cal.getTime();
 
-			double validPrice = Double.parseDouble(price);
-
-			OrderDetail detail = new OrderDetail();
-			detail.setId(detailId);
-			detail.setPrice(validPrice);
-
-			String result = rep.priceAdjust(detail);
+			if (date.after(dateLimit)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Start date cannot be more than 2 years from now.");
+			}
 
 			if (result.equals("success")) {
 				return ResponseEntity.ok("Succeed");
 			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Action failed.");
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to implement action.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to adjust the price.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed.");
+		}
+	}
+
+	@PostMapping("/order/cancel")
+	public ResponseEntity<String> cancelSchedule(@RequestParam int scheId, @RequestParam String reason) {
+		try {
+			String result = rep.cancelOrder(scheId, reason);
+			if (result.equals("success")) {
+				return ResponseEntity.ok("Succeed");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to implement action.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed.");
+		}
+	}
+
+	@PostMapping("/order/completeOrder")
+	public ResponseEntity<String> completeOrder(@RequestParam int detailId, @RequestParam MultipartFile before,
+			@RequestParam MultipartFile after) {
+		try {
+			String beforeImg = FileUtility.uploadFileImage(before, "upload");
+			String afterImg = FileUtility.uploadFileImage(after, "upload");
+			String result = rep.completeOrder(detailId, beforeImg, afterImg);
+			if (result.equals("success")) {
+				return ResponseEntity.ok("Succeed");
+			} else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to implement action.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed.");
 		}
 	}
 

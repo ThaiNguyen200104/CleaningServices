@@ -29,35 +29,28 @@
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 		<div class="mx-5 mt-5">
 			<div class="col-12">
-				<h2 class="mb-4">Order List</h2>
+				<h2 class="mb-4">Staff list</h2>
+				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<div class="table-responsive border-1">
 					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Order By</th>
-								<th>Price</th>
-								<th>Expected Start Date</th>
-								<th>Staff required</th>
-								<th>Status</th>
+								<th>Name</th>
+								<th>Start Date</th>
+								<th>Job Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item : ${orders}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.fullname}"></td>
-								<td th:text="${item.price + '$'}"></td>
-								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.staff_required}"></td>
-								<td th:text="${item.status}"></td>
+							<tr th:each="staff : ${staffs}">
+								<td th:text="${staff.id}"></td>
+								<td th:text="${staff.fullname}"></td>
+								<td th:text="${staff.jobOccupied}"></td>
+								<td th:text="${staff.status}"></td>
 								<td>
-									<a class="btn btn-success assign" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
-										th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign Staff</a>
-									<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
-										class="btn btn-warning replace" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
-										Replace Staff
-									</a>
+									<button class="btn btn-primary" type="button" onclick="AssignStaff(event)"
+										th:attr="staffid=${staff.id}, urdId=${urdId}">Assign</button>
 								</td>
 							</tr>
 						</tbody>
@@ -76,6 +69,33 @@
 	<script src="../../back/js/world-merc.js"></script>
 	<script src="../../back/js/polyfill.js"></script>
 	<script src="../../back/js/main.js"></script>
+
+	<script>
+		function AssignStaff(event) {
+			var item = event.target;
+			var staffId = item.getAttribute("staffid");
+			var urdId = item.getAttribute("urdId");
+			const formData = new FormData();
+			formData.append('urdId', urdId);
+			formData.append('staffId', staffId);
+			fetch('/admin/request/Assign', {
+				method: 'POST',
+				body: formData
+			}).then(response => {
+				if (response.redirected) {
+					window.location.href = response.url;
+				} else {
+					return response.text();
+				}
+			}).then(data => {
+				if (data) {
+					alert("Failed to implement action, please try again later.");
+				}
+			}).catch(error => {
+				console.log(error);
+			});
+		}
+	</script>
 </body>
 
 </html>

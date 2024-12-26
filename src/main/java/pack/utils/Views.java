@@ -34,6 +34,11 @@ public class Views {
 	public static String ADMIN_ORDERS_ASSIGN_STAFF = "admin/orders/assign_staff";
 	public static String ADMIN_ORDERS_REPLACE_STAFF = "admin/orders/replaceStaff";
 	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/staffForReplace";
+	public static String ADMIN_REQUESTS_STAFF_FOR_REPLACE = "admin/orders/staffForCancelRequest";
+	
+	// ADMMIN/USER_REQUEST
+	public static String ADMIN_REQUEST_LIST = "admin/urd/list";
+	public static String ADMIN_REQUEST_ASSIGN = "admin/urd/assign";
 
 	// -------------------- STAFF -------------------- //
 
@@ -43,7 +48,8 @@ public class Views {
 	public static String STAFF_ACCOUNTS = "staff/accounts";
 	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
 	public static String STAFF_VALIDATE = "staff/validate_otp";
-	public static String STAFF_ORDER_LIST = "staff/orders/order_list";
+	public static String STAFF_REQUEST_LIST = "staff/request/list";
+	public static String STAFF_ORDER_LIST = "staff/order/list";
 
 	// -------------------- USER -------------------- //
 
@@ -134,10 +140,11 @@ public class Views {
 
 	// USER_REQUEST_DETAILS
 	public static String TBL_USER_REQUEST_DETAILS = "user_request_details";
+	public static String COL_URD_ID = "id";
 	public static String COL_URD_USRID = "user_id";
+	public static String COL_URD_STAFFID = "staff_id";
 	public static String COL_URD_SERID = "service_id";
 	public static String COL_URD_USRREQID = "usrReq_id";
-	public static String COL_URD_SERNAME = "service_name";
 	public static String COL_URD_PRICE = "price";
 	public static String COL_URD_STARTDATE = "start_date";
 	public static String COL_URD_CREATEDATE = "create_date";

@@ -6,59 +6,69 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Orders Management</title>
+	<title>Cleanex - Staff Management</title>
 
 	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../../back/css/lineicons.css" />
 	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
+
+	<style>
+		.table thead tr th,
+		.table tbody tr td {
+			text-align: center !important;
+		}
+	</style>
 </head>
 
 <body>
 	<div id="preloader">
 		<div class="spinner"></div>
 	</div>
+
 	<!-- ASIDE -->
-	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
+	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
 	<div class="overlay"></div>
 	<main class="main-wrapper">
 
 		<!-- HEADER -->
-		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
+		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
+
 		<div class="mx-5 mt-5">
-			<div class="col-12">
-				<h2 class="mb-4">Order List</h2>
-				<div class="table-responsive border-1">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Price</th>
-								<th>Expected Start Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${orders}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.price}"></td>
-								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.status}"></td>
-								<td>
-									<a class="btn btn-success activate" th:href="@{/staff/orders/confirmOrder(id=${item.id})}"
-										th:if="${item.status == 'pending'}">Confirm</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+			<div class="d-flex">
+				<h2 class="flex-grow-1">Staff replacement list</h2>
+			</div>
+			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
+			<div class="table-responsive mt-4">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Username</th>
+							<th>Fullname</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${staffs}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.username}"></td>
+							<td th:text="${item.fullname}"></td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a class="btn btn-success"
+									th:href="@{/admin/orders/request/replaceStaff(scrId=${scrId}, staffId=${item.id}, oldStaff=${oldStaff})}">Select</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</main>
-
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
 	<script src="../../back/js/dynamic-pie-chart.js"></script>
@@ -68,6 +78,7 @@
 	<script src="../../back/js/world-merc.js"></script>
 	<script src="../../back/js/polyfill.js"></script>
 	<script src="../../back/js/main.js"></script>
+
 </body>
 
 </html>
