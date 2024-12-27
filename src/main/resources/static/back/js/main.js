@@ -67,8 +67,18 @@ setTimeout(function() {
 	document.querySelector('.error-message').innerText = '';
 }, 6000);
 
-// Hàm cập nhật đếm ký tự
+// Count messages_length
 document.getElementById('description').addEventListener('input', function() {
 	const messageLength = this.value.length;
 	document.getElementById('charCount').innerText = `${messageLength}/255`;
 });
+
+// Smart UI for Blogs
+document.querySelector('smart-editor').toolbarViewMode = 'multiRow';
+document.querySelector('smart-editor').toolbarItems = ['bold', 'italic', 'Underline', 
+'StrikeThrough', 'hyperlink', 'removeLink', 'copy', 'cut', 'paste', 'alignment', 'table', 
+'image', 'sourcecode', 'formats', 'splitmode', 'undo', 'redo', 'OrderedList', 'UnorderedList', 
+'superscript', 'subscript'];
+
+
+

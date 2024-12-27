@@ -53,9 +53,18 @@ public class HomeController {
 
 	@GetMapping("/blog")
 	public String blog(Model model) {
+		model.addAttribute("blogs", rep.getBlogs());
 		model.addAttribute("currentPage", "blog");
 
 		return Views.MAIN_BLOG;
+	}
+
+	@GetMapping("/blogDetail")
+	public String blog_detail(Model model, @RequestParam int id) {
+		model.addAttribute("blogs", rep.getBlogById(id));
+		model.addAttribute("currentPage", "blog");
+
+		return Views.MAIN_BLOG_DETAIL;
 	}
 
 	@GetMapping("/about")

@@ -3,6 +3,7 @@ package pack.controllers;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
-import pack.models.OrderDetail;
+import pack.models.PageView;
 import pack.models.User;
-import pack.models.UserRequestDetail;
 import pack.repositories.UserRepository;
 import pack.services.OtpService;
 import pack.utils.FileUtility;
@@ -117,6 +116,43 @@ public class UserController {
 		return Views.USER_ACCOUNTS;
 	}
 
+	// Thái
+//	@GetMapping("/accounts")
+//	public String accounts(HttpServletRequest req, Model model) {
+//		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
+//		model.addAttribute("orders", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
+//		model.addAttribute("browseMore", rep.countOrdersToBrowseMore((int) req.getSession().getAttribute("usrId")));
+//
+//		model.addAttribute("currentPage", "accounts");
+//
+//		return Views.USER_ACCOUNTS;
+//	}
+
+	@GetMapping("/seeMore")
+	public String seeMore(@RequestParam("id") int orderId, Model model) {
+		List<Map<String, Object>> details = rep.getSeeMoreOrderDetails(orderId);
+		model.addAttribute("seeMore", details);
+
+		if (details.isEmpty()) {
+			model.addAttribute("error", "Something went wrong. Please try again later.");
+			return "redirect:/user/accounts";
+		}
+		return Views.USER_SEE_MORE;
+	}
+
+	@GetMapping("/browseMore")
+	public String browse_more(HttpServletRequest req, Model model,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("browseMore", rep.getAllOrdersHistory(pv, (int) req.getSession().getAttribute("usrId")));
+
+		return Views.USER_BROWSE_MORE;
+	}
+
 	@GetMapping("/editProfile")
 	public String edit_profile(Model model, HttpServletRequest req) {
 		User user = rep.findUserById((int) req.getSession().getAttribute("usrId"));
@@ -129,7 +165,6 @@ public class UserController {
 			Model model, RedirectAttributes ra, HttpServletRequest req) {
 		try {
 			User oldUserInfo = rep.findUserById((int) req.getSession().getAttribute("usrId"));
-
 			if (user.getPassword() != null && !user.getPassword().equals(user.getConfirmPassword())) {
 				model.addAttribute("error", "Password and Confirm Password are not match.");
 				return Views.USER_EDIT_PROFILE;
@@ -213,7 +248,9 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orderDetails", rep.getOrderDetails((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("currentPage", "orders");
+
 		return Views.USER_ORDERS;
 	}
 
@@ -232,6 +269,17 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
 	}
 
+	// Thái
+//	@GetMapping("/confirmOrder")
+//	public String confirmOrder(@RequestParam int detailId, Model model) {
+//		String confirm = rep.confirmOrder(detailId);
+//		if (confirm.equals("success")) {
+//			return "redirect:/user/orders";
+//		}
+//		model.addAttribute("error", "Confirm failed due to some errors");
+//		return Views.USER_ORDERS;
+//	}
+
 	@GetMapping("/cancelOrder")
 	public ResponseEntity<String> cancel_order(@RequestParam int requestId,
 			@RequestParam(required = false) Integer staffId, Model model) {
@@ -242,7 +290,6 @@ public class UserController {
 				if (result1.equals("success")) {
 					return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders")
 							.body("");
-
 				}
 				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
 			}
@@ -250,6 +297,17 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
 	}
+	
+	// Thái
+//	@GetMapping("/cancelOrder")
+//	public String cancel_order(@RequestParam int id, Model model) {
+//		String cancel = rep.cancelOrder(id);
+//		if (cancel.equals("success")) {
+//			return "redirect:/user/orders";
+//		}
+//		model.addAttribute("error", "Cancel failed. Please try again.");
+//		return Views.USER_ORDERS;
+//	}
 
 //	@GetMapping("/orderDetails")
 //	public String order_details(Model model) {
@@ -264,7 +322,6 @@ public class UserController {
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate, @RequestParam double price) {
 		try {
-
 			Date currentDate = new Date(System.currentTimeMillis());
 			if (startDate.before(currentDate)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
@@ -278,14 +335,12 @@ public class UserController {
 			cal.setTime(currentDate);
 			cal.add(Calendar.YEAR, 5);
 			java.util.Date dateLimit = cal.getTime();
-
 			if (startDate.after(dateLimit)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body("Start date cannot be more than 5 years from now.");
 			}
 
 			String result = rep.newRequestDetail(userId, serviceId, startDate, price);
-
 			if (result.equals("success")) {
 				return ResponseEntity.ok("Order created successfully.");
 			} else {

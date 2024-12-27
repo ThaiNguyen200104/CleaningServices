@@ -72,6 +72,7 @@ public class Views {
 	public static String MAIN_SERVICES = "main/service";
 	public static String MAIN_ABOUT = "main/about";
 	public static String MAIN_BLOG = "main/blog";
+	public static String MAIN_BLOG_DETAIL = "main/blog_detail";
 	public static String MAIN_CONTACT = "main/contact";
 
 	// -------------------- DATABASE -------------------- //

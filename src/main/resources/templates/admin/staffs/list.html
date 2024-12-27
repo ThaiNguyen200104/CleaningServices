@@ -48,7 +48,7 @@
 						<tr>
 							<th>No.</th>
 							<th>Username</th>
-							<th class="hide-sm">Status</th>
+							<th>Status</th>
 							<th>Job Occupied</th>
 							<th>Actions</th>
 						</tr>
@@ -57,12 +57,12 @@
 						<tr th:each="item : ${staffs}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.username}"></td>
-							<td class="hide-sm" th:text="${item.status}"></td>
+							<td th:text="${item.status}"></td>
 							<td th:text="${item.jobOccupied}"></td>
 							<td>
-								<a class="btn btn-warning"
+								<a class="btn btn-warning disable"
 									th:if="${item.status != 'disabled' && item.status != 'unavailable'}"
-									th:attr="id=${item.id}" onclick="Deactivate(event)">Disabled</a>
+									th:attr="id=${item.id}" onclick="Deactivate(event)">Disable</a>
 							</td>
 						</tr>
 					</tbody>
@@ -70,6 +70,7 @@
 			</div>
 		</div>
 	</main>
+
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>
