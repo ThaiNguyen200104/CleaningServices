@@ -60,27 +60,30 @@
 			<div class="account-content">
 				<h2 class="mb-4">Orders History</h2>
 
-				<div th:if="${#lists.isEmpty(orders)}" class="text-center mt-5">
+				<div th:if="${#lists.isEmpty(orderDetails)}" class="text-center mt-5">
 					<p>You have not booked any services.</p>
 				</div>
 
-				<div th:if="${!#lists.isEmpty(orders)}" class="table-container">
+				<div th:if="${!#lists.isEmpty(orderDetails)}" class="table-container">
 					<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 					<table class="booking-table">
 						<thead>
 							<tr>
 								<th>No.</th>
 								<th>Service Name</th>
-								<th>Start Date</th>
+								<th>Price</th>
+								<th>Expected Start Date</th>
 								<th>Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="item: ${orders}">
-								<td th:text="${item.orderId}"></td>
+							<tr th:each="item: ${orderDetails}">
+								<td th:text="${item.id}"></td>
 								<td th:text="${item.serName}"></td>
-								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+								<td th:text="${item.price} + '$'"></td>
+								<td th:text="${item.startDate}"></td>
+								<td th:text="${item.completeDate}" th:if="${item.status == 'completed'}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
 									<a th:href="@{/user/seeMore(id=${item.orderId})}" class="btn btn-outline-info">

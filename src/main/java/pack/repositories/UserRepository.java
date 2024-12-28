@@ -142,20 +142,6 @@ public class UserRepository {
 
 	// -------------------- ORDERS -------------------- //
 
-	public boolean countOrdersToBrowseMore(int userId) {
-		try {
-			// Đếm số lượng order_details theo user_id
-			String countQuery = "SELECT COUNT(*) FROM order_details od JOIN orders o ON od.order_id = o.id "
-					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
-			int count = db.queryForObject(countQuery, Integer.class, new Object[] { userId });
-
-			return count > 4;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	public List<Map<String, Object>> getOrdersHistory(int userId) {
 		try {
 			String str_query = "SELECT o.id AS orderId, od.start_date AS startDate, od.status, s.service_name AS serName "

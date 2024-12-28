@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
+import pack.models.OrderDetail;
 import pack.models.PageView;
 import pack.models.User;
 import pack.repositories.UserRepository;
@@ -107,24 +108,12 @@ public class UserController {
 
 	// -------------------- ACCOUNTS -------------------- //
 
-//	@GetMapping("/accounts")
-//	public String accounts(HttpServletRequest req, Model model) {
-//		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-//		model.addAttribute("orderDetails", rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId")));
-//		model.addAttribute("currentPage", "accounts");
-//
-//		return Views.USER_ACCOUNTS;
-//	}
-
-	// Thái
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		model.addAttribute("orders", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
-		model.addAttribute("browseMore", rep.countOrdersToBrowseMore((int) req.getSession().getAttribute("usrId")));
-
-		model.addAttribute("currentPage", "accounts");
-
+		List<OrderDetail> orderDetail = rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId"));
+		model.addAttribute("orderDetails", orderDetail);
+		model.addAttribute("browseMore", orderDetail.size() > 4);
 		return Views.USER_ACCOUNTS;
 	}
 
@@ -248,9 +237,7 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orderDetails", rep.getOrderDetails((int) request.getSession().getAttribute("usrId")));
-		model.addAttribute("currentPage", "orders");
-
+		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
@@ -269,17 +256,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
 	}
 
-	// Thái
-//	@GetMapping("/confirmOrder")
-//	public String confirmOrder(@RequestParam int detailId, Model model) {
-//		String confirm = rep.confirmOrder(detailId);
-//		if (confirm.equals("success")) {
-//			return "redirect:/user/orders";
-//		}
-//		model.addAttribute("error", "Confirm failed due to some errors");
-//		return Views.USER_ORDERS;
-//	}
-
 	@GetMapping("/cancelOrder")
 	public ResponseEntity<String> cancel_order(@RequestParam int requestId,
 			@RequestParam(required = false) Integer staffId, Model model) {
@@ -297,25 +273,6 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
 	}
-	
-	// Thái
-//	@GetMapping("/cancelOrder")
-//	public String cancel_order(@RequestParam int id, Model model) {
-//		String cancel = rep.cancelOrder(id);
-//		if (cancel.equals("success")) {
-//			return "redirect:/user/orders";
-//		}
-//		model.addAttribute("error", "Cancel failed. Please try again.");
-//		return Views.USER_ORDERS;
-//	}
-
-//	@GetMapping("/orderDetails")
-//	public String order_details(Model model) {
-//		List<OrderDetail> detail = rep.getOrderDetails();
-//		model.addAttribute("details", detail);
-//
-//		return Views.USER_ORDER_DETAILS;
-//	}
 
 	// Service
 	@PostMapping("/bookService")

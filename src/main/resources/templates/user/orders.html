@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Your Orders</title>
+	<title>Cleanex - Confirm your Orders</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -30,46 +30,10 @@
 
 	<div class="wrapper">
 		<div class="mx-2 my-5">
-			<div class="section-header mb-5">
-				<h2>Your Orders</h2>
-			</div>
-
-			<div th:if="${#lists.isEmpty(orderDetails)}" class="section-header mb-5">
-				<p>You have not ordered any services.</p>
-			</div>
-
-			<div th:if="${!#lists.isEmpty(orderDetails)}" class="mb-5 table-responsive">
+			<h1 class="mb-4">Confirm your Orders</h1>
+			<div class="mb-5 table-responsive">
 				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
-				<table class="booking-table">
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>Service Name</th>
-							<th>Base Price</th>
-							<th>Start Date</th>
-							<th>Status</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="item : ${orderDetails}" th:if="${item.status != 'canceled'}">
-							<td th:text="${item.orderId}"></td>
-							<td th:text="${item.serName}"></td>
-							<td th:text="${item.price} + '$'"></td>
-							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-							<td th:text="${item.status}"></td>
-							<td>
-								<a class="btn btn-success" th:href="@{/user/confirmOrder(detailId=${item.detailId})}"
-									th:if="${item.status == 'pending'}">Confirm</a>
-								<a class="btn btn-danger" th:href="@{/user/cancelOrder(id=${item.detailId})}"
-									th:if="${item.status == 'pending'}">Cancel</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<!-- HIẾU -->
-				<!--<table class="table table-hover">
+				<table class="table table-hover">
 					<thead>
 						<tr>
 							<th>No.</th>
@@ -99,7 +63,7 @@
 							</td>
 						</tr>
 					</tbody>
-				</table>-->
+				</table>
 			</div>
 		</div>
 	</div>
@@ -118,4 +82,4 @@
 	<script src="../front/js/userOrder.js"></script>
 </body>
 
-</html>>
+</html>
