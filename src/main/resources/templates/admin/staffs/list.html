@@ -60,9 +60,11 @@
 							<td th:text="${item.status}"></td>
 							<td th:text="${item.jobOccupied}"></td>
 							<td>
-								<a class="btn btn-warning disable"
+								<a class="btn btn-warning changeSize"
 									th:if="${item.status != 'disabled' && item.status != 'unavailable'}"
-									th:attr="id=${item.id}" onclick="Deactivate(event)">Disable</a>
+									th:attr="id=${item.id}" onclick="Deactivate(event)">Disable
+								</a>
+									
 							</td>
 						</tr>
 					</tbody>

@@ -6485,7 +6485,8 @@ h6, .h6 {
 	animation: spinner 0.9s linear infinite;
 }
 
-@keyframes spinner {from { -webkit-transform:rotate(0deg);
+@
+keyframes spinner {from { -webkit-transform:rotate(0deg);
 	-moz-transform: rotate(0deg);
 	-ms-transform: rotate(0deg);
 	-o-transform: rotate(0deg);
@@ -6585,4 +6586,25 @@ to {
 	color: #000;
 	border-bottom: 2px solid #00539C;
 	padding-bottom: 10px;
+}
+
+@media ( max-width : 767px) {
+	.btn.changeSize {
+		display: none;
+	}
+	.svg-icon {
+		display: inline-block;
+		cursor: pointer;
+		width: 24px;
+		height: 24px;
+		border: none;
+		background-color: transparent;
+	}
+}
+
+@media ( min-width : 768px) {
+	.svg-icon {
+		display: none;
+		border: none;
+	}
 }

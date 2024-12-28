@@ -71,23 +71,69 @@
 							<td th:text="${item.serName}"></td>
 							<td>
 								<button type="button" data-bs-toggle="popover" title="Description"
-									class="btn btn-outline-info" th:data-bs-content="${item.description}">
+									class="btn btn-outline-info changeSize" th:data-bs-content="${item.description}">
 									Show Description
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover" title="Description"
+									th:data-bs-content="${item.description}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 1.25 1.25A1.25 1.25 0 0 0 12 7.5Z"
+											fill="#63b5f0" class="fill-6563ff"></path>
+									</svg>
 								</button>
 							</td>
 							<td th:text="${item.basePrice} + '$'"></td>
 							<td th:text="${item.staffRequired}"></td>
-							<td th:text="${item.status}"></td>
+							<td th:if="${item.status == 'activated'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M18.71 7.21a1 1 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1 1 0 1 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a1 1 0 0 0 0-1.47Z"
+										fill="#20d465" class="fill-6563ff"></path>
+								</svg>
+							</td>
+							<td th:if="${item.status == 'disabled'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M18.71 7.21a1 1 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1 1 0 1 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a1 1 0 0 0 0-1.47Z"
+										fill="#20d465" class="fill-6563ff"></path>
+								</svg>
+							</td>
+
 							<td>
-								<a class="btn btn-warning edit" th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
+								<a class="btn btn-warning changeSize"
+									th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
+								<a class="svg-icon" th:href="@{/admin/services/edit(id=${item.id})}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#6563ff"
+										width="24px" height="24px">
+										<path
+											d="M21,12a1,1,0,0,0-1,1v6a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4h6a1,1,0,0,0,0-2H5A3,3,0,0,0,2,5V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V13A1,1,0,0,0,21,12ZM6,12.76V17a1,1,0,0,0,1,1h4.24a1,1,0,0,0,.71-.29l6.92-6.93h0L21.71,8a1,1,0,0,0,0-1.42L17.47,2.29a1,1,0,0,0-1.42,0L13.23,5.12h0L6.29,12.05A1,1,0,0,0,6,12.76ZM16.76,4.41l2.83,2.83L18.17,8.66,15.34,5.83ZM8,13.17l5.93-5.93,2.83,2.83L10.83,16H8Z">
+										</path>
+									</svg>
+								</a>
+
 								<form th:action="@{/admin/services/disable(id=${item.id})}" method="post"
 									class="form-inline" th:if="${item.status == 'activated'}">
-									<button class="btn btn-danger disable" type="submit">Disable</button>
+									<button class="btn btn-danger changeSize" type="submit">Disable</button>
+									<button class="svg-icon">
+										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M15.71,8.29a1,1,0,0,0-1.42,0L12,10.59,9.71,8.29A1,1,0,0,0,8.29,9.71L10.59,12l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l2.29,2.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42L13.41,12l2.3-2.29A1,1,0,0,0,15.71,8.29ZM19,2H5A3,3,0,0,0,2,5V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V5A3,3,0,0,0,19,2Zm1,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4H19a1,1,0,0,1,1,1Z"
+												fill="#6563ff" />
+										</svg>
+									</button>
 								</form>
 
 								<form th:action="@{/admin/services/activate(id=${item.id})}" method="post"
 									class="form-inline" th:if="${item.status == 'disabled'}">
-									<button class="btn btn-info activate" type="submit">Activate</button>
+									<button class="btn btn-success changeSize" type="submit">Activate</button>
+									<button class="svg-icon">
+										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+											<path
+												d="M10.21,14.75a1,1,0,0,0,1.42,0l4.08-4.08a1,1,0,0,0-1.42-1.42l-3.37,3.38L9.71,11.41a1,1,0,0,0-1.42,1.42ZM21,2H3A1,1,0,0,0,2,3V21a1,1,0,0,0,1,1H21a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM20,20H4V4H20Z"
+												fill="#6563ff" />
+										</svg>
+									</button>
 								</form>
 							</td>
 						</tr>

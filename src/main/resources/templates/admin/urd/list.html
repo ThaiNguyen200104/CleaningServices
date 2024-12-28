@@ -54,8 +54,11 @@
 								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a class="btn btn-success" th:if="${item.staff_id == null && staffCheck > 0}"
-										th:href="@{/admin/request/StaffsForAssign(urdId=${item.id})}">Assign Staff</a>
+									<a class="btn btn-success changeSize"
+										th:if="${item.staff_id == null && staffCheck > 0}"
+										th:href="@{/admin/request/StaffsForAssign(urdId=${item.id})}">Assign Staff
+									</a>
+									
 									<p
 										th:if="${item.staff_id != null || staffCheck == 0 || item.status == 'reviewing'}">
 										None</p>

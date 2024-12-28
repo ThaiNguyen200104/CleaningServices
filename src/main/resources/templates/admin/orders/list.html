@@ -52,12 +52,17 @@
 								<td th:text="${item.staff_required}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a class="btn btn-success assign" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
+									<a class="btn btn-success changeSize"
+										th:href="@{/admin/orders/assignStaff(id=${item.id})}"
 										th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign Staff</a>
+										
+										
 									<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
-										class="btn btn-warning replace" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
-										Replace Staff
+										class="btn btn-warning changeSize"
+										th:href="@{/admin/orders/replaceStaff(id=${item.id})}">Replace Staff
 									</a>
+									
+									
 								</td>
 							</tr>
 						</tbody>

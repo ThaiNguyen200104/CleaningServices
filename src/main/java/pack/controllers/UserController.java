@@ -107,26 +107,26 @@ public class UserController {
 
 	// -------------------- ACCOUNTS -------------------- //
 
-	@GetMapping("/accounts")
-	public String accounts(HttpServletRequest req, Model model) {
-		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		model.addAttribute("orderDetails", rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId")));
-		model.addAttribute("currentPage", "accounts");
-
-		return Views.USER_ACCOUNTS;
-	}
-
-	// Thái
 //	@GetMapping("/accounts")
 //	public String accounts(HttpServletRequest req, Model model) {
 //		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-//		model.addAttribute("orders", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
-//		model.addAttribute("browseMore", rep.countOrdersToBrowseMore((int) req.getSession().getAttribute("usrId")));
-//
+//		model.addAttribute("orderDetails", rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId")));
 //		model.addAttribute("currentPage", "accounts");
 //
 //		return Views.USER_ACCOUNTS;
 //	}
+
+	// Thái
+	@GetMapping("/accounts")
+	public String accounts(HttpServletRequest req, Model model) {
+		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
+		model.addAttribute("orders", rep.getOrdersHistory((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("browseMore", rep.countOrdersToBrowseMore((int) req.getSession().getAttribute("usrId")));
+
+		model.addAttribute("currentPage", "accounts");
+
+		return Views.USER_ACCOUNTS;
+	}
 
 	@GetMapping("/seeMore")
 	public String seeMore(@RequestParam("id") int orderId, Model model) {
