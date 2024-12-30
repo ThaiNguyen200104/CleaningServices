@@ -111,21 +111,18 @@ public class UserController {
 	@GetMapping("/accounts")
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
-		List<OrderDetail> orderDetail = rep.getOrderDetailsForAccount((int) req.getSession().getAttribute("usrId"));
+		List<OrderDetail> orderDetail = rep.getOrdersForAccount((int) req.getSession().getAttribute("usrId"));
+
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
 		return Views.USER_ACCOUNTS;
 	}
 
 	@GetMapping("/seeMore")
-	public String seeMore(@RequestParam("id") int orderId, Model model) {
-		List<Map<String, Object>> details = rep.getSeeMoreOrderDetails(orderId);
+	public String see_more(@RequestParam("id") int usrReqId, Model model) {
+		List<Map<String, Object>> details = rep.getOrderDetailsForAccount(usrReqId);
 		model.addAttribute("seeMore", details);
 
-		if (details.isEmpty()) {
-			model.addAttribute("error", "Something went wrong. Please try again later.");
-			return "redirect:/user/accounts";
-		}
 		return Views.USER_SEE_MORE;
 	}
 
@@ -137,7 +134,8 @@ public class UserController {
 		pv.setPageSize(20);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("browseMore", rep.getAllOrdersHistory(pv, (int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("browseMore",
+				rep.getAllOrderDetailsForAccount(pv, (int) req.getSession().getAttribute("usrId")));
 
 		return Views.USER_BROWSE_MORE;
 	}
@@ -239,6 +237,13 @@ public class UserController {
 	public String orders(Model model, HttpServletRequest request) {
 		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
+	}
+
+	@GetMapping("/orders/orderDetails")
+	public String order_details(Model model, @RequestParam int id) {
+		model.addAttribute("orderDetails", rep.getOrderDetails(id));
+		return Views.USER_ORDER_DETAILS;
+
 	}
 
 	@PostMapping("/confirmOrder")

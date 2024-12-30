@@ -28,13 +28,13 @@
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapping">
+	<div class="wrapper">
 		<div th:unless="${#lists.isEmpty(browseMore)}" class="section-header mb-5">
 			<h2>All Orders</h2>
 		</div>
 
 		<div th:if="${#lists.isEmpty(browseMore)}" class="section-header mb-5">
-			<h2>There are no services ordered</h2>
+			<h2>There aren't any services ordered</h2>
 		</div>
 
 		<div th:unless="${#lists.isEmpty(browseMore)}" class="table-container">
@@ -43,8 +43,8 @@
 				<thead>
 					<tr>
 						<th>No.</th>
-						<th>Service Name</th>
-						<th>Start Date</th>
+						<th>Service</th>
+						<th>Started Date</th>
 						<th>Status</th>
 						<th>Actions</th>
 					</tr>
@@ -56,8 +56,12 @@
 						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a th:href="@{/user/seeMore(id=${item.orderId})}" class="btn btn-outline-info">
-								See More
+							<a th:href="@{/user/seeMore(id=${item.orderId})}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
+									<path
+										d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
+										fill="#000000" class="fill-6563ff"></path>
+								</svg>
 							</a>
 						</td>
 					</tr>

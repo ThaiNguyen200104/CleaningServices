@@ -2,6 +2,7 @@ package pack.repositories;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -142,19 +143,13 @@ public class UserRepository {
 
 	// -------------------- ORDERS -------------------- //
 
-	public List<Map<String, Object>> getOrdersHistory(int userId) {
-		try {
-			String str_query = "SELECT o.id AS orderId, od.start_date AS startDate, od.status, s.service_name AS serName "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
-					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
-			return db.queryForList(str_query, new Object[] { userId });
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	/***
+	 * fetch all detail data from table order_details
+	 * 
+	 * @return detail list of order_details for browse_more.html
+	 */
 
-	public List<Map<String, Object>> getAllOrdersHistory(PageView pageItem, int userId) {
+	public List<Map<String, Object>> getAllOrderDetailsForAccount(PageView pageItem, int userId) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
 			int total_page = (int) Math.ceil((double) count / pageItem.getPageSize());
@@ -172,39 +167,82 @@ public class UserRepository {
 		}
 	}
 
-	public List<Map<String, Object>> getSeeMoreOrderDetails(int orderId) {
+	/***
+	 * fetch top 5 detail data from table order_details
+	 * 
+	 * @return detail list of order_details for accounts.html
+	 */
+
+	public List<OrderDetail> getOrdersForAccount(int usrId) {
 		try {
-			String str_query = "SELECT o.id AS orderId, od.price, od.start_date AS startDate, od.complete_date AS completeDate, "
-					+ "od.status, s.service_name AS serName, st.username AS staffsName FROM orders o "
-					+ "JOIN order_details od ON o.id = od.order_id JOIN services s ON od.service_id = s.id "
-					+ "LEFT JOIN schedules sch ON od.id = sch.detail_id LEFT JOIN staffs st ON sch.staff_id = st.id "
-					+ "WHERE o.id = ?";
-			return db.queryForList(str_query, new Object[] { orderId });
+			String str_query = String.format(
+					"SELECT TOP 5 od.*, s.service_name AS serName FROM %s s JOIN %s od ON s.id = od.service_id "
+							+ "JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
+							+ "WHERE ur.user_id = ? ORDER BY od.create_date DESC",
+					Views.TBL_SERVICES, Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST);
+			return db.query(str_query, new OrderDetail_mapper(), new Object[] { usrId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	/***
+	 * fetch detail data from table order_details
+	 * 
+	 * @return detail of order_details for see_more.html
+	 */
+
+	public List<Map<String, Object>> getOrderDetailsForAccount(int usrReqId) {
+		try {
+			String str_query = String.format(
+					"SELECT od.*, s.service_name FROM %s od JOIN %s s ON s.id = od.service_id "
+							+ "JOIN %s o ON od.order_id = o.id WHERE o.usrReq_id = ? ORDER BY od.create_date DESC",
+					Views.TBL_SERVICES, Views.TBL_ORDER_DETAIL, Views.TBL_ORDER);
+			return db.queryForList(str_query, new Object[] { usrReqId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<Map<String, Object>> getOrderDetails(int userId) {
-		try {
-			String str_query = "SELECT od.id AS detailId, o.id AS orderId, s.service_name AS serName, od.price, od.start_date AS startDate, od.status "
-					+ "FROM services s JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
-					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id WHERE u.id = ?";
-			return db.queryForList(str_query, new Object[] { userId });
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	// -------------------- ORDERS -------------------- //
 
-	// ORDER - HIẾU
+	/***
+	 * fetch data from table user_request_details and services
+	 * 
+	 * @return detail list for orders.html
+	 */
+
 	public List<UserRequestDetail> getUserReqDetailById(int userId) {
 		try {
 			String str_query = String.format(
-					"SELECT urd.*, s.service_name FROM %s urd join %s ur on urd.usrReq_id = ur.id join %s s on urd.service_id = s.id WHERE urd.user_id = ? and urd.status != 'canceled'",
+					"SELECT urd.*, s.service_name FROM %s urd JOIN %s ur ON urd.usrReq_id = ur.id JOIN %s s ON urd.service_id = s.id "
+							+ "WHERE urd.user_id = ? AND urd.status != 'canceled'",
 					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_SERVICES);
 			return db.query(str_query, new UserRequestDetail_mapper(), new Object[] { userId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/***
+	 * fetch data from table user_request_details, order_details and services
+	 * 
+	 * @return detail list for order_details.html
+	 */
+
+	public List<Map<String, Object>> getOrderDetails(int userId) {
+		try {
+			String str_query = String.format(
+					"SELECT urd.*, od.beforeImage, od.afterImage, s.service_name FROM %s urd "
+							+ "JOIN %s ur ON urd.usrReq_id = ur.id JOIN %s o ON ur.id = o.usrReq_id "
+							+ "JOIN %s od ON o.id = od.order_id JOIN %s s ON od.service_id = s.id "
+							+ "WHERE urd.user_id = ? AND urd.status != 'canceled'",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_ORDER, Views.TBL_ORDER_DETAIL,
+					Views.TBL_SERVICES);
+			return db.queryForList(str_query, new Object[] { userId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -235,19 +273,11 @@ public class UserRepository {
 		}
 	}
 
-	public List<OrderDetail> getOrderDetailsForAccount(int usrId) {
-		try {
-			String str_query = String.format(
-					"SELECT top 5 ord.*, s.service_name FROM %s ord " + "join %s o on ord.order_id = o.id "
-							+ "join user_requests ur on o.usrReq_id = ur.id " + "join %s s on ord.service_id = s.id "
-							+ "WHERE ur.user_id = ? " + "order by ord.create_date desc",
-					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_SERVICES);
-			return db.query(str_query, new OrderDetail_mapper(), new Object[] { usrId });
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	/***
+	 * insert data into table orders
+	 * 
+	 * @return inserted date in table orders
+	 */
 
 	public String newOrder(int urdId, int serId, Date startDate, double price) {
 		try {
@@ -272,6 +302,12 @@ public class UserRepository {
 		}
 	}
 
+	/***
+	 * update status for table user_request_details
+	 * 
+	 * @return canceled status updated in table user_request_details
+	 */
+
 	public String cancelOrder(int requestId) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = 'canceled' WHERE %s = ?",
@@ -282,6 +318,12 @@ public class UserRepository {
 			return "failed";
 		}
 	}
+
+	/***
+	 * update status for table user_request_details
+	 * 
+	 * @return confirmed status updated in table user_request_details
+	 */
 
 	public String confirmOrder(int requestId) {
 		try {
@@ -294,6 +336,12 @@ public class UserRepository {
 			return null;
 		}
 	}
+
+	/***
+	 * update status for table staffs
+	 * 
+	 * @return available status updated in table staffs
+	 */
 
 	public String updateStaffStatusToAvailable(int staffId) {
 		try {
@@ -313,6 +361,12 @@ public class UserRepository {
 		Integer count = db.queryForObject(str_query, Integer.class, new Object[] { userId, serId });
 		return count != null && count > 0;
 	}
+
+	/***
+	 * insert new request from user into table user_request, then insert into user_request_details
+	 * 
+	 * @return inserted data in table user_request & user_request_details
+	 */
 
 	public String newRequestDetail(int userId, int serId, Date startDate, double price) {
 		try {

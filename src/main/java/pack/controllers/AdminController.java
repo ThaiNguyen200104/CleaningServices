@@ -545,7 +545,7 @@ public class AdminController {
 		return Views.ADMIN_STAFFS_LIST;
 	}
 
-	@GetMapping("/staffs/create_account")
+	@GetMapping("/staffs/create")
 	public String create_account_view(Model model) {
 		model.addAttribute("new_item", new Staff());
 		return Views.ADMIN_STAFFS_CREATE_ACCOUNT;

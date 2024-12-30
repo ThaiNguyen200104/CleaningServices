@@ -29,42 +29,56 @@
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
 	<div class="wrapper">
-		<div class="mx-2 my-5">
-			<h1 class="mb-4">Confirm your Orders</h1>
-			<div class="mb-5 table-responsive">
-				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>Service Name</th>
-							<th>Price</th>
-							<th>Start Date</th>
-							<th>Status</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="item : ${orders}">
-							<td th:text="${item.id}"></td>
-							<td th:text="${item.serName}"></td>
-							<td th:text="${item.price} + '$'"></td>
-							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-							<td th:text="${item.status}"></td>
-							<td>
-								<a class="btn btn-success" onclick="confirmAction(event)"
-									th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
-									th:if="${item.status == 'reviewing'}">Confirm</a>
-								<a class="btn btn-danger" onclick="cancel(event)"
-									th:attr="requestId=${item.id}, staffId=${item.staffId}"
-									th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
-								<a class="btn btn-warning" th:href="@{/user/seeOrderDetail(id=${item.usrReqId})}"
-									th:if="${item.status == 'confirmed'}">See Details</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+		<div th:unless="${#lists.isEmpty(orders)}" class="section-header mb-5">
+			<h2>Your Orders</h2>
+		</div>
+
+		<div th:if="${#lists.isEmpty(orders)}" class="section-header mb-5">
+			<h2>There are no services ordered.</h2>
+		</div>
+
+		<div th:unless="${#lists.isEmpty(orders)}" class="table-container">
+			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
+			<table class="booking-table">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Service</th>
+						<th>Price</th>
+						<th>Start Date</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${orders}">
+						<td th:text="${item.id}"></td>
+						<td th:text="${item.serName}"></td>
+						<td th:text="${item.price} + '$'"></td>
+						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${item.status}"></td>
+						<td>
+							<a class="btn btn-success" onclick="confirmAction(event)"
+								th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
+								th:if="${item.status == 'reviewing'}">Confirm</a>
+
+							<a class="btn btn-danger" onclick="cancel(event)"
+								th:attr="requestId=${item.id}, staffId=${item.staffId}"
+								th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
+
+							<a th:href="@{/user/orders/orderDetails(id=${item.id})}"
+								th:if="${item.status == 'confirmed'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
+									<path
+										d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
+										fill="#000000" class="fill-6563ff"></path>
+								</svg>
+							</a>
+
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
