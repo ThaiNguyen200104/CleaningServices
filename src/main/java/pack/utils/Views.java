@@ -35,7 +35,7 @@ public class Views {
 	public static String ADMIN_ORDERS_REPLACE_STAFF = "admin/orders/replaceStaff";
 	public static String ADMIN_ORDERS_STAFF_FOR_REPLACE = "admin/orders/staffForReplace";
 	public static String ADMIN_REQUESTS_STAFF_FOR_REPLACE = "admin/orders/staffForCancelRequest";
-	
+
 	// ADMMIN/USER_REQUEST
 	public static String ADMIN_REQUEST_LIST = "admin/urd/list";
 	public static String ADMIN_REQUEST_ASSIGN = "admin/urd/assign";
@@ -62,6 +62,7 @@ public class Views {
 	public static String USER_VALIDATE = "user/validate_otp";
 	public static String USER_CHANGE_PASSWORD = "user/change_password";
 	public static String USER_ORDERS = "user/orders";
+	public static String USER_ORDER_DETAILS = "user/order_details";
 	public static String USER_SEE_MORE = "user/see_more";
 	public static String USER_BROWSE_MORE = "user/browse_more";
 
@@ -126,11 +127,12 @@ public class Views {
 	public static String COL_ORDER_DETAIL_ID = "id";
 	public static String COL_ORDER_DETAIL_ORDER_ID = "order_id";
 	public static String COL_ORDER_DETAIL_SERVICE_ID = "service_id";
-	public static String COL_ORDER_DETAIL_CODE = "detail_code";
 	public static String COL_ORDER_DETAIL_PRICE = "price";
 	public static String COL_ORDER_DETAIL_STARTDATE = "start_date";
 	public static String COL_ORDER_DETAIL_COMPLETEDATE = "complete_date";
 	public static String COL_ORDER_DETAIL_CREATEDATE = "create_date";
+	public static String COL_ORDER_DETAIL_BEFOREIMAGE = "beforeImage";
+	public static String COL_ORDER_DETAIL_AFTERIMAGE = "afterImage";
 	public static String COL_ORDER_DETAIL_STATUS = "status";
 
 	// USER_REQUESTS
@@ -158,7 +160,6 @@ public class Views {
 	public static String COL_STAFFS_PASSWORD = "password";
 	public static String COL_STAFFS_EMAIL = "email";
 	public static String COL_STAFFS_PHONE = "phone";
-	public static String COL_STAFFS_JOB_OCCUPIED = "job_occupied";
 	public static String COL_STAFFS_IMAGES = "image";
 	public static String COL_STAFFS_CREATEDATE = "create_date";
 	public static String COL_STAFFS_STATUS = "status";
@@ -170,14 +171,6 @@ public class Views {
 	public static String COL_SR_REASON = "reason";
 	public static String COL_SR_CREATEDATE = "create_date";
 	public static String COL_SR_STATUS = "status";
-
-	// CONFIRM_IMAGES
-	public static String TBL_CONFIRM_IMAGES = "confirm_images";
-	public static String COL_CONFIRM_IMAGES_ID = "id";
-	public static String COL_CONFIRM_IMAGES_DETAIL_ID = "detail_id";
-	public static String COL_CONFIRM_IMAGES_IMAGES = "image";
-	public static String COL_CONFIRM_IMAGES_CAPTUREDATE = "capture_date";
-	public static String COL_CONFIRM_IMAGES_UPLOAD_DATE = "upload_date";
 
 	// SCHEDULES
 	public static String TBL_SCHEDULES = "schedules";

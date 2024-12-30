@@ -39,7 +39,17 @@
 		<div class="mx-5 mt-5">
 			<div class="d-flex">
 				<h2 class="flex-grow-1">Staff List</h2>
-				<a class="btn btn-primary" th:href="@{/admin/staffs/create_account}">Provide Account</a>
+				<div>
+					<a class="btn btn-primary changeSize" th:href="@{/admin/staffs/create}">Provide Account</a>
+					<a class="svg-icon" th:href="@{/admin/staffs/create}">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M21 10.5h-1v-1a1 1 0 0 0-2 0v1h-1a1 1 0 0 0 0 2h1v1a1 1 0 0 0 2 0v-1h1a1 1 0 0 0 0-2Zm-7.7 1.72A4.92 4.92 0 0 0 15 8.5a5 5 0 0 0-10 0 4.92 4.92 0 0 0 1.7 3.72A8 8 0 0 0 2 19.5a1 1 0 0 0 2 0 6 6 0 0 1 12 0 1 1 0 0 0 2 0 8 8 0 0 0-4.7-7.28ZM10 11.5a3 3 0 1 1 3-3 3 3 0 0 1-3 3Z"
+								fill="#365cf5" class="fill-6563ff"></path>
+						</svg>
+					</a>
+				</div>
+
 			</div>
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">
@@ -48,8 +58,8 @@
 						<tr>
 							<th>No.</th>
 							<th>Username</th>
+							<th>Email</th>
 							<th>Status</th>
-							<th>Job Occupied</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -57,12 +67,54 @@
 						<tr th:each="item : ${staffs}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.username}"></td>
-							<td th:text="${item.status}"></td>
-							<td th:text="${item.jobOccupied}"></td>
 							<td>
-								<a class="btn btn-warning disable"
+								<button type="button" data-bs-toggle="popover" title="Email"
+									class="btn btn-outline-info changeSize" th:data-bs-content="${item.email}">
+									Email
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover" title="Email"
+									th:data-bs-content="${item.email}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 1.25 1.25A1.25 1.25 0 0 0 12 7.5Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
+								</button>
+							</td>
+							<td th:if="${item.status == 'available'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
+									<path
+										d="M13.3 12.22A4.92 4.92 0 0 0 15 8.5a5 5 0 0 0-10 0 4.92 4.92 0 0 0 1.7 3.72A8 8 0 0 0 2 19.5a1 1 0 0 0 2 0 6 6 0 0 1 12 0 1 1 0 0 0 2 0 8 8 0 0 0-4.7-7.28ZM10 11.5a3 3 0 1 1 3-3 3 3 0 0 1-3 3Zm11.71-2.37a1 1 0 0 0-1.42 0l-2 2-.62-.63a1 1 0 0 0-1.42 0 1 1 0 0 0 0 1.41l1.34 1.34a1 1 0 0 0 1.41 0l2.67-2.67a1 1 0 0 0 .04-1.45Z"
+										fill="#36e622" class="fill-6563ff"></path>
+								</svg>
+							</td>
+							<td th:if="${item.status == 'unavailable'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
+									<path
+										d="M13.3 12.22A4.92 4.92 0 0 0 15 8.5a5 5 0 0 0-10 0 4.92 4.92 0 0 0 1.7 3.72A8 8 0 0 0 2 19.5a1 1 0 0 0 2 0 6 6 0 0 1 12 0 1 1 0 0 0 2 0 8 8 0 0 0-4.7-7.28ZM10 11.5a3 3 0 1 1 3-3 3 3 0 0 1-3 3Zm10.91.5.8-.79a1 1 0 0 0-1.42-1.42l-.79.8-.79-.8a1 1 0 0 0-1.42 1.42l.8.79-.8.79a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l.79-.8.79.8a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42Z"
+										fill="#faa51b" class="fill-6563ff"></path>
+								</svg>
+							</td>
+							<td th:if="${item.status == 'disabled'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
+									<path
+										d="m13.41 12 4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42Z"
+										fill="#ed1411" class="fill-6563ff"></path>
+								</svg>
+							</td>
+							<td>
+								<a class="btn btn-danger changeSize"
 									th:if="${item.status != 'disabled' && item.status != 'unavailable'}"
-									th:attr="id=${item.id}" onclick="Deactivate(event)">Disable</a>
+									th:attr="id=${item.id}" onclick="Deactivate(event)">Disable
+								</a>
+								<a class="svg-icon" th:if="${item.status != 'disabled' && item.status != 'unavailable'}"
+									th:attr="id=${item.id}" onclick="Deactivate(event)">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M13.3 12.22A4.92 4.92 0 0 0 15 8.5a5 5 0 0 0-10 0 4.92 4.92 0 0 0 1.7 3.72A8 8 0 0 0 2 19.5a1 1 0 0 0 2 0 6 6 0 0 1 12 0 1 1 0 0 0 2 0 8 8 0 0 0-4.7-7.28ZM10 11.5a3 3 0 1 1 3-3 3 3 0 0 1-3 3Zm10.91.5.8-.79a1 1 0 0 0-1.42-1.42l-.79.8-.79-.8a1 1 0 0 0-1.42 1.42l.8.79-.8.79a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l.79-.8.79.8a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42Z"
+											fill="#dc3545" class="fill-6563ff"></path>
+									</svg>
+								</a>
 							</td>
 						</tr>
 					</tbody>

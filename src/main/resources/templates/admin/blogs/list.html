@@ -39,7 +39,16 @@
 		<div class="mx-5 mt-5">
 			<div class="d-flex">
 				<h2 class="flex-grow-1">Blog List</h2>
-				<a class="btn btn-primary" th:href="@{/admin/blogs/create}">Write a blog</a>
+				<div>
+					<a class="btn btn-primary changeSize" th:href="@{/admin/blogs/create}">Write a blog</a>
+					<a class="svg-icon" th:href="@{/admin/blogs/create}">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Zm4-9h-3V8a1 1 0 0 0-2 0v3H8a1 1 0 0 0 0 2h3v3a1 1 0 0 0 2 0v-3h3a1 1 0 0 0 0-2Z"
+								fill="#365cf5" class="fill-6563ff"></path>
+						</svg>
+					</a>
+				</div>
 			</div>
 			<div class="table-responsive mt-4">
 				<table class="table table-hover">
@@ -60,8 +69,16 @@
 							<td th:text="${item.title}"></td>
 							<td>
 								<button type="button" data-bs-toggle="popover" title="Content"
-									class="btn btn-outline-info" th:data-bs-content="${item.content}">
+									class="btn btn-outline-info changeSize" th:data-bs-content="${item.content}">
 									Show Content
+								</button>
+								<button data-bs-toggle="popover" title="Content" th:data-bs-content="${item.content}"
+									class="svg-icon">
+									<svg data-name="Layer 1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 1.25 1.25A1.25 1.25 0 0 0 12 7.5Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
 								</button>
 							</td>
 							<td>
@@ -73,7 +90,15 @@
 							<td th:text="${item.createDate != null ? item.createDate : 'N/A'}"></td>
 							<td th:text="${item.updateDate != null ? item.updateDate : 'N/A'}"></td>
 							<td>
-								<a class="btn btn-warning edit" th:href="@{/admin/blogs/edit(id=${item.id})}">Edit</a>
+								<a class="btn btn-warning changeSize"
+									th:href="@{/admin/blogs/edit(id=${item.id})}">Edit</a>
+								<a class="svg-icon" th:href="@{/admin/blogs/edit(id=${item.id})}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1Zm-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83-6.94 6.93a1 1 0 0 0-.29.71Zm10.76-8.35 2.83 2.83-1.42 1.42-2.83-2.83ZM8 13.17l5.93-5.93 2.83 2.83L10.83 16H8Z"
+											fill="#ffc107" class="fill-6563ff"></path>
+									</svg>
+								</a>
 							</td>
 						</tr>
 					</tbody>

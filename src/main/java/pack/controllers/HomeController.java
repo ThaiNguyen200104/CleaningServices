@@ -38,19 +38,6 @@ public class HomeController {
 		return Views.MAIN_INDEX;
 	}
 
-	@GetMapping("/service")
-	public String service(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
-		PageView pv = new PageView();
-		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
-
-		model.addAttribute("pv", pv);
-		model.addAttribute("services", rep.getServices(pv));
-		model.addAttribute("currentPage", "service");
-
-		return Views.MAIN_SERVICES;
-	}
-
 	@GetMapping("/blog")
 	public String blog(Model model) {
 		model.addAttribute("blogs", rep.getBlogs());

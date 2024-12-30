@@ -70,7 +70,7 @@
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Service Name</th>
+								<th>Service</th>
 								<th>Price</th>
 								<th>Expected Start Date</th>
 								<th>Status</th>
@@ -83,11 +83,16 @@
 								<td th:text="${item.serName}"></td>
 								<td th:text="${item.price} + '$'"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${item.completeDate}" th:if="${item.status == 'completed'}"></td>
+								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
-									<a th:href="@{/user/seeMore(id=${item.orderId})}" class="btn btn-outline-info">
-										See More
+									<a th:href="@{/user/seeMore(id=${item.orderId})}">
+										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px"
+											height="50px">
+											<path
+												d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
+												fill="#000000" class="fill-6563ff"></path>
+										</svg>
 									</a>
 								</td>
 							</tr>

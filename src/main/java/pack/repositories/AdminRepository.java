@@ -437,8 +437,8 @@ public class AdminRepository {
 	public List<Staff> staffListForAssign(int detailId) {
 		try {
 			String str_query = String.format(
-					"SELECT * FROM %s WHERE %s = ? AND %s < 3 AND id NOT IN (SELECT staff_id FROM %s WHERE detail_id = ?)",
-					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_JOB_OCCUPIED, Views.TBL_SCHEDULES);
+					"SELECT * FROM %s WHERE %s = ? AND id NOT IN (SELECT staff_id FROM %s WHERE detail_id = ?)",
+					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.TBL_SCHEDULES);
 			return db.query(str_query, new Staff_mapper(), new Object[] { "available", detailId });
 		} catch (Exception e) {
 			e.printStackTrace();

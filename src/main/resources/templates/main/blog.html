@@ -24,31 +24,31 @@
 
 		.blog-image {
 			width: 100%;
-			height: 200px;
+			height: 250px;
 			object-fit: cover;
 			border-radius: .25rem;
 			box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
 		}
 
 		.blog-meta {
-			color: #6c757d;
+			color: #666666;
 			font-size: 0.9rem;
 			margin-bottom: 0.5rem;
 		}
 
 		.blog-title {
-			color: #2c3e50;
+			color: #000;
 			text-decoration: none !important;
-		}
-
-		.blog-title:hover {
-			color: #1a365d;
 		}
 
 		.blog-title h2 {
 			font-size: 1.5rem;
 			margin-bottom: 1rem;
 			font-weight: 600;
+		}
+
+		.title-h2:hover {
+			color: #ffd662;
 		}
 
 		.blog-content {
@@ -93,25 +93,28 @@
 					<h2>Where we shows our works</h2>
 				</div>
 
-				<div th:if="${#lists.isEmpty(blogs)}" class="text-center mt-5">
+				<div th:if="${#lists.isEmpty(blogs)}" class="text-center">
 					<p>There are currently no blogs available.</p>
 				</div>
+				
 				<div class="projcard-container row" th:if="${!#lists.isEmpty(blogs)}">
-					<div class="blog-posts">
+					<div class="blog-posts mt-5">
 						<article th:each="item : ${blogs}" class="blog-card">
 							<div class="row">
-								<div class="col-md-4 blog-image-container">
-									<img class="blog-image" loading="lazy" th:if="${item.image != null}"
-										th:src="'/upload/'+${item.image}" th:alt="${item.title}" />
-									<img class="blog-image" loading="lazy" th:unless="${item.image != null}"
-										th:src="'../../front/img/none-img.png'" th:alt="${item.title}" />
+								<div class="col-md-6 blog-image-container">
+									<a th:href="@{/blogDetail(id=${item.id})}">
+										<img class="blog-image" loading="lazy" th:if="${item.image != null}"
+											th:src="'/upload/'+${item.image}" th:alt="${item.title}" />
+										<img class="blog-image" loading="lazy" th:unless="${item.image != null}"
+											th:src="'../../front/img/none-img.png'" th:alt="${item.title}" />
+									</a>
 								</div>
-								<div class="col-md-8 blog-content">
+								<div class="col-md-6 blog-content">
 									<div class="blog-meta">
 										<span th:text="${item.createDate}"></span>
 									</div>
 									<a th:href="@{/blogDetail(id=${item.id})}" class="blog-title">
-										<h2 th:text="${item.title}"></h2>
+										<h2 class="title-h2" th:text="${item.title}"></h2>
 									</a>
 									<p class="blog-content" th:utext="${item.content}"></p>
 								</div>
