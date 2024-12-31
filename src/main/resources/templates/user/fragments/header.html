@@ -9,8 +9,7 @@
 			<div class="col-lg-9">
 				<div class="topbar">
 					<div class="topbar-col">
-						<a href="tel:+012 345 67890"><i class="fa fa-phone-alt"></i>+012
-							345 67890</a>
+						<a href="tel:+012 345 67890"><i class="fa fa-phone-alt"></i>+012 345 67890</a>
 					</div>
 					<div class="topbar-col">
 						<a href="mailto:cleanex@gmail.com"><i class="fa fa-envelope"></i>cleanex@gmail.com</a>
@@ -18,36 +17,30 @@
 				</div>
 				<div class="navbar navbar-expand-lg bg-light navbar-light">
 					<a href="#" class="navbar-brand">MENU</a>
-					<button type="button" class="navbar-toggler" data-toggle="collapse"
-						data-target="#navbarCollapse">
+					<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
 						<span class="navbar-toggler-icon"></span>
 					</button>
 
-					<div class="collapse navbar-collapse justify-content-between"
-						id="navbarCollapse">
+					<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 						<div class="navbar-nav ml-auto">
-							<a th:href="@{/}" class="nav-item nav-link">Home</a>
-							<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
-							<div class="nav-item dropdown">
-								<a href="#menu2" class="nav-link dropdown-toggle"
-									data-toggle="dropdown">More</a>
-								<div class="dropdown-menu">
-									<a th:href="@{/about}" class="dropdown-item">About Us</a> <a
-										th:href="@{/contact}" class="dropdown-item">Contact Us</a>
-								</div>
-							</div>
-							<div class="nav-item dropdown" th:if="${session.usrId != null}">
-								<a href="#menu1" class="nav-link dropdown-toggle"
-									data-toggle="dropdown">Account</a>
-								<div class="dropdown-menu">
-									<a th:href="@{/user/accounts}" class="dropdown-item"
-										th:classappend="${currentPage == 'accounts' ? 'active' : ''}">
-										Your Account </a> <a th:href="@{/user/orders}"
-										class="dropdown-item"
-										th:classappend="${currentPage == 'orders' ? 'active' : ''}">
-										Orders </a> <a th:href="@{/user/logout}" class="dropdown-item">Logout</a>
-								</div>
-							</div>
+							<a class="nav-item nav-link" th:href="@{/}">Home</a>
+							<a class="nav-item nav-link" th:href="@{/blog}">Blog</a>
+							<a class="nav-item nav-link" th:href="@{/about}">About</a>
+							<a class="nav-item nav-link" th:href="@{/contact}">Contact</a>
+
+							<a class="nav-item nav-link" th:href="@{/user/login}" th:if="${session.usrId == null}"
+								th:classappend="${currentPage == 'login' ? 'active' : ''}">Login</a>
+
+							<a class="nav-item nav-link" th:href="@{/user/accounts}"
+								th:classappend="${currentPage == 'accounts' ? 'active' : ''}"
+								th:if="${session.usrId != null}">Your Account</a>
+
+							<a class="nav-item nav-link" th:href="@{/user/orders}"
+								th:classappend="${currentPage == 'orders' ? 'active' : ''}"
+								th:if="${session.usrId != null}">Orders</a>
+								
+							<a class="nav-item nav-link" th:href="@{/user/logout}"
+								th:if="${session.usrId != null}">Logout</a>
 
 						</div>
 					</div>
