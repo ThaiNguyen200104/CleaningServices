@@ -100,26 +100,25 @@
 
 						<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 							<div class="navbar-nav ml-auto">
-								<a th:href="@{/}" class="nav-item nav-link active">Home</a>
-								<a th:href="@{/blog}" class="nav-item nav-link">Blog</a>
-								<div class="nav-item dropdown">
-									<a href="#menu2" class="nav-link dropdown-toggle" data-toggle="dropdown">More</a>
-									<div class="dropdown-menu">
-										<a th:href="@{/about}" class="dropdown-item">About Us</a>
-										<a th:href="@{/contact}" class="dropdown-item">Contact Us</a>
-									</div>
-								</div>
-								<a th:if="${session.usrId == null}" th:href="@{/user/login}" class="nav-item nav-link">
+								<a class="nav-item nav-link active" th:href="@{/}">Home</a>
+								<a class="nav-item nav-link" th:href="@{/blog}">Blog</a>
+
+								<a class="nav-item nav-link" th:href="@{/about}">About</a>
+								<a class="nav-item nav-link" th:href="@{/contact}">Contact</a>
+
+								<a class="nav-item nav-link" th:href="@{/user/login}" th:if="${session.usrId == null}">
 									Login
 								</a>
-								<div class="nav-item dropdown" th:if="${session.usrId != null}">
-									<a href="#menu1" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
-									<div class="dropdown-menu">
-										<a th:href="@{/user/accounts}" class="dropdown-item">Your Account</a>
-										<a th:href="@{/user/orders}" class="dropdown-item">Orders</a>
-										<a th:href="@{/user/logout}" class="dropdown-item">Logout</a>
-									</div>
-								</div>
+								<a class="nav-item nav-link" th:href="@{/user/accounts}"
+									th:if="${session.usrId != null}">
+									Your Account
+								</a>
+								<a class="nav-item nav-link" th:href="@{/user/orders}" th:if="${session.usrId != null}">
+									Orders
+								</a>
+								<a class="nav-item nav-link" th:href="@{/user/logout}" th:if="${session.usrId != null}">
+									Logout
+								</a>
 							</div>
 						</div>
 					</div>

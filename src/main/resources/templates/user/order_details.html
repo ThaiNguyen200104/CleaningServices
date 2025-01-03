@@ -50,26 +50,35 @@
 						<th>Before</th>
 						<th>After</th>
 						<th>Status</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="item : ${orderDetails}">
 						<td th:text="${item.id}"></td>
-						<td th:text="${item.service_name}"></td>
+						<td th:text="${item.serName}"></td>
 						<td th:text="${item.price + '$'}"></td>
-						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
+						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 						<td
-							th:text="${item.complete_date != null ? #dates.format(item.complete_date, 'yyyy-MM-dd') : 'N/A'}">
+							th:text="${item.completeDate != null ? #dates.format(item.completeDate, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
 						<td>
 							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" width="50" height="50"
-								alt="Before" />
+								alt="Before" th:if="${item.status == 'verifying'}" />
+							<p th:if="${item.status != 'verifying'}">None</p>
 						</td>
 						<td>
 							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" width="50" height="50"
-								alt="After" />
+								alt="After" th:if="${item.status == 'verifying'}" />
+							<p th:if="${item.status != 'verifying'}">None</p>
 						</td>
 						<td th:text="${item.status}"></td>
+						<td>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderApprove(id=${item.id})}">Approve</a>
+							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>

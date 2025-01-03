@@ -83,7 +83,7 @@
 								<td th:text="${item.serName}"></td>
 								<td th:text="${item.price} + '$'"></td>
 								<td th:text="${item.startDate}"></td>
-								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+								<td th:text="${item.completeDate}" th:if="${item.status == 'completed'}"></td>
 								<td th:text="${item.status}"></td>
 								<td>
 									<a th:href="@{/user/seeMore(id=${item.orderId})}">

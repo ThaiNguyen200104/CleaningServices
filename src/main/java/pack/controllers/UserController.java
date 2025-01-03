@@ -112,7 +112,6 @@ public class UserController {
 	public String accounts(HttpServletRequest req, Model model) {
 		model.addAttribute("user", rep.findUserByUsername(req.getSession().getAttribute("username").toString()));
 		List<OrderDetail> orderDetail = rep.getOrdersForAccount((int) req.getSession().getAttribute("usrId"));
-
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
 		return Views.USER_ACCOUNTS;
@@ -243,7 +242,6 @@ public class UserController {
 	public String order_details(Model model, @RequestParam int id) {
 		model.addAttribute("orderDetails", rep.getOrderDetails(id));
 		return Views.USER_ORDER_DETAILS;
-
 	}
 
 	@PostMapping("/confirmOrder")
@@ -313,4 +311,23 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
 		}
 	}
+
+	@GetMapping("/orderApprove")
+	public String completeConfirm(@RequestParam int id) {
+		String result = rep.orderApprove(id);
+		if (result.equals("success")) {
+			return "redirect:/user/orders/orderDetails?id=" + id;
+		}
+		return Views.USER_ORDERS;
+	}
+
+	@GetMapping("/orderDecline")
+	public String orderDecline(@RequestParam int id) {
+		String result = rep.orderDecline(id);
+		if (result.equals("success")) {
+			return "redirect:/user/orders/orderDetails?id=" + id;
+		}
+		return Views.USER_ORDERS;
+	}
+
 }
