@@ -50,6 +50,7 @@
 						<th>Before</th>
 						<th>After</th>
 						<th>Status</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -73,6 +74,12 @@
 							<p th:if="${item.after_image != null}">N/A</p>
 						</td>
 						<td th:text="${item.status}"></td>
+						<td>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderApprove(id=${item.id})}">Approve</a>
+							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>
