@@ -47,7 +47,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="item : ${requests}">
-								<td th:text="${item.scrId}"></td>
+								<td th:text="${item.schrId}"></td>
 								<td th:text="${item.fullname}"></td>
 								<td th:text="${item.type}"></td>
 								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
@@ -56,16 +56,17 @@
 								<td th:if="${item.date_adjust == null}">None</td>
 								<td th:text="${item.reason}"></td>
 								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.scrStatus}"></td>
+								<td th:text="${item.schrStatus}"></td>
 								<td>
-									<a class="btn btn-info" onclick="Approve(event)"
-										th:if="${item.type == 'adjustDate'}"
-										th:attr="scrId=${item.scrId}, scheId=${item.schedule_id},
+									<a class="btn btn-info" onclick="approve(event)"
+										th:if="${item.type == 'adjustDate'}" th:attr="schrId=${item.schrId}, scheId=${item.schedule_id},
 										 newDate=${#dates.format(item.date_adjust, 'yyyy-MM-dd')}, type=${item.type}">Approve</a>
+
 									<a class="btn btn-info" th:if="${item.type == 'cancel'}"
-										th:href="@{/admin/request/staffForReplace(scrId=${item.scrId}, oldStaff=${item.oldStaff})}">Approve</a>
-									<a class="btn btn-danger" onclick="DenyRequest(event)"
-										th:attr="scrId=${item.scrId}">Deny</a>
+										th:href="@{/admin/request/staffForReplace(schrId=${item.schrId}, oldStaff=${item.oldStaff})}">Approve</a>
+
+									<a class="btn btn-danger" onclick="denyRequest(event)"
+										th:attr="schrId=${item.schrId}">Deny</a>
 								</td>
 							</tr>
 						</tbody>
@@ -86,18 +87,18 @@
 	<script src="../../back/js/main.js"></script>
 
 	<script>
-		function Approve(event) {
+		function approve(event) {
 			var item = event.target;
 			var scheduleId = item.getAttribute("scheId");
 			var newDate = item.getAttribute("newDate");
 			var type = item.getAttribute("type");
-			var scrId = item.getAttribute("scrId");
+			var schrId = item.getAttribute("schrId");
 
 			if (confirm("Are you sure you want to approve this request!")) {
 				const formData = new FormData();
 				formData.append('scheduleId', scheduleId);
 				formData.append('newDate', newDate);
-				formData.append('scrId', scrId);
+				formData.append('schrId', schrId);
 
 				fetch('/admin/orders/request/approveDate', {
 					method: 'POST',
@@ -131,12 +132,12 @@
 			}
 		}
 
-		function DenyRequest(event) {
+		function denyRequest(event) {
 			var item = event.target;
-			var scrId = item.getAttribute("scrId");
+			var schrId = item.getAttribute("schrId");
 
 			if (confirm("Are you sure you want to deny this request!")) {
-				fetch(`/admin/orders/request/denyRequest?scrId=${scrId}`, {
+				fetch(`/admin/orders/request/denyRequest?schrId=${schrId}`, {
 					method: 'POST'
 				}).then(response => {
 					if (response.redirected) {

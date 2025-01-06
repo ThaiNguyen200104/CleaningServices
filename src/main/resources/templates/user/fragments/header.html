@@ -38,9 +38,10 @@
 							<a class="nav-item nav-link" th:href="@{/user/orders}"
 								th:classappend="${currentPage == 'orders' ? 'active' : ''}"
 								th:if="${session.usrId != null}">Orders</a>
-
+								
 							<a class="nav-item nav-link" th:href="@{/user/logout}"
 								th:if="${session.usrId != null}">Logout</a>
+
 						</div>
 					</div>
 				</div>

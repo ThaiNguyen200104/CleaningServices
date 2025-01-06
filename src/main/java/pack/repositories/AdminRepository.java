@@ -35,6 +35,11 @@ public class AdminRepository {
 
 	// -------------------- ACCOUNTS -------------------- //
 
+	/***
+	 * fetch specific admin by username from table admin
+	 * 
+	 * @return admin's username
+	 */
 	public Admin getAdminByUsername(String username) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_USERNAME);
@@ -44,6 +49,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch specific admin by id from table admin
+	 * 
+	 * @return admin's id
+	 */
 	public Admin getAdminById(int id) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_ADMIN, Views.COL_ADMIN_ID);
@@ -53,6 +63,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * insert into table admin
+	 * 
+	 * @return new admin
+	 */
 	public String newAdmin(String username, String password) {
 		try {
 			String str_query = String.format("INSERT INTO %s (username, password) VALUES (?,?)", Views.TBL_ADMIN);
@@ -63,6 +78,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch email in table admin for duplication
+	 * 
+	 * @return admin's email
+	 */
 	public Admin checkEmailExists(String email) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s = ?", Views.TBL_ADMIN, Views.COL_ADMIN_EMAIL);
@@ -72,6 +92,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update admin's password in table admin
+	 * 
+	 * @return updated admin's password
+	 */
 	public String changePass(String password) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = ? WHERE %s = ?", Views.TBL_ADMIN,
@@ -86,6 +111,11 @@ public class AdminRepository {
 
 	// -------------------- SERVICES -------------------- //
 
+	/***
+	 * fetch all data in table services
+	 * 
+	 * @return list of services
+	 */
 	public List<Service> getServices(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM services", Integer.class);
@@ -101,6 +131,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch a service in table services with id
+	 * 
+	 * @return specific service
+	 */
 	public Service getServiceById(int id) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_SERVICES, Views.COL_SERVICES_ID);
@@ -110,6 +145,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * insert into table services
+	 * 
+	 * @return new service
+	 */
 	public String newService(Service ser) {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
@@ -144,6 +184,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update for table services
+	 * 
+	 * @return updated service
+	 */
 	public String editService(Service ser) {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("UPDATE " + Views.TBL_SERVICES + " SET ");
@@ -189,6 +234,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update status for table services
+	 * 
+	 * @return updated status = 'activated'
+	 */
 	public String activateServiceStatus(int id) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = 'activated' WHERE %s = ?", Views.TBL_SERVICES,
@@ -200,6 +250,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update status for table services
+	 * 
+	 * @return updated services's status = 'disabled'
+	 */
 	public String disableServiceStatus(int id) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = 'disabled' WHERE %s = ?", Views.TBL_SERVICES,
@@ -213,6 +268,11 @@ public class AdminRepository {
 
 	// -------------------- BLOGS -------------------- //
 
+	/***
+	 * fetch blog from table blogs
+	 * 
+	 * @return list of blog
+	 */
 	public List<Blog> getBlogs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM blogs", Integer.class);
@@ -228,6 +288,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch specific blog by id from table blogs
+	 * 
+	 * @return a specific blog
+	 */
 	public Blog getBlogById(int id) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_BLOG, Views.COL_BLOG_ID);
@@ -237,6 +302,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * insert into table blogs
+	 * 
+	 * @return a new blog
+	 */
 	public String newBlog(Blog blog) {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
@@ -273,6 +343,11 @@ public class AdminRepository {
 		return null;
 	}
 
+	/***
+	 * update for table blogs
+	 * 
+	 * @return updated blog
+	 */
 	public String editBlog(Blog blog) {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("UPDATE blogs SET ");
@@ -310,6 +385,11 @@ public class AdminRepository {
 
 	// -------------------- STAFFS -------------------- //
 
+	/***
+	 * fetch specific staff by status == 'available' from table staffs
+	 * 
+	 * @return a specific available staff
+	 */
 	public List<Staff> getStaffs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM staffs WHERE status != 'disabled'", Integer.class);
@@ -326,6 +406,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch specific staff by status != 'disabled, unavailable' from table staffs
+	 * 
+	 * @return a specific staff
+	 */
 	public List<Staff> getStaffsForOrder(PageView pageItem) {
 		try {
 			int count = db.queryForObject(
@@ -344,6 +429,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch specific staff by id from table staffs
+	 * 
+	 * @return staff's id
+	 */
 	public Staff getStaffById(int id) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s=?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
@@ -353,6 +443,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * insert into table staffs
+	 * 
+	 * @return new staff's account
+	 */
 	public String newStaff(Staff staff) {
 		try {
 			String str_query = String.format(
@@ -368,6 +463,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update status for table staffs
+	 * 
+	 * @return updated status = 'disabled'
+	 */
 	public String disableStaff(int id) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = ? WHERE %s = ?", Views.TBL_STAFFS,
@@ -380,30 +480,13 @@ public class AdminRepository {
 		}
 	}
 
-	// assign staff for request
-	public List<Map<String, Object>> getRequestDetails() {
-		try {
-			String str_query = String.format(
-					"SELECT urd.*, s.service_name, u.fullname FROM %s urd JOIN %s s ON urd.service_id = s.id "
-							+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' or urd.status = 'reviewing' ORDER BY create_date desc",
-					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER);
-			return db.queryForList(str_query);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	// -------------------- REQUEST DETAILS -------------------- //
 
-	public int countAvailableStaff() {
-		try {
-			String query = "SELECT COUNT(*) FROM staffs WHERE status = 'available'";
-			return db.queryForObject(query, Integer.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0;
-		}
-	}
-
+	/***
+	 * fetch all staffs by status = 'available' from table staffs
+	 * 
+	 * @return list of available staffs
+	 */
 	public List<Staff> staffListForAssignRequest() {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE %s = 'available'", Views.TBL_STAFFS,
@@ -415,13 +498,58 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch specific staff by id from table staffs
+	 * 
+	 * @return a specific staff
+	 */
+	public List<Map<String, Object>> getRequestDetails() {
+		try {
+			String str_query = String.format(
+					"SELECT urd.*, s.service_name, u.fullname FROM %s urd JOIN %s s ON urd.service_id = s.id "
+							+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing' ORDER BY create_date DESC",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER);
+			return db.queryForList(str_query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/***
+	 * fetch all available staffs by status from table staffs
+	 * 
+	 * @return an amount of staffs
+	 */
+	public int countAvailableStaff() {
+		try {
+			String query = "SELECT COUNT(*) FROM staffs WHERE status = 'available'";
+			return db.queryForObject(query, Integer.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	/***
+	 * update status = 'reviewing' that specific staff(s) are in table
+	 * user_request_details
+	 * 
+	 * update status = 'unavailable' of that specific staff(s) in table staffs
+	 * 
+	 * @return assigned staff(s) into table user_request_details along update both
+	 *         tables's status
+	 */
 	public String assignStaffIntoRequest(int staffId, int urdId) {
 		try {
-			String request_query = String.format("UPDATE %s SET %s=?, %s ='reviewing' WHERE %s = ?",
+			String request_query = String.format("UPDATE %s SET %s = ?, %s = 'reviewing' WHERE %s = ?",
 					Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_STAFFID, Views.COL_URD_STATUS, Views.COL_URD_ID);
+
 			String staff_query = String.format("UPDATE %s SET %s = 'unavailable' WHERE %s = ?", Views.TBL_STAFFS,
 					Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
+
 			int requestaccepted = db.update(request_query, new Object[] { staffId, urdId });
+
 			if (requestaccepted == 1) {
 				int staffaccepted = db.update(staff_query, new Object[] { staffId });
 				return staffaccepted == 1 ? "success" : "failed";
@@ -432,8 +560,14 @@ public class AdminRepository {
 			return "failed";
 		}
 	}
-	// end region
 
+	// -------------------- SCHEDULES -------------------- //
+
+	/***
+	 * fetch all staffs by status = 'available' from table staffs
+	 * 
+	 * @return list of available staffs for assigning staff into an order
+	 */
 	public List<Staff> staffListForAssign(int detailId) {
 		try {
 			String str_query = String.format(
@@ -446,6 +580,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch all staffs by status = 'available' from table staffs
+	 * 
+	 * @return list of available staffs
+	 */
 	public String assignStaff(Schedule item) {
 		try {
 			String latestScheduleQuery = String.format("SELECT MAX(start_date) FROM %s WHERE staff_id = ?",
@@ -477,7 +616,12 @@ public class AdminRepository {
 		}
 	}
 
-	public List<Staff> AssignedStaffList(int id) {
+	/***
+	 * fetch all assigned staffs from table staffs & schedules
+	 * 
+	 * @return list of assigned staffs
+	 */
+	public List<Staff> assignedStaffList(int id) {
 		try {
 			String str_query = String.format("SELECT s.* FROM %s s JOIN %s ts ON s.id = ts.staff_id WHERE ts.%s = ?",
 					Views.TBL_STAFFS, Views.TBL_SCHEDULES, Views.COL_SCHEDULES_DETAIL_ID);
@@ -488,6 +632,12 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * fetch all assigned staffs from table staffs, schedules & order_details in
+	 * order to replace
+	 * 
+	 * @return list of assigned staffs
+	 */
 	public List<Staff> getCurrentStaff(int detailId) {
 		try {
 			String str_query = "SELECT s.* FROM staffs s JOIN schedules sd ON s.id = sd.staff_id"
@@ -499,12 +649,22 @@ public class AdminRepository {
 		}
 	}
 
-	public List<Staff> getAvailableStaffForReplacement(int orderId, int excludeStaffId) {
+	/***
+	 * fetch all available staffs from table staffs in order to be replaced
+	 * 
+	 * @return list of available staffs
+	 */
+	public List<Staff> getAvailableStaffToReplace(int orderId, int excludeStaffId) {
 		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
 		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
 	}
 
-	public String ReplaceStaff(int currentStaff, int newStaff, int orderId) {
+	/***
+	 * update staff_id in table schedules
+	 * 
+	 * @return updated staff_id
+	 */
+	public String replaceStaff(int currentStaff, int newStaff, int orderId) {
 		try {
 			String schedule_query = String.format("UPDATE %s SET %s = ? WHERE %s = ? and %s = ?", Views.TBL_SCHEDULES,
 					Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_STAFF_ID, Views.COL_SCHEDULES_DETAIL_ID);
@@ -530,6 +690,11 @@ public class AdminRepository {
 
 	// -------------------- ORDERS -------------------- //
 
+	/***
+	 * fetch all from table orders
+	 * 
+	 * @return list of orders
+	 */
 	public List<Map<String, Object>> getOrders(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
@@ -550,26 +715,11 @@ public class AdminRepository {
 		}
 	}
 
-	// Thái
-//	public List<OrderDetail> getOrders(PageView pageItem) {
-//		try {
-//			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
-//			int totalPage = count / pageItem.getPageSize();
-//			pageItem.setTotalPage(totalPage);
-//
-//			String str_query = String.format("SELECT od.*, o.*, u.fullname AS customer_name, "
-//					+ "CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
-//					+ "THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od " + "JOIN %s o ON od.order_id = o.id "
-//					+ "JOIN %s u ON o.user_id = u.id " + "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
-//					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
-//			return db.query(str_query, new OrderDetail_mapper(),
-//					(pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-
+	/***
+	 * fetch specific order_details by id from table order_details
+	 * 
+	 * @return a specific order_details
+	 */
 	public OrderDetail getDetailById(int id) {
 		try {
 			String str_query = String.format(
@@ -582,7 +732,12 @@ public class AdminRepository {
 		}
 	}
 
-	public void CheckOrderDetailUpToDate() {
+	/***
+	 * update status & new start_date in table order_details
+	 * 
+	 * @return updated status & start_date
+	 */
+	public void checkOrderDetailUpToDate() {
 		try {
 			String str_query = String.format(
 					"UPDATE %s SET %s = 'progressing' WHERE start_date = convert(date, getdate()) AND status = 'confirmed'",
@@ -595,13 +750,18 @@ public class AdminRepository {
 
 	// -------------------- SCHEDULE_REQUESTS -------------------- //
 
+	/***
+	 * fetch all from table schedule_requests
+	 * 
+	 * @return list of schedule_requests
+	 */
 	public List<Map<String, Object>> getRequestList() {
 		try {
 			String str_query = String.format(
-					"SELECT scr.*, scr.id AS scrId, scr.status AS scrStatus, "
-							+ "sc.staff_id AS oldStaff, sc.start_date, st.fullname FROM %s scr "
-							+ "JOIN %s sc ON scr.schedule_id = sc.id JOIN %s st ON sc.staff_id = st.id "
-							+ "WHERE scr.status = 'pending' ORDER BY create_date asc",
+					"SELECT schr.*, schr.id AS schrId, schr.status AS schrStatus, "
+							+ "sc.staff_id AS oldStaff, sc.start_date, st.fullname FROM %s schr "
+							+ "JOIN %s sc ON schr.schedule_id = sc.id JOIN %s st ON sc.staff_id = st.id "
+							+ "WHERE schr.status = 'pending' ORDER BY create_date",
 					Views.TBL_SCHEDULE_REQUESTS, Views.TBL_SCHEDULES, Views.TBL_STAFFS);
 			return db.queryForList(str_query);
 		} catch (Exception e) {
@@ -610,12 +770,52 @@ public class AdminRepository {
 		}
 	}
 
-	public String approveDateRequest(int scheduleId, Date newDate, int scrId) {
+	/***
+	 * update new staff into table schedules
+	 * update both old & new staff's status from table staffs
+	 * update schedule_request's status from table schedule_requests
+	 * 
+	 * @return updated fields in schedules, staffs & schedule_requests
+	 */
+	@Transactional
+	public String approveCancelRequest(int newStaffId, int schrId, int oldStaffId) {
+		try {
+			String updateScheduleQuery = "UPDATE schedules SET staff_id = ? FROM schedules sch "
+					+ "JOIN schedule_requests schr ON sch.id = schr.schedule_id WHERE schr.id = ?";
+
+			int rowsUpdated = db.update(updateScheduleQuery, newStaffId, schrId);
+			if (rowsUpdated == 1) {
+				String updateOldStaffQuery = "UPDATE staffs SET status = 'available' WHERE id = ?";
+				db.update(updateOldStaffQuery, oldStaffId);
+
+				String updateNewStaffQuery = "UPDATE staffs SET status = 'unavailable' WHERE id = ?";
+				db.update(updateNewStaffQuery, newStaffId);
+
+				String updateScheduleRequestQuery = "UPDATE schedule_requests SET status = 'approved' WHERE id = ?";
+				db.update(updateScheduleRequestQuery, schrId);
+
+				return "success";
+			}
+			return "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	/***
+	 * update new staff for table schedules
+	 * update both old & new staff's status for table staffs
+	 * update schedule_request's status from for schedule_requests
+	 * 
+	 * @return updated fields for schedules, staffs & schedule_requests
+	 */
+	public String approveDateRequest(int scheduleId, Date newDate, int schrId) {
 		try {
 			String sche_query = "UPDATE schedules SET start_date = ? WHERE id = ?";
 			String sr_query = "UPDATE schedule_requests SET status = ? WHERE id = ?";
 			Integer orderId = db.queryForObject(
-					"SELECT od.id FROM schedules s JOIN order_details od ON s.detail_id = od.id WHERE s.id = ?",
+					"SELECT od.id FROM schedules sch JOIN order_details od ON sch.detail_id = od.id WHERE sch.id = ?",
 					Integer.class, scheduleId);
 
 			if (orderId == null) {
@@ -624,9 +824,8 @@ public class AdminRepository {
 
 			String order_query = "UPDATE order_details SET start_date = ? WHERE id = ?";
 			int rowaccepted = db.update(sche_query, new Object[] { newDate, scheduleId });
-
 			if (rowaccepted == 1) {
-				db.update(sr_query, new Object[] { "approved", scrId });
+				db.update(sr_query, new Object[] { "approved", schrId });
 				db.update(order_query, new Object[] { newDate, orderId });
 				return "success";
 			}
@@ -637,6 +836,11 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update status for table schedule_requests
+	 * 
+	 * @return updated status = 'denied'
+	 */
 	public String denyRequest(int scheduleRequestId) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = 'denied' WHERE %s = ?", Views.TBL_SCHEDULE_REQUESTS,
@@ -650,29 +854,4 @@ public class AdminRepository {
 		}
 	}
 
-	@Transactional
-	public String approveCancelRequest(int newStaffId, int scrId, int oldStaffId) {
-		try {
-			String updateScheduleQuery = "UPDATE schedules SET staff_id = ? FROM schedules s "
-					+ "JOIN schedule_requests sr ON s.id = sr.schedule_id WHERE sr.id = ?";
-
-			int rowsUpdated = db.update(updateScheduleQuery, newStaffId, scrId);
-			if (rowsUpdated == 1) {
-				String updateOldStaffQuery = "UPDATE staffs SET status = 'available' WHERE id = ?";
-				db.update(updateOldStaffQuery, oldStaffId);
-
-				String updateNewStaffQuery = "UPDATE staffs SET status = 'unavailable' WHERE id = ?";
-				db.update(updateNewStaffQuery, newStaffId);
-
-				String updateScheduleRequestQuery = "UPDATE schedule_requests SET status = 'approved' WHERE id = ?";
-				db.update(updateScheduleRequestQuery, scrId);
-
-				return "success";
-			}
-			return "failed";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "failed";
-		}
-	}
 }

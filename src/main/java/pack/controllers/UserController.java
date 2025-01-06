@@ -234,17 +234,18 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getUserRequestDetailById((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/orders/orderDetails")
-	public String order_details(Model model, @RequestParam int id) {
-		model.addAttribute("orderDetails", rep.getOrderDetails(id));
+	public String order_details(Model model, @RequestParam("id") int usrReqId) {
+		List<Map<String, Object>> details =  rep.getOrderDetails(usrReqId);
+		model.addAttribute("orderDetails", details);
 		return Views.USER_ORDER_DETAILS;
 	}
 
-	@PostMapping("/confirmOrder")
+@PostMapping("/confirmOrder")
 	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
 			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
 		String result = rep.confirmOrder(urdId);
@@ -277,7 +278,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
 	}
 
-	// Service
 	@PostMapping("/bookService")
 	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate, @RequestParam double price) {
@@ -329,5 +329,4 @@ public class UserController {
 		}
 		return Views.USER_ORDERS;
 	}
-
 }
