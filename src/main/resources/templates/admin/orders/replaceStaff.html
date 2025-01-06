@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Staff Management</title>
+	<title>Cleanex - Orders Management</title>
 
 	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../../back/css/lineicons.css" />
@@ -58,7 +58,7 @@
 							<td th:text="${item.fullname}"></td>
 							<td>
 								<a class="btn btn-warning"
-									th:href="@{/admin/orders/staffToReplaceWith(detailId=${detailId}, staffId= ${item.id})}">Replace</a>
+									th:href="@{/admin/orders/availableStaffs(detailId=${detailId}, staffId= ${item.id})}">Replace</a>
 							</td>
 						</tr>
 					</tbody>

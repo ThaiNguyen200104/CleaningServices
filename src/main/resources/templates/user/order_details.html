@@ -61,13 +61,16 @@
 						<td
 							th:text="${item.complete_date != null ? #dates.format(item.complete_date, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
+
 						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" width="50" height="50"
-								alt="Before" />
+							<img loading="lazy" th:if="${item.before_image != null}"
+								th:src="'/upload/'+${item.before_image}" width="50" height="50" alt="Before" />
+							<p th:if="${item.before_image != null}">N/A</p>
 						</td>
 						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" width="50" height="50"
-								alt="After" />
+							<img loading="lazy" th:if="${item.after_image != null}"
+								th:src="'/upload/'+${item.after_image}" width="50" height="50" alt="After" />
+							<p th:if="${item.after_image != null}">N/A</p>
 						</td>
 						<td th:text="${item.status}"></td>
 					</tr>

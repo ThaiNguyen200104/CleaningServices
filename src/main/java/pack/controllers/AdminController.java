@@ -79,7 +79,7 @@ public class AdminController {
 			return Views.ADMIN_LOGIN;
 		}
 
-		rep.CheckOrderDetailUpToDate();
+		rep.checkOrderDetailUpToDate();
 
 		req.getSession().setAttribute("adminId", get.getId());
 		return "redirect:/admin";
@@ -405,7 +405,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders/assignStaff")
-	public String orderlisttoassign(@RequestParam int id, Model model) {
+	public String order_list_to_assign(@RequestParam int id, Model model) {
 		model.addAttribute("staffs", rep.staffListForAssign(id));
 		model.addAttribute("Ord_id", id);
 		model.addAttribute("detail", rep.getDetailById(id));
@@ -413,7 +413,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/newSchedule")
-	public ResponseEntity<String> assignStaff(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity<String> assign_staff(@RequestBody Map<String, Object> payload) {
 		List<Integer> staffIds = (List<Integer>) payload.get("staffIds");
 		String startDateStr = (String) payload.get("startDate");
 		Integer orderId = Integer.parseInt(payload.get("orderId").toString());
@@ -448,24 +448,24 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders/replaceStaff")
-	public String editStaffInOrder(@RequestParam int id, Model model) {
+	public String edit_staff_in_order(@RequestParam int id, Model model) {
 		model.addAttribute("staffs", rep.getCurrentStaff(id));
 		model.addAttribute("detailId", id);
 		return Views.ADMIN_ORDERS_REPLACE_STAFF;
 	}
 
-	@GetMapping("/orders/staffToReplaceWith")
-	public String editschedultstaff(@RequestParam int detailId, @RequestParam int staffId, Model model) {
-		model.addAttribute("staffs", rep.getAvailableStaffForReplacement(detailId, staffId));
+	@GetMapping("/orders/availableStaffs")
+	public String available_staffs(@RequestParam int detailId, @RequestParam int staffId, Model model) {
+		model.addAttribute("staffs", rep.getAvailableStaffToReplace(detailId, staffId));
 		model.addAttribute("currentStaff", staffId);
 		model.addAttribute("detailId", detailId);
 		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
 	}
 
 	@GetMapping("/replaceStaff")
-	public String replaceaction(@RequestParam int detailId, @RequestParam int currentStaff, @RequestParam int newStaff,
+	public String replace_staff(@RequestParam int detailId, @RequestParam int currentStaff, @RequestParam int newStaff,
 			Model model) {
-		String result = rep.ReplaceStaff(currentStaff, newStaff, detailId);
+		String result = rep.replaceStaff(currentStaff, newStaff, detailId);
 		if (result.equals("success")) {
 			return "redirect:/admin/orders/list";
 		}
@@ -473,7 +473,8 @@ public class AdminController {
 		return Views.ADMIN_ORDERS_STAFF_FOR_REPLACE;
 	}
 
-	// Schedule_Request
+	// -------------------- SCHEDULE REQUESTS -------------------- //
+
 	@PostMapping("/orders/request/approveDate")
 	public ResponseEntity<String> approveDate(@RequestParam int scheduleId,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate newDate, @RequestParam int scrId) {
@@ -514,7 +515,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/request/staffForReplace")
-	public String replaceStaffPage(@RequestParam int scrId, @RequestParam int oldStaff, Model model) {
+	public String replace_staff_view(@RequestParam int scrId, @RequestParam int oldStaff, Model model) {
 		model.addAttribute("scrId", scrId);
 		model.addAttribute("oldStaff", oldStaff);
 		model.addAttribute("staffs", rep.staffListForAssignRequest());
@@ -522,7 +523,8 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders/request/replaceStaff")
-	public String replaceStaff(@RequestParam int scrId, @RequestParam int staffId, @RequestParam int oldStaff, Model model) {
+	public String approve_cancel_request(@RequestParam int scrId, @RequestParam int staffId, @RequestParam int oldStaff,
+			Model model) {
 		String result = rep.approveCancelRequest(staffId, scrId, oldStaff);
 		if (result.equals("success")) {
 			return "redirect:/admin/orders/request";
@@ -589,8 +591,8 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
 
-	// -------------------- USER_REQUESTS -------------------- //
-	
+	// -------------------- USER REQUESTS -------------------- //
+
 	@GetMapping("/request/list")
 	public String requestList(Model model) {
 		model.addAttribute("requests", rep.getRequestDetails());
@@ -598,14 +600,14 @@ public class AdminController {
 		return Views.ADMIN_REQUEST_LIST;
 	}
 
-	@GetMapping("/request/StaffsForAssign")
+	@GetMapping("/request/staffsForAssign")
 	public String staffList(@RequestParam int urdId, Model model) {
 		model.addAttribute("staffs", rep.staffListForAssignRequest());
 		model.addAttribute("urdId", urdId);
 		return Views.ADMIN_REQUEST_ASSIGN;
 	}
 
-	@PostMapping("/request/Assign")
+	@PostMapping("/request/assign")
 	public ResponseEntity<String> assignForRequest(@RequestParam int staffId, @RequestParam int urdId) {
 		String result = rep.assignStaffIntoRequest(staffId, urdId);
 		if (result.equals("success")) {

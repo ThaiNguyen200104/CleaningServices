@@ -7,7 +7,7 @@
 	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
 	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
-	<title>Cleanex - Confirm your Orders</title>
+	<title>Cleanex - Your Orders</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -37,14 +37,15 @@
 			<h2>There are no services ordered.</h2>
 		</div>
 
-		<div th:unless="${#lists.isEmpty(orders)}" class="table-container">
+		<div th:unless="${#lists.isEmpty(orders)}">
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<table class="booking-table">
 				<thead>
 					<tr>
 						<th>No.</th>
 						<th>Service</th>
-						<th>Price</th>
+						<th>Base Price</th>
+						<th>Confirmed Price</th>
 						<th>Start Date</th>
 						<th>Status</th>
 						<th>Action</th>
@@ -53,28 +54,46 @@
 				<tbody>
 					<tr th:each="item : ${orders}">
 						<td th:text="${item.id}"></td>
-						<td th:text="${item.serName}"></td>
+						<td th:text="${item.service_name}"></td>
+						<td th:text="${item.base_price} + '$'"></td>
 						<td th:text="${item.price} + '$'"></td>
-						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-						<td th:text="${item.status}"></td>
+						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
+						<td th:text="${item.status}" th:if="${item.status == 'confirmed'}">
+							<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M18.71 7.21a1 1 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1 1 0 1 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a1 1 0 0 0 0-1.47Z"
+									fill="#19c836" class="fill-6563ff"></path>
+							</svg>
+						</td>
 						<td>
-							<a class="btn btn-success" onclick="confirmAction(event)"
+							<a class="btn btn-outline-info" th:href="@{/user/orders/orderDetails(id=${item.id})}"
+								th:if="${item.status == 'confirmed'}">Detail</a>
+
+							<a class="btn btn-success changeSize" onclick="confirmAction(event)"
 								th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
 								th:if="${item.status == 'reviewing'}">Confirm</a>
-
-							<a class="btn btn-danger" onclick="cancel(event)"
-								th:attr="requestId=${item.id}, staffId=${item.staffId}"
-								th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
-
-							<a th:href="@{/user/orders/orderDetails(id=${item.id})}"
-								th:if="${item.status == 'confirmed'}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
+							<a class="svg-icon" onclick="confirmAction(event)"
+								th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staffId=${item.staffId}"
+								th:if="${item.status == 'reviewing'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
 									<path
-										d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
-										fill="#000000" class="fill-6563ff"></path>
+										d="m14.72 8.79-4.29 4.3-1.65-1.65a1 1 0 1 0-1.41 1.41l2.35 2.36a1 1 0 0 0 .71.29 1 1 0 0 0 .7-.29l5-5a1 1 0 0 0 0-1.42 1 1 0 0 0-1.41 0ZM12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"
+										fill="#365cf5" class="fill-6563ff"></path>
 								</svg>
 							</a>
 
+							<a class="btn btn-danger changeSize" onclick="cancel(event)"
+								th:attr="requestId=${item.id}, staffId=${item.staffId}"
+								th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
+							<a class="svg-icon" onclick="cancel(event)"
+								th:attr="requestId=${item.id}, staffId=${item.staffId}"
+								th:if="${item.status == 'pending' || item.status == 'reviewing'}">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
+									<path
+										d="M15.71 8.29a1 1 0 0 0-1.42 0L12 10.59l-2.29-2.3a1 1 0 0 0-1.42 1.42l2.3 2.29-2.3 2.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l2.29-2.3 2.29 2.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12l2.3-2.29a1 1 0 0 0 0-1.42ZM19 2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
+										fill="#dc3545" class="fill-6563ff fill-ed1411"></path>
+								</svg>
+							</a>
 						</td>
 					</tr>
 				</tbody>

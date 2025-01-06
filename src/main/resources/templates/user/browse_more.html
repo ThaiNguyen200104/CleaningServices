@@ -51,12 +51,12 @@
 				</thead>
 				<tbody th:each="item: ${browseMore}">
 					<tr>
-						<td th:text="${item.orderId}"></td>
-						<td th:text="${item.serName}"></td>
-						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${item.id}"></td>
+						<td th:text="${item.service_name}"></td>
+						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a th:href="@{/user/seeMore(id=${item.orderId})}">
+							<a th:href="@{/user/seeMore(id=${item.id})}">
 								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
 									<path
 										d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"

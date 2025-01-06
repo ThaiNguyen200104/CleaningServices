@@ -235,53 +235,19 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getUserReqDetailById((int) request.getSession().getAttribute("usrId")));
+		model.addAttribute("orders", rep.getUserRequestDetailById((int) request.getSession().getAttribute("usrId")));
 		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/orders/orderDetails")
-	public String order_details(Model model, @RequestParam int id) {
-		model.addAttribute("orderDetails", rep.getOrderDetails(id));
+	public String order_details(Model model, @RequestParam("id") int usrReqId) {
+		List<Map<String, Object>> details =  rep.getOrderDetails(usrReqId);
+		model.addAttribute("orderDetails", details);
 		return Views.USER_ORDER_DETAILS;
-
 	}
 
-	@PostMapping("/confirmOrder")
-	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
-			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
-		String result = rep.confirmOrder(urdId);
-		if (result.equals("success")) {
-			String confirm = rep.newOrder(urdId, serId, startDate, price);
-			if (confirm.equals("success")) {
-				rep.updateStaffStatusToAvailable(staffId);
-				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
-			}
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
-	}
-
-	@GetMapping("/cancelOrder")
-	public ResponseEntity<String> cancel_order(@RequestParam int requestId,
-			@RequestParam(required = false) Integer staffId, Model model) {
-		String result = rep.cancelOrder(requestId);
-		if (result.equals("success")) {
-			if (staffId != null && staffId != 0) {
-				String result1 = rep.updateStaffStatusToAvailable(staffId);
-				if (result1.equals("success")) {
-					return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders")
-							.body("");
-				}
-				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
-			}
-			return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
-	}
-
-	// Service
 	@PostMapping("/bookService")
-	public ResponseEntity<String> createOrder(@RequestParam int userId, @RequestParam int serviceId,
+	public ResponseEntity<String> create_order(@RequestParam int userId, @RequestParam int serviceId,
 			@RequestParam Date startDate, @RequestParam double price) {
 		try {
 			Date currentDate = new Date(System.currentTimeMillis());
@@ -313,4 +279,38 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create order.");
 		}
 	}
+
+	@PostMapping("/confirmOrder")
+	public ResponseEntity<String> confirm_order(@RequestParam int urdId, @RequestParam int serId,
+			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
+		String result = rep.confirmOrder(urdId);
+		if (result.equals("success")) {
+			String confirm = rep.newOrder(urdId, serId, startDate, price);
+			if (confirm.equals("success")) {
+				rep.updateStaffStatusToAvailable(staffId);
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to confirm the order. Please try again.");
+	}
+
+	@GetMapping("/cancelOrder")
+	public ResponseEntity<String> cancel_order(@RequestParam int requestId,
+			@RequestParam(required = false) Integer staffId, Model model) {
+		String result = rep.cancelOrder(requestId);
+		if (result.equals("success")) {
+			if (staffId != null && staffId != 0) {
+				String result1 = rep.updateStaffStatusToAvailable(staffId);
+				if (result1.equals("success")) {
+					return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders")
+							.body("");
+				}
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
+			}
+			return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to cancel the order. Please try again.");
+	}
+
 }
