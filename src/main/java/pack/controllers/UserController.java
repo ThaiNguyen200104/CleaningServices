@@ -114,14 +114,13 @@ public class UserController {
 		List<OrderDetail> orderDetail = rep.getOrdersForAccount((int) req.getSession().getAttribute("usrId"));
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
+		model.addAttribute("currentPage", "accounts");
 		return Views.USER_ACCOUNTS;
 	}
 
 	@GetMapping("/seeMore")
-	public String see_more(@RequestParam("id") int usrReqId, Model model) {
-		List<Map<String, Object>> details = rep.getOrderDetailsForAccount(usrReqId);
-		model.addAttribute("seeMore", details);
-
+	public String see_more(@RequestParam int id, Model model) {
+		model.addAttribute("seeMore", rep.getOrderDetailsForAccount(id));
 		return Views.USER_SEE_MORE;
 	}
 
@@ -134,8 +133,7 @@ public class UserController {
 
 		model.addAttribute("pv", pv);
 		model.addAttribute("browseMore",
-				rep.getAllOrderDetailsForAccount(pv, (int) req.getSession().getAttribute("usrId")));
-
+		rep.getAllOrderDetailsForAccount(pv, (int) req.getSession().getAttribute("usrId")));
 		return Views.USER_BROWSE_MORE;
 	}
 
@@ -240,12 +238,11 @@ public class UserController {
 
 	@GetMapping("/orders/orderDetails")
 	public String order_details(Model model, @RequestParam("id") int usrReqId) {
-		List<Map<String, Object>> details =  rep.getOrderDetails(usrReqId);
-		model.addAttribute("orderDetails", details);
+		model.addAttribute("orderDetails", rep.getOrderDetails(usrReqId));
 		return Views.USER_ORDER_DETAILS;
 	}
 
-@PostMapping("/confirmOrder")
+	@PostMapping("/confirmOrder")
 	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
 			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
 		String result = rep.confirmOrder(urdId);

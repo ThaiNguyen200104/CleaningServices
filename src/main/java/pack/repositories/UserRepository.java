@@ -184,10 +184,10 @@ public class UserRepository {
 	public List<OrderDetail> getOrdersForAccount(int usrId) {
 		try {
 			String str_query = String.format(
-					"SELECT TOP 5 od.*, s.service_name AS serName FROM %s s JOIN %s od ON s.id = od.service_id "
-							+ "JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
-							+ "WHERE ur.user_id = ? ORDER BY od.create_date DESC",
-					Views.TBL_SERVICES, Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST);
+					"SELECT top 5 ord.*, s.service_name FROM %s ord " + "join %s o on ord.order_id = o.id "
+							+ "join user_requests ur on o.usrReq_id = ur.id " + "join %s s on ord.service_id = s.id "
+							+ "WHERE ur.user_id = ? " + "order by ord.create_date desc",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_SERVICES);
 			return db.query(str_query, new OrderDetail_mapper(), new Object[] { usrId });
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,19 +218,15 @@ public class UserRepository {
 		}
 	}
 
-
-  /***
+	/***
 	 * fetch data from table services, staffs and order_details
 	 * 
 	 * @return order list for see_more.html
 	 */
-	public List<Map<String, Object>> getOrderDetailsForAccount(int usrReqId) {
+	public List<Map<String, Object>> getOrderDetailsForAccount(int id) {
 		try {
-			String str_query = String.format(
-					"SELECT od.*, s.service_name FROM %s od JOIN %s s ON s.id = od.service_id JOIN %s sch ON sch.detail_id = od.id "
-							+ "JOIN %s st ON sch.staff_id = st.id WHERE od.id = ? ORDER BY od.create_date DESC",
-					Views.TBL_SERVICES, Views.TBL_ORDER_DETAIL, Views.TBL_SCHEDULES, Views.TBL_STAFFS);
-			return db.queryForList(str_query, new Object[] { usrReqId });
+			String str_query = "select ord.*, s.service_name from order_details ord join services s on ord.service_id = s.id where ord.id = ?";
+			return db.queryForList(str_query, new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -260,15 +256,10 @@ public class UserRepository {
 	 * 
 	 * @return order list for order_details.html
 	 */
-	public List<Map<String, Object>> getOrderDetails(int userId) {
+	public OrderDetail getOrderDetails(int orderId) {
 		try {
-			String str_query = String.format(
-					"SELECT urd.*, urd.price, s.service_name, s.base_price, od.before_image, od.after_image FROM %s urd "
-							+ "JOIN %s ur ON urd.usrReq_id = ur.id JOIN %s o ON ur.id = o.usrReq_id JOIN %s od ON o.id = od.order_id "
-							+ "JOIN %s s ON urd.service_id = s.id WHERE urd.user_id = ? AND urd.status != 'canceled'",
-					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_ORDER, Views.TBL_ORDER_DETAIL,
-					Views.TBL_SERVICES);
-			return db.queryForList(str_query, new Object[] { userId });
+			String str_query = "select od.*, s.service_name from order_details od join services s on od.service_id = s.id where od.id = ?";
+			return db.queryForObject(str_query, new OrderDetail_mapper(), new Object[] { orderId });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -392,10 +383,10 @@ public class UserRepository {
 			return "failed";
 		}
 	}
-	
-  /***
-	 * update status = 'completed' in table order_details
-	 * update status = 'available'in table staffs
+
+	/***
+	 * update status = 'completed' in table order_details update status =
+	 * 'available'in table staffs
 	 * 
 	 * @return updated order_details & staffs status
 	 */
@@ -403,9 +394,9 @@ public class UserRepository {
 		try {
 			String str_query = "update order_details set status = 'completed' where id = ?";
 			String staffs_query = "update staffs set status = 'available' where id in (select s.staff_id from schedules s where s.detail_id = ?)";
-			int rowaccepted = db.update(str_query, new Object[] {detailId});
-			if(rowaccepted == 1) {
-				db.update(staffs_query, new Object[] {detailId});
+			int rowaccepted = db.update(str_query, new Object[] { detailId });
+			if (rowaccepted == 1) {
+				db.update(staffs_query, new Object[] { detailId });
 				return "success";
 			}
 			return "failed";
@@ -414,15 +405,16 @@ public class UserRepository {
 			return "failed";
 		}
 	}
-	
-  /***
+
+	/***
 	 * update status = 'progressing' in table order_details
 	 * 
 	 * @return updated order_details status
 	 */
 	public String orderDecline(int detailId) {
 		try {
-			int rowaccepted = db.update("update order_details set status = 'progressing' where id = ?", new Object[] {detailId});
+			int rowaccepted = db.update("update order_details set status = 'progressing' where id = ?",
+					new Object[] { detailId });
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
 			e.printStackTrace();

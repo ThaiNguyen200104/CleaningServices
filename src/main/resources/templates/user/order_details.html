@@ -56,22 +56,21 @@
 				<tbody>
 					<tr th:each="item : ${orderDetails}">
 						<td th:text="${item.id}"></td>
-						<td th:text="${item.service_name}"></td>
+						<td th:text="${item.serName}"></td>
 						<td th:text="${item.price + '$'}"></td>
-						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
+						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 						<td
-							th:text="${item.complete_date != null ? #dates.format(item.complete_date, 'yyyy-MM-dd') : 'N/A'}">
-						</td>
-
-						<td>
-							<img loading="lazy" th:if="${item.before_image != null}"
-								th:src="'/upload/'+${item.before_image}" width="50" height="50" alt="Before" />
-							<p th:if="${item.before_image != null}">N/A</p>
+							th:text="${item.completeDate != null ? #dates.format(item.completeDate, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
 						<td>
-							<img loading="lazy" th:if="${item.after_image != null}"
-								th:src="'/upload/'+${item.after_image}" width="50" height="50" alt="After" />
-							<p th:if="${item.after_image != null}">N/A</p>
+							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" width="50" height="50"
+								alt="Before" th:if="${item.status == 'verifying'}" />
+							<p th:if="${item.status != 'verifying'}">None</p>
+						</td>
+						<td>
+							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" width="50" height="50"
+								alt="After" th:if="${item.status == 'verifying'}" />
+							<p th:if="${item.status != 'verifying'}">None</p>
 						</td>
 						<td th:text="${item.status}"></td>
 						<td>
