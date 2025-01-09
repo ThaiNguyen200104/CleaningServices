@@ -31,6 +31,7 @@
 		<div class="login-container">
 			<div class="form-container">
 				<h2>Welcome Back</h2>
+				<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 				<div th:if="${loginError}" class="error-message" th:text="${loginError}"></div>
 				<form th:action="@{/user/checkLogin}" method="post">
 					<div class="form-group">

@@ -60,7 +60,7 @@ public class AdminRest {
 
 	@CrossOrigin
 	@GetMapping("/createAdmin")
-	public ResponseEntity<String> createAdmin(@RequestParam("token") String token) {
+	public ResponseEntity<String> createAdmin(@RequestParam String token) {
 		try {
 			TokenRecord tokenRecord = tokenRepository.findToken(token);
 

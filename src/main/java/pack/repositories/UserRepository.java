@@ -1,23 +1,31 @@
 package pack.repositories;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import pack.IService.TokenInterface;
 import pack.models.OrderDetail;
 import pack.models.PageView;
 import pack.models.Service;
+import pack.models.TokenRecord;
 import pack.models.User;
 import pack.modelviews.OrderDetail_mapper;
 import pack.modelviews.Service_mapper;
 import pack.modelviews.User_mapper;
+import pack.services.EmailService;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
 
@@ -25,7 +33,13 @@ import pack.utils.Views;
 public class UserRepository {
 
 	@Autowired
-	JdbcTemplate db;
+	private JdbcTemplate db;
+
+	@Autowired
+	private EmailService emailService;
+
+	@Autowired
+	private TokenInterface tokenService;
 
 	// -------------------- ACCOUNTS -------------------- //
 
@@ -76,18 +90,53 @@ public class UserRepository {
 	 * 
 	 * @return new user account
 	 */
-	public String newUser(User user) {
+	@Transactional
+	public String saveUser(User user) {
 		try {
-			String str_query = String.format(
-					"INSERT INTO %s (username, password, email, phone, fullname) VALUES (?,?,?,?,?)", Views.TBL_USER);
+			String sql = "INSERT INTO users (fullname, username, password, email, phone) VALUES (?, ?, ?, ?, ?)";
 			String hashPassword = SecurityUtility.encryptBcrypt(user.getPassword());
-			int rowaccept = db.update(str_query, new Object[] { user.getUsername(), hashPassword, user.getEmail(),
-					user.getPhone(), user.getFullname() });
-			return rowaccept == 1 ? "success" : "failed";
+
+			int rowaccepted = db.update(sql, user.getFullname(), user.getUsername(), hashPassword, user.getEmail(),
+					user.getPhone());
+
+			String token = UUID.randomUUID().toString();
+			LocalDateTime expirationTime = LocalDateTime.now().plusHours(3);
+			tokenService.saveUserToken(token, expirationTime, user.getEmail());
+
+			String verificationLink = "http://localhost:8080/user/verify?token=" + token;
+			String emailText = String.format(
+					"Dear %s,\n\nThank you for registering. Please click the link below to verify your account:\n%s\n\n"
+							+ "This link will expire in 3 hours.\n\nBest regards,\nCleanex Team",
+					user.getFullname(), verificationLink);
+
+			emailService.SendMail(user.getEmail(), "Verify Your Cleanex Account", emailText);
+			return rowaccepted == 1 ? "success" : "failed";
 		} catch (DuplicateKeyException e) {
 			throw new IllegalArgumentException("Some information(username, email, phone) may already exists.");
 		} catch (Exception e) {
-			return "Error: " + e.getMessage();
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	public boolean verifyUser(String token) {
+		try {
+			TokenRecord tokenRecord = tokenService.findUserToken(token);
+
+			if (tokenRecord == null || tokenRecord.getExpirationTime().isBefore(LocalDateTime.now())
+					|| tokenRecord.isUsed()) {
+				return false;
+			}
+
+			tokenService.markTokenAsUsed(token);
+
+			String updateUserSql = "UPDATE users SET is_verified = 1 WHERE email = ?";
+			int updatedRows = db.update(updateUserSql, tokenRecord.getEmail());
+
+			return updatedRows > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 

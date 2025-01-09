@@ -73,21 +73,50 @@
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script>
-		setTimeout(function () {
-			document.querySelector('.error-message').innerText = '';
-		}, 6000);
-	</script>
-
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
 	<script src="../front/lib/easing/easing.min.js"></script>
 	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../front/js/main.js"></script>
+
+	<script>
+		setTimeout(function () {
+			document.querySelector('.error-message').innerText = '';
+		}, 6000);
+
+		document.querySelector('form').addEventListener('submit', async function (e) {
+			e.preventDefault();
+			const submitButton = this.querySelector('button[type="submit"]');
+			const originalButtonText = submitButton.innerHTML;
+			submitButton.disabled = true;
+			submitButton.innerHTML = 'Processing...';
+
+			try {
+				const formData = new FormData(this);
+				const response = await fetch('/user/newUser', {
+					method: 'POST',
+					body: formData
+				});
+
+				const result = await response.json();
+
+				if (result.status === 'success') {
+					alert('Registration successful! Please check your email to verify your account.');
+					window.location.href = '/user/login';
+				} else {
+					alert(result.message || 'Failed to create user, please try again.');
+					submitButton.disabled = false;
+					submitButton.innerHTML = originalButtonText;
+				}
+			} catch (error) {
+				alert('Failed to create user, please try again.');
+				submitButton.disabled = false;
+				submitButton.innerHTML = originalButtonText;
+			}
+		});
+	</script>
 </body>
 
 </html>
