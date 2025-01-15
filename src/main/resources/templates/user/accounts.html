@@ -21,7 +21,7 @@
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="acc-container container my-5">
+	<div class="acc-container my-5 mx-3">
 		<div class="row">
 			<div class="col-3 text-center">
 				<img th:if="${user.image == null}" src="../front/img/none-user.png" class="rounded-circle mb-3"
@@ -90,9 +90,6 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="text-center mt-3">
-					<a th:if="${browseMore}" th:href="@{/user/browseMore}" class="btn btn-primary">Browse More</a>
-				</div>
 			</div>
 		</div>
 	</div>
