@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pack.IService.TokenInterface;
 import pack.models.TokenRecord;
@@ -34,4 +35,19 @@ public class TokenRepository implements TokenInterface {
 		String sql = "UPDATE tokens SET used = 1 WHERE token_id = ?";
 		db.update(sql, token);
 	}
+
+	@Override
+	public void saveUserToken(String token, LocalDateTime expirationTime, String email) {
+		String sql = "insert into tokens(token_id, expiration_time, email) values(?,?,?)";
+		db.update(sql, new Object[] { token, expirationTime, email });
+	}
+
+	@Override
+	public TokenRecord findUserToken(String token) {
+		String sql = "SELECT token_id, email, expiration_time, used FROM tokens WHERE token_id = ?";
+		return db.queryForObject(sql, (rs, rowNum) -> new TokenRecord(rs.getString("token_id"),
+				rs.getTimestamp("expiration_time").toLocalDateTime(), rs.getBoolean("used"), rs.getString("email")),
+				token);
+	}
+
 }

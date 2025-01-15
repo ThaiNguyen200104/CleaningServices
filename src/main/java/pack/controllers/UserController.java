@@ -1,9 +1,12 @@
 package pack.controllers;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +14,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
+import pack.IService.TokenInterface;
 import pack.models.OrderDetail;
 import pack.models.PageView;
+import pack.models.TokenRecord;
 import pack.models.User;
 import pack.repositories.UserRepository;
+import pack.services.EmailService;
 import pack.services.OtpService;
 import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
@@ -39,6 +48,12 @@ public class UserController {
 	@Autowired
 	OtpService otpService;
 
+	@Autowired
+	TokenInterface tokenService;
+
+	@Autowired
+	EmailService emailService;
+
 	// -------------------- INDEX -------------------- //
 
 	@GetMapping("/signup")
@@ -48,37 +63,46 @@ public class UserController {
 	}
 
 	@PostMapping("/newUser")
-	public String create_user(@ModelAttribute("new_item") User user, HttpServletRequest req, Model model) {
-		if (!user.getPhone().matches(Views.PHONE_REGEX)) {
-			model.addAttribute("error",
-					"Your phone number must only have digits and be at least 10 to 11 digits long.");
-			return Views.USER_SIGNUP;
-		}
-		if (!user.getConfirmPassword().equals(user.getPassword())) {
-			model.addAttribute("error", "Password and Confirm Password are not match.");
-			return Views.USER_SIGNUP;
-		}
+	@ResponseBody
+	public Map<String, String> create_user(@ModelAttribute("new_item") User user, HttpServletRequest req) {
+		Map<String, String> response = new HashMap<>();
 		try {
-			String result = rep.newUser(user);
-			if (result.equals("success")) {
-				return "redirect:/user/login";
+			String result = rep.saveUser(user);
+			if (!"success".equals(result)) {
+				response.put("status", "failed");
+				response.put("message", "User creation failed.");
+				return response;
 			}
-			model.addAttribute("error", "Failed to create user, please try again.");
-			return Views.USER_SIGNUP;
+			response.put("status", "success");
+			response.put("message", "Please check your email to verify your account.");
 		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "Some information(username, email, phone) may already exists.");
-			return Views.USER_SIGNUP;
+			response.put("status", "failed");
+			response.put("message", e.getMessage());
 		} catch (Exception e) {
-			System.out.println("System error: " + e.getMessage());
-			model.addAttribute("error", "An unexpected error occurred. Please try again later.");
-			return Views.USER_SIGNUP;
+			response.put("status", "failed");
+			response.put("message", "An unexpected error occurred.");
+			e.printStackTrace();
 		}
+		return response;
+	}
+
+	@GetMapping("/verify")
+	public String verifyUser(@RequestParam String token, RedirectAttributes redirectAttributes) {
+		boolean verified = rep.verifyUser(token);
+		if (verified) {
+			redirectAttributes.addFlashAttribute("message",
+					"Your account has been verified successfully. You can now login.");
+			return "redirect:/user/login";
+		} else {
+			redirectAttributes.addFlashAttribute("message",
+					"Invalid or expired verification link. Please try again or contact support.");
+		}
+		return "redirect:/user/login";
 	}
 
 	@GetMapping("/login")
 	public String login(Model model) {
 		model.addAttribute("currentPage", "login");
-
 		return Views.USER_LOGIN;
 	}
 
@@ -86,7 +110,7 @@ public class UserController {
 	public String check_login(@RequestParam("usrname") String username, @RequestParam("pw") String password,
 			HttpServletRequest req, Model model) {
 		User user = rep.findUserByUsername(username);
-		if (user == null) {
+		if (user == null || !user.isVerified()) {
 			model.addAttribute("loginError", "Username does not exist.");
 			return Views.USER_LOGIN;
 		}
@@ -115,15 +139,13 @@ public class UserController {
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
 		model.addAttribute("currentPage", "accounts");
-
+    
 		return Views.USER_ACCOUNTS;
 	}
 
 	@GetMapping("/seeMore")
-	public String see_more(@RequestParam("id") int usrReqId, Model model) {
-		List<Map<String, Object>> details = rep.getOrderDetailsForAccount(usrReqId);
-		model.addAttribute("seeMore", details);
-
+	public String see_more(@RequestParam int id, Model model) {
+		model.addAttribute("seeMore", rep.getOrderDetailsForAccount(id));
 		return Views.USER_SEE_MORE;
 	}
 
@@ -137,7 +159,6 @@ public class UserController {
 		model.addAttribute("pv", pv);
 		model.addAttribute("browseMore",
 				rep.getAllOrderDetailsForAccount(pv, (int) req.getSession().getAttribute("usrId")));
-
 		return Views.USER_BROWSE_MORE;
 	}
 
@@ -250,11 +271,11 @@ public class UserController {
 	public String order_details(Model model, @RequestParam("id") int usrReqId) {
 		List<Map<String, Object>> details = rep.getOrderDetails(usrReqId);
 		model.addAttribute("orderDetails", details);
-		
+    
 		return Views.USER_ORDER_DETAILS;
 	}
 
-@PostMapping("/confirmOrder")
+	@PostMapping("/confirmOrder")
 	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
 			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
 		String result = rep.confirmOrder(urdId);

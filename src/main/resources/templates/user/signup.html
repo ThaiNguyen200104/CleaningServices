@@ -76,6 +76,37 @@
 		setTimeout(function () {
 			document.querySelector('.error-message').innerText = '';
 		}, 6000);
+
+		document.querySelector('form').addEventListener('submit', async function (e) {
+			e.preventDefault();
+			const submitButton = this.querySelector('button[type="submit"]');
+			const originalButtonText = submitButton.innerHTML;
+			submitButton.disabled = true;
+			submitButton.innerHTML = 'Processing...';
+
+			try {
+				const formData = new FormData(this);
+				const response = await fetch('/user/newUser', {
+					method: 'POST',
+					body: formData
+				});
+
+				const result = await response.json();
+
+				if (result.status === 'success') {
+					alert('Registration successful! Please check your email to verify your account.');
+					window.location.href = '/user/login';
+				} else {
+					alert(result.message || 'Failed to create user, please try again.');
+					submitButton.disabled = false;
+					submitButton.innerHTML = originalButtonText;
+				}
+			} catch (error) {
+				alert('Failed to create user, please try again.');
+				submitButton.disabled = false;
+				submitButton.innerHTML = originalButtonText;
+			}
+		});
 	</script>
 </body>
 
