@@ -4,30 +4,27 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
-import pack.models.OrderDetail;
 import pack.models.Staff;
 import pack.repositories.StaffRepository;
 import pack.services.OtpService;
 import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RequestMapping("/staff")
 @Controller
@@ -84,12 +81,52 @@ public class StaffController {
 
 	// -------------------- ACCOUNT --------------------//
 
-	@GetMapping("/accounts")
-	public String accounts(HttpServletRequest req, Model model) {
-		Staff st = rep.findStaffById((int) req.getSession().getAttribute("staffId"));
-		model.addAttribute("staff", st);
+	@GetMapping("/editProfile")
+	public String edit_profile(Model model, HttpServletRequest req) {
+		try {
+			Staff st = rep.findStaffById((int) req.getSession().getAttribute("staffId"));
+			if (st != null) {
+				model.addAttribute("edit_item", st);
+				return Views.STAFF_EDIT_PROFILE;
+			}
+			return "redirect:/staff/edit_profile";
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
+			return Views.STAFF_EDIT_PROFILE;
+		}
+	}
 
-		return Views.STAFF_ACCOUNTS;
+	@PostMapping("/updateProfile")
+	public String update_profile(@RequestParam(required = false) MultipartFile file,
+			@ModelAttribute("edit_item") Staff st, Model model, RedirectAttributes ra, HttpServletRequest req) {
+		try {
+			Staff oldStaffInfo = rep.findStaffById((int) req.getSession().getAttribute("staffId"));
+			if (st.getPassword() != null
+					&& SecurityUtility.compareBcrypt(oldStaffInfo.getPassword(), st.getPassword())) {
+				model.addAttribute("error", "You have used this password before. Please choose a different one.");
+				return Views.STAFF_EDIT_PROFILE;
+			}
+
+			if (file != null && !file.isEmpty()) {
+				st.setImage(FileUtility.uploadFileImage(file, "upload"));
+			}
+
+			String result = rep.editProfile(st);
+			if ("success".equals(result)) {
+				ra.addFlashAttribute("message", "Profile updated successfully.");
+				return "redirect:/staff";
+			} else {
+				model.addAttribute("error", "Failed to update profile: " + result);
+				return Views.STAFF_EDIT_PROFILE;
+			}
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", e.getMessage());
+			return Views.STAFF_EDIT_PROFILE;
+		} catch (Exception e) {
+			model.addAttribute("error", "An error occurred: " + e.getMessage());
+			return Views.STAFF_EDIT_PROFILE;
+		}
 	}
 
 	@GetMapping("/forgotPassword")

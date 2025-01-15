@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Staff Account</title>
+	<title>Cleanex - Edit Account</title>
 
 	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../back/css/lineicons.css" />
@@ -29,30 +29,27 @@
 		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
 
 		<div class="wrapper">
-			<div class="acc-container mt-5">
-				<div class="row">
-					<div class="col-3 text-center">
-						<img th:if="${staff.image == null}" src="../front/img/none-user.png"
-							class="img-fluid rounded-circle mb-3" width="150" height="150" />
-						<img th:unless="${staff.image == null}" th:src="'/upload/' + ${staff.image}"
-							class="img-fluid rounded-circle mb-3" width="150" height="150" />
-						<h3 th:text="${staff.fullname}"></h3>
-						<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
+			<div class="container-fluid">
+				<h2 class="my-4">Edit your profile</h2>
+				<form th:action="@{/staff/updateProfile}" method="post" th:object="${edit_item}"
+					enctype="multipart/form-data">
+					<div th:if="${error}" class="error-message" th:text="${error}"></div>
+					<input type="hidden" id="id" name="id" th:field="*{id}" />
+					<div class="mb-3 row">
+						<div class="col-6">
+							<label class="form-label" for="password">Password</label>
+							<input class="form-control" type="password" id="password" />
+						</div>
+
+						<div class="col-6">
+							<label class="form-label" for="image">Profile Image</label>
+							<input class="form-control" type="file" name="file" accept="image/*" />
+						</div>
 					</div>
-					<div class="col-9">
-						<h2 class="mb-4">Profile</h2>
-						<dl class="row">
-							<dt class="col-3">Username:</dt>
-							<dd class="col-9" th:text="${staff.username}"></dd>
-							<dt class="col-3">Email:</dt>
-							<dd class="col-9" th:text="${staff.email}"></dd>
-							<dt class="col-3">Phone:</dt>
-							<dd class="col-9" th:text="${staff.phone}"></dd>
-							<dt class="col-3">Job Occupied:</dt>
-							<dd class="col-9" th:text="${staff.jobOccupied}"></dd>
-						</dl>
+					<div class="d-flex justify-content-end">
+						<button type="submit" class="btn btn-success">Save</button>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</main>
@@ -66,8 +63,6 @@
 	<script src="../back/js/world-merc.js"></script>
 	<script src="../back/js/polyfill.js"></script>
 	<script src="../back/js/main.js"></script>
-
-
 </body>
 
 </html>

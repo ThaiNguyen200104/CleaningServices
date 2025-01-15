@@ -4,14 +4,12 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Edit Profile</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
@@ -20,76 +18,61 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
-		<div class="container-fluid">
-			<h2 class="mb-4">Edit your profile</h2>
-			<form th:action="@{/user/updateProfile}" method="post" enctype="multipart/form-data">
-				<div th:if="${error}" class="error-message" th:text="${error}"></div>
-				<input class="form-control" type="hidden" name="id" th:value="${user.id}">
+	<div class="acc-container mx-5">
+		<h2 class="mb-5">Edit your profile</h2>
+		<form th:action="@{/user/updateProfile}" method="post" enctype="multipart/form-data">
+			<div th:if="${error}" class="error-message" th:text="${error}"></div>
+			<input class="form-control" type="hidden" name="id" th:value="${user.id}">
 
-				<div class="mb-3 row">
-					<div class="col-6">
-						<label class="form-label" for="fullname">FullName</label>
-						<input class="form-control" type="text" id="fullname" name="fullname"
-							th:value="${user.fullname}" />
-					</div>
-					<div class="col-6">
-						<label class="form-label" for="email">Email</label>
-						<input class="form-control" type="email" id="email" name="email" th:value="${user.email}" />
-					</div>
+			<div class="mb-4 row">
+				<div class="col-6">
+					<label class="form-label" for="fullname">FullName</label>
+					<input class="form-control" type="text" id="fullname" name="fullname" th:value="${user.fullname}" />
 				</div>
-				<div class="mb-3 row">
-					<div class="col-6">
-						<label class="form-label" for="password">Password</label>
-						<input class="form-control" type="password" id="password" name="password" />
-					</div>
-					<div class="col-6">
-						<label class="form-label" for="confirmPassword">Confirm Password</label>
-						<input class="form-control" type="password" id="confirmPassword" name="confirmPassword" />
-					</div>
+				<div class="col-6">
+					<label class="form-label" for="email">Email</label>
+					<input class="form-control" type="email" id="email" name="email" th:value="${user.email}" />
 				</div>
-				<div class="mb-4 row">
-					<div class="col-3">
-						<label class="form-label" for="image">Profile Image</label>
-						<input class="form-control" style="border: none; padding: .375rem 0;" type="file" id="image"
-							name="image" accept="image/*" />
-					</div>
-					<div class="col-3">
-						<label class="form-label" for="phone">Phone</label>
-						<input class="form-control" type="text" id="phone" name="phone" th:value="${user.phone}" />
-					</div>
-					<div class="col-6">
-						<label class="form-label" for="address">Address</label>
-						<input class="form-control" type="text" id="address" name="address"
-							th:value="${user.address}" />
-					</div>
+			</div>
+			<div class="mb-4 row">
+				<div class="col-6">
+					<label class="form-label" for="password">Password</label>
+					<input class="form-control" type="password" id="password" name="password" />
 				</div>
-				<div class="d-flex justify-content-end">
-					<button type="submit" class="btn btn-success">Save</button>
+				<div class="col-6">
+					<label class="form-label" for="confirmPassword">Confirm Password</label>
+					<input class="form-control" type="password" id="confirmPassword" name="confirmPassword" />
 				</div>
-			</form>
-		</div>
+			</div>
+			<div class="mb-4 row">
+				<div class="col-3">
+					<label class="form-label" for="image">Profile Image</label>
+					<input class="form-control" style="border: none; padding: .375rem 0;" type="file" id="image"
+						name="image" accept="image/*" />
+				</div>
+				<div class="col-3">
+					<label class="form-label" for="phone">Phone</label>
+					<input class="form-control" type="text" id="phone" name="phone" th:value="${user.phone}" />
+				</div>
+				<div class="col-6">
+					<label class="form-label" for="address">Address</label>
+					<input class="form-control" type="text" id="address" name="address" th:value="${user.address}" />
+				</div>
+			</div>
+			<div class="d-flex justify-content-end">
+				<button type="submit" class="btn btn-success">Save</button>
+			</div>
+		</form>
 	</div>
+
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
-
 </body>
 
 </html>

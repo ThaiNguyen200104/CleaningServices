@@ -9,7 +9,7 @@ public class Views {
 	// ADMIN - VIEWS
 	public static String ADMIN_LOGIN = "admin/login";
 	public static String ADMIN_INDEX = "admin/index";
-	public static String ADMIN_ACCOUNTS = "admin/accounts";
+	public static String ADMIN_EDIT_PROFILE = "admin/edit_profile";
 	public static String ADMIN_FORGOT_PASSWORD = "admin/forgot_password";
 	public static String ADMIN_VALIDATE = "admin/validate_otp";
 
@@ -45,7 +45,7 @@ public class Views {
 	// STAFF - VIEWS
 	public static String STAFF_LOGIN = "staff/login";
 	public static String STAFF_INDEX = "staff/index";
-	public static String STAFF_ACCOUNTS = "staff/accounts";
+	public static String STAFF_EDIT_PROFILE = "staff/edit_profile";
 	public static String STAFF_FORGOT_PASSWORD = "staff/forgot_password";
 	public static String STAFF_VALIDATE = "staff/validate_otp";
 	public static String STAFF_REQUEST_LIST = "staff/request/list";
@@ -70,7 +70,7 @@ public class Views {
 
 	// MAIN PAGE - VIEWS
 	public static String MAIN_INDEX = "main/index";
-	public static String MAIN_SERVICES = "main/service";
+	public static String MAIN_SERVICE = "main/service";
 	public static String MAIN_ABOUT = "main/about";
 	public static String MAIN_BLOG = "main/blog";
 	public static String MAIN_BLOG_DETAIL = "main/blog_detail";

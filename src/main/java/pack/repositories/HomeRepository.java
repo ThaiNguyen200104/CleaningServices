@@ -9,8 +9,10 @@ import org.springframework.stereotype.Repository;
 import pack.models.Blog;
 import pack.models.PageView;
 import pack.models.Service;
+import pack.models.Staff;
 import pack.modelviews.Blog_mapper;
 import pack.modelviews.Service_mapper;
+import pack.modelviews.Staff_mapper;
 import pack.utils.Views;
 
 @Repository
@@ -19,7 +21,18 @@ public class HomeRepository {
 	JdbcTemplate db;
 
 	// -------------------- ORDERS -------------------- //
-	public List<Service> getServices(PageView pageItem) {
+
+	public List<Service> getTop5Services() {
+		try {
+			String str_query = String.format("SELECT TOP 5 * FROM %s", Views.TBL_SERVICES);
+			return db.query(str_query, new Service_mapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Service> getAllServices(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM services", Integer.class);
 			int total_page = count / pageItem.getPageSize();
@@ -30,6 +43,33 @@ public class HomeRepository {
 			return db.query(str_query, new Service_mapper(),
 					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
 		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Staff> getTop4Staffs() {
+		try {
+			String str_query = String.format("SELECT TOP 4 * FROM %s", Views.TBL_STAFFS);
+			return db.query(str_query, new Staff_mapper());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Staff> getAllStaffs(PageView pageItem) {
+		try {
+			int count = db.queryForObject("SELECT COUNT(*) FROM staffs", Integer.class);
+			int total_page = count / pageItem.getPageSize();
+			pageItem.setTotalPage(total_page);
+
+			String str_query = String.format("SELECT * FROM %s ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_STAFFS, Views.COL_STAFFS_ID);
+			return db.query(str_query, new Staff_mapper(),
+					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

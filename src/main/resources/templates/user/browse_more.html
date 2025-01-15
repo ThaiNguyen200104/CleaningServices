@@ -4,31 +4,24 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Order Details</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
-
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
+	<div class="container-fluid">
 		<div th:unless="${#lists.isEmpty(browseMore)}" class="section-header mb-5">
 			<h2>All Orders</h2>
 		</div>
@@ -56,31 +49,19 @@
 						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a th:href="@{/user/seeMore(id=${item.id})}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
-									<path
-										d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
-										fill="#000000" class="fill-6563ff"></path>
-								</svg>
-							</a>
+							<a class="btn btn-outline-info" th:href="@{/user/seeMore(id=${item.id})}">See More</a>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
+	
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
 </body>
 
 </html>

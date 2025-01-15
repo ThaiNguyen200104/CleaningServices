@@ -4,119 +4,104 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Account</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
-
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
-		<div class="acc-container mt-3">
-			<div class="row">
-				<div class="col-3 text-center">
-					<img th:if="${user.image == null}" src="../front/img/none-user.png"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<img th:unless="${user.image == null}" th:src="'/upload/' + ${user.image}"
-						class="img-fluid rounded-circle mb-3" width="150" height="150" />
-					<h3 th:text="${user.fullname}"></h3>
-					<a class="btn btn-primary mt-3" th:href="@{/user/editProfile}">Edit Profile</a>
-				</div>
-				<div class="col-9">
-					<h2 class="mb-4">Profile</h2>
-					<dl class="row">
-						<dt class="col-3">Username:</dt>
-						<dd class="col-9" th:text="${user.username}"></dd>
-						<dt class="col-3">Email:</dt>
-						<dd class="col-9" th:text="${user.email}"></dd>
-						<dt class="col-3">Phone:</dt>
-						<dd class="col-9" th:text="${user.phone}"></dd>
-						<dt class="col-3">Address:</dt>
-						<dd class="col-9" th:text="${user.address}"></dd>
-					</dl>
-				</div>
+	<div class="acc-container container my-5">
+		<div class="row">
+			<div class="col-3 text-center">
+				<img th:if="${user.image == null}" src="../front/img/none-user.png" class="rounded-circle mb-3"
+					width="150px" height="150px" />
+				<img th:unless="${user.image == null}" th:src="'/upload/' + ${user.image}" class="rounded-circle mb-3"
+					width="150px" height="150px" />
+				<h3 th:text="${user.fullname}"></h3>
+				<a class="btn btn-primary mt-3" th:href="@{/user/editProfile}">Edit Profile</a>
+			</div>
+			<div class="col-9">
+				<h2 class="mb-4">Profile</h2>
+				<dl class="row">
+					<dt class="col-3">Username:</dt>
+					<dd class="col-9" th:text="${user.username}"></dd>
+					<dt class="col-3">Email:</dt>
+					<dd class="col-9" th:text="${user.email}"></dd>
+					<dt class="col-3">Phone:</dt>
+					<dd class="col-9" th:text="${user.phone}"></dd>
+					<dt class="col-3">Address:</dt>
+					<dd class="col-9" th:text="${user.address}"></dd>
+				</dl>
 			</div>
 		</div>
+	</div>
 
-		<!-- ORDER HISTORY -->
-		<div class="acc-container mt-5">
-			<div class="account-content">
-				<h2 class="mb-4">Orders History</h2>
+	<!-- ORDER HISTORY -->
+	<div class="acc-container mx-3">
+		<div class="account-content">
+			<h2 class="mb-4">Orders History</h2>
 
-				<div th:if="${#lists.isEmpty(orderDetails)}" class="text-center mt-5">
-					<p>You have not booked any services.</p>
-				</div>
+			<div th:if="${#lists.isEmpty(orderDetails)}" class="text-center mt-5">
+				<p>You have not booked any services.</p>
+			</div>
 
-				<div th:if="${!#lists.isEmpty(orderDetails)}" class="table-container">
-					<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
-					<table class="booking-table">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Service</th>
-								<th>Price</th>
-								<th>Expected Start Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item: ${orderDetails}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.serName}"></td>
-								<td th:text="${item.price} + '$'"></td>
-								<td th:text="${item.startDate}"></td>
-								<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
-								<td th:text="${item.status}"></td>
-								<td>
-									<a th:href="@{/user/seeMore(id=${item.orderId})}">
-										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px"
-											height="50px">
-											<path
-												d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
-												fill="#000000" class="fill-6563ff"></path>
-										</svg>
-									</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class="text-center mt-3">
-						<a th:if="${browseMore}" th:href="@{/user/browseMore}" class="btn btn-primary">Browse More</a>
-					</div>
+			<div th:if="${!#lists.isEmpty(orderDetails)}" class="table-container">
+				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
+				<table class="booking-table">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Service</th>
+							<th>Price</th>
+							<th>Expected Start Date</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item: ${orderDetails}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.serName}"></td>
+							<td th:text="${item.price} + '$'"></td>
+							<td th:text="${item.startDate}"></td>
+							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a th:href="@{/user/seeMore(id=${item.orderId})}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px"
+										height="50px">
+										<path
+											d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
+											fill="#000000" class="fill-6563ff"></path>
+									</svg>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="text-center mt-3">
+					<a th:if="${browseMore}" th:href="@{/user/browseMore}" class="btn btn-primary">Browse More</a>
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
 </body>
 
 </html>

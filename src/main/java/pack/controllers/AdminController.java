@@ -15,13 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import pack.models.Admin;
@@ -53,7 +56,10 @@ public class AdminController {
 	// -------------------- INDEX --------------------//
 
 	@GetMapping("")
-	public String index() {
+	public String index(HttpServletRequest req, Model model) {
+		Admin admin = rep.getAdminById((int) req.getSession().getAttribute("adminId"));
+		model.addAttribute("admin", admin);
+
 		return Views.ADMIN_INDEX;
 	}
 
@@ -90,6 +96,56 @@ public class AdminController {
 		req.getSession().invalidate();
 
 		return "redirect:/admin/login";
+	}
+
+	@GetMapping("/editProfile")
+	public String edit_profile(Model model, HttpServletRequest req) {
+		try {
+			Admin admin = rep.getAdminById((int) req.getSession().getAttribute("adminId"));
+			if (admin != null) {
+				model.addAttribute("edit_item", admin);
+				return Views.ADMIN_EDIT_PROFILE;
+			}
+			return "redirect:/admin/edit_profile";
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
+			return Views.ADMIN_EDIT_PROFILE;
+		}
+	}
+
+	@PostMapping("/updateProfile")
+	public String update_profile(@ModelAttribute("edit_item") Admin admin, Model model, RedirectAttributes ra,
+			HttpServletRequest req) {
+		try {
+			Admin oldAdminInfo = rep.getAdminById((int) req.getSession().getAttribute("adminId"));
+
+			if (admin.getEmail() != null) {
+				model.addAttribute("error", "You have used this email before. Please choose a different one.");
+				return Views.ADMIN_EDIT_PROFILE;
+			}
+
+			if (admin.getPassword() != null
+					&& SecurityUtility.compareBcrypt(oldAdminInfo.getPassword(), admin.getPassword())) {
+				model.addAttribute("error", "You have used this password before. Please choose a different one.");
+				return Views.ADMIN_EDIT_PROFILE;
+			}
+
+			String result = rep.editProfile(admin);
+			if ("success".equals(result)) {
+				ra.addFlashAttribute("message", "Profile updated successfully.");
+				return "redirect:/admin";
+			} else {
+				model.addAttribute("error", "Failed to update profile: " + result);
+				return Views.ADMIN_EDIT_PROFILE;
+			}
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", e.getMessage());
+			return Views.ADMIN_EDIT_PROFILE;
+		} catch (Exception e) {
+			model.addAttribute("error", "An error occurred: " + e.getMessage());
+			return Views.ADMIN_EDIT_PROFILE;
+		}
 	}
 
 	@GetMapping("/forgotPassword")
@@ -245,6 +301,23 @@ public class AdminController {
 		}
 	}
 
+	@GetMapping("blogs/delete")
+	public String delete_blog(int id, Model model) {
+		try {
+			String result = rep.deleteBlog(id);
+			if (result.equals("succeed")) {
+				return "redirect:/admin/blogs/list";
+			}
+			model.addAttribute("catchError", "Failed to delete blog, please try again.");
+
+			return Views.ADMIN_BLOGS_LIST;
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("catchError", "An unexpected error occurred. Please try again later.");
+			return Views.ADMIN_BLOGS_LIST;
+		}
+	}
+
 	// -------------------- SERVICES --------------------//
 
 	@GetMapping("/services/list")
@@ -321,8 +394,7 @@ public class AdminController {
 
 	@PostMapping("/services/editService")
 	public String edit_service(@ModelAttribute("edit_item") Service ser, BindingResult br,
-			@RequestParam(required = false) MultipartFile image, @RequestParam(required = false) String status,
-			Model model) {
+			@RequestParam(required = false) MultipartFile image, Model model) {
 		try {
 			if (image != null && !image.isEmpty()) {
 				ser.setImage(FileUtility.uploadFileImage(image, "upload"));
@@ -387,6 +459,64 @@ public class AdminController {
 			System.out.println("System error: " + e.getMessage());
 			return "redirect:/admin/services/list?error=disableFail";
 		}
+	}
+
+	// -------------------- STAFFS -------------------- //
+
+	@GetMapping("/staffs/list")
+	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(20);
+
+		model.addAttribute("staffs", rep.getStaffs(pv));
+		model.addAttribute("pv", pv);
+
+		return Views.ADMIN_STAFFS_LIST;
+	}
+
+	@GetMapping("/staffs/create")
+	public String create_account_view(Model model) {
+		model.addAttribute("new_item", new Staff());
+		return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+	}
+
+	@PostMapping("/staffs/createAccount")
+	public String create_account(@ModelAttribute("new_item") Staff staff, Model model) {
+		try {
+			String result = rep.newStaff(staff);
+			if (!staff.getPhone().matches(Views.PHONE_REGEX)) {
+				model.addAttribute("error",
+						"Your phone number must only have digits and be at least 10 to 11 digits long.");
+				return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+			}
+			if (result.equals("success")) {
+				return "redirect:/admin/staffs/list";
+			}
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("error", "Some information(username, email, phone) may already exists.");
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		} catch (Exception e) {
+			System.out.println("System error: " + e.getMessage());
+			model.addAttribute("error", "An unexpected error occurred. Please try again later.");
+			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
+		}
+	}
+
+	@GetMapping("/staffs/accounts")
+	public String staff_accounts(int id, Model model) {
+		model.addAttribute("staffs", rep.getStaffById(id));
+		return Views.ADMIN_STAFFS_INFO;
+	}
+
+	@PostMapping("/staffs/disabledAccount")
+	public ResponseEntity<String> disabled_account(@RequestParam int id) {
+		String result = rep.disableStaff(id);
+		if (result.equals("success")) {
+			return ResponseEntity.ok("success");
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
 
 	// -------------------- ORDERS --------------------//
@@ -531,64 +661,6 @@ public class AdminController {
 		}
 		model.addAttribute("error", "Fail to implement action, please try again later.");
 		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
-	}
-
-	// -------------------- STAFFS -------------------- //
-
-	@GetMapping("/staffs/list")
-	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
-		PageView pv = new PageView();
-		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
-
-		model.addAttribute("staffs", rep.getStaffs(pv));
-		model.addAttribute("pv", pv);
-
-		return Views.ADMIN_STAFFS_LIST;
-	}
-
-	@GetMapping("/staffs/create")
-	public String create_account_view(Model model) {
-		model.addAttribute("new_item", new Staff());
-		return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
-	}
-
-	@PostMapping("/staffs/createAccount")
-	public String create_account(@ModelAttribute("new_item") Staff staff, Model model) {
-		try {
-			String result = rep.newStaff(staff);
-			if (!staff.getPhone().matches(Views.PHONE_REGEX)) {
-				model.addAttribute("error",
-						"Your phone number must only have digits and be at least 10 to 11 digits long.");
-				return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
-			}
-			if (result.equals("success")) {
-				return "redirect:/admin/staffs/list";
-			}
-			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
-		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "Some information(username, email, phone) may already exists.");
-			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
-		} catch (Exception e) {
-			System.out.println("System error: " + e.getMessage());
-			model.addAttribute("error", "An unexpected error occurred. Please try again later.");
-			return Views.ADMIN_STAFFS_CREATE_ACCOUNT;
-		}
-	}
-
-	@GetMapping("/staffs/accounts")
-	public String staff_accounts(int id, Model model) {
-		model.addAttribute("staffs", rep.getStaffById(id));
-		return Views.ADMIN_STAFFS_INFO;
-	}
-
-	@PostMapping("/staffs/disabledAccount")
-	public ResponseEntity<String> disabled_account(@RequestParam int id) {
-		String result = rep.disableStaff(id);
-		if (result.equals("success")) {
-			return ResponseEntity.ok("success");
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed");
 	}
 
 	// -------------------- USER REQUESTS -------------------- //

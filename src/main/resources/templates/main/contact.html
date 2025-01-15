@@ -3,42 +3,24 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>Cleanex - Contact</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
+
+	<title>Cleanex - Contact</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
-
-	<script>
-		const CONFIGURATION = {
-			"locations": [
-				{"title": "Escondido Grill", "address1": "601 Geary St", "address2": "San Francisco, CA 94102, USA", "coords": {"lat": 37.7866, "lng": -122.4133}, "placeId": "ChIJ5Sz52pGAhYAR1raOybzuDp8", "actions": [{"label": "Reserve a table", "defaultUrl": "https://www.gstatic.com/pantheon/images/maps/reserve_with_google_preview_v1.png"}]}
-			],
-			"mapOptions": {"center": {"lat": 38.0, "lng": -100.0}, "fullscreenControl": true, "mapTypeControl": false, "streetViewControl": false, "zoom": 4, "zoomControl": true, "maxZoom": 17, "mapId": ""},
-			"mapsApiKey": "YOUR_API_KEY_HERE",
-			"capabilities": {"input": false, "autocomplete": false, "directions": false, "distanceMatrix": false, "details": false, "actions": true}
-		};
-
-	</script>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
-
-	<div class="wrapper">
+	
 		<!-- Contact -->
 		<div class="contact">
 			<div class="container">
@@ -100,39 +82,11 @@
 		</div>
 	</div>
 
-
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+	
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
-
-	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', async () => {
-			await customElements.whenDefined('gmpx-store-locator');
-			const locator = document.querySelector('gmpx-store-locator');
-			locator.configureFromQuickBuilder(CONFIGURATION);
-		});
-		function myMap() {
-			var mapProp = {
-				center: new google.maps.LatLng(51.508742, -0.120850),
-				zoom: 5,
-			};
-			var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-		}
-
-	</script>
-
-	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=myMap"></script>
-
 </body>
 
 </html>

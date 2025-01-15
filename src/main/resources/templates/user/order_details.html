@@ -4,31 +4,24 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Order Details</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
-	<link href="../../front/img/favicon.ico" rel="icon" />
-	<link href="../../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-	<link href="../../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-	<link href="../../front/css/style.css" rel="stylesheet" />
-
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
+	<div class="mx-3">
 		<div class="section-header mb-5">
 			<h2>Order Details</h2>
 		</div>
@@ -73,23 +66,23 @@
 							<p th:if="${item.after_image != null}">N/A</p>
 						</td>
 						<td th:text="${item.status}"></td>
+						<td>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderApprove(id=${item.id})}">Approve</a>
+							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../../front/lib/easing/easing.min.js"></script>
-	<script src="../../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../../front/js/main.js"></script>
 </body>
 
 </html>

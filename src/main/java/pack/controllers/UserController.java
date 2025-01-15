@@ -115,6 +115,8 @@ public class UserController {
 
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
+		model.addAttribute("currentPage", "accounts");
+
 		return Views.USER_ACCOUNTS;
 	}
 
@@ -147,8 +149,8 @@ public class UserController {
 		return Views.USER_EDIT_PROFILE;
 	}
 
-	@PostMapping("/updateProflie")
-	public String update_profile(@RequestParam(required = false) MultipartFile image, @ModelAttribute User user,
+	@PostMapping("/updateProfile")
+	public String update_profile(@RequestParam(required = false) MultipartFile file, @ModelAttribute User user,
 			Model model, RedirectAttributes ra, HttpServletRequest req) {
 		try {
 			User oldUserInfo = rep.findUserById((int) req.getSession().getAttribute("usrId"));
@@ -163,8 +165,8 @@ public class UserController {
 				return Views.USER_EDIT_PROFILE;
 			}
 
-			if (image != null && !image.isEmpty()) {
-				user.setImage(FileUtility.uploadFileImage(image, "upload"));
+			if (file != null && !file.isEmpty()) {
+				user.setImage(FileUtility.uploadFileImage(file, "upload"));
 			}
 
 			String result = rep.editProfile(user);
@@ -235,14 +237,21 @@ public class UserController {
 
 	@GetMapping("/orders")
 	public String orders(Model model, HttpServletRequest request) {
-		model.addAttribute("orders", rep.getUserRequestDetailById((int) request.getSession().getAttribute("usrId")));
+		List<Map<String, Object>> orders = rep
+				.getUserRequestDetailById((int) request.getSession().getAttribute("usrId"));
+		model.addAttribute("orders", orders);
+		model.addAttribute("statusCheck",
+				orders.stream().anyMatch(order -> !order.get("status").toString().equalsIgnoreCase("confirmed")));
+		model.addAttribute("currentPage", "orders");
+		
 		return Views.USER_ORDERS;
 	}
 
 	@GetMapping("/orders/orderDetails")
 	public String order_details(Model model, @RequestParam("id") int usrReqId) {
-		List<Map<String, Object>> details =  rep.getOrderDetails(usrReqId);
+		List<Map<String, Object>> details = rep.getOrderDetails(usrReqId);
 		model.addAttribute("orderDetails", details);
+		
 		return Views.USER_ORDER_DETAILS;
 	}
 

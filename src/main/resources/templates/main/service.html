@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<title>Cleanex - Service</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<!-- Header -->
+	<div th:replace="~{main/fragments/header::mainHeader}"></div>
+
+	<!-- Service -->
+	<div class="service">
+		<div class="container">
+			<div th:if="${!#lists.isEmpty(services)}" class="section-header">
+				<p>Our Services</p>
+				<h2>Commit to Making Your Home Fresher</h2>
+			</div>
+
+			<div th:if="${#lists.isEmpty(services)}" class="section-header mb-5">
+				<h2>There are currently no services available.</h2>
+			</div>
+
+			<div th:if="${!#lists.isEmpty(services)}" class="row">
+				<div class="col-lg-3 col-md-6 pb-4" th:each="item : ${services}" th:if="${item.status != 'disabled'}">
+					<div class="service-item">
+						<div class="service-image">
+							<img loading="lazy" th:src="'/upload/'+${item.image}" />
+						</div>
+						<div class="service-content">
+							<h3 th:text="${item.serName}"></h3>
+							<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
+							<p th:text="${item.description}"></p>
+							<a class="btn justify-content-end" href="javascript:void(0);"
+								onclick="showBookingPopup(event)"
+								th:attr="serId=${item.id}, userId=${session.usrId}, serPrice=${item.basePrice}">
+								Book Now
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Popup Modal -->
+	<div id="bookingModal" style="display: none;">
+		<div class="modal-content">
+			<h3>Select Service Date</h3>
+			<input class="form-control my-4" type="date" id="serviceDate" required />
+			<div class="d-flex justify-content-between">
+				<button class="btn btn-success" onclick="confirmBooking()">Confirm Booking</button>
+				<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Pricing Plan -->
+	<div class="price" id="PlanningPrice">
+		<div class="container">
+			<div class="section-header">
+				<p>For your convenience, we offer three packages that are suited to our usual clients needs.</p>
+				<h2>Pricing Plan Reference</h2>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-home"></i>
+							</div>
+							<div class="price-title">
+								<h2>Basic Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>49</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Basic Bathroom & Kitchen Cleaning</li>
+									<li>Vacuuming & Dusting</li>
+									<li>Surface Wipe-Down</li>
+									<li>Floor Cleaning</li>
+									<li>Complete Within 4 hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="price-item featured-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-star"></i>
+							</div>
+							<div class="price-title">
+								<h2>Deep Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>79</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Bathroom & Kitchen Sanitization</li>
+									<li>Carpet & Upholstery Cleaning</li>
+									<li>Complete Room Cleaning</li>
+									<li>Window & Glass Polishing</li>
+									<li>Complete Within 6 hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="price-item">
+						<div class="price-header">
+							<div class="price-icon">
+								<i class="fa fa-gift"></i>
+							</div>
+							<div class="price-title">
+								<h2>Ultimate Clean</h2>
+							</div>
+							<div class="price-pricing">
+								<h2><small>$</small>129</h2>
+							</div>
+						</div>
+						<div class="price-body">
+							<div class="price-des">
+								<ul>
+									<li>Exterior Cleaning (Windows, Porch, etc.)</li>
+									<li>Special Requests (Pets, Allergies)</li>
+									<li>Customized Cleaning Plan</li>
+									<li>All Deep Clean Services</li>
+									<li>Complete Within 12 Hours</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+	<!-- Footer -->
+	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
+
+	<script>
+		let selectedServiceId = null;
+		let UserId = null;
+		let price = null;
+		const inputDate = document.getElementById("serviceDate");
+		const currentYear = new Date().getFullYear();
+		inputDate.max = `${currentYear + 2}-12-31`;
+
+		function showBookingPopup(event) {
+			var item = event.target
+			selectedServiceId = item.getAttribute("serId");
+			UserId = item.getAttribute("userId");
+			price = item.getAttribute("serPrice");
+			document.getElementById("bookingModal").style.display = "flex";
+			document.body.classList.add("no-scroll");
+		}
+
+		function closePopup() {
+			document.getElementById("bookingModal").style.display = "none";
+			document.body.classList.remove("no-scroll");
+		}
+
+		function confirmBooking() {
+			const date = document.getElementById("serviceDate").value;
+
+			if (!date) {
+				alert("Please select a date.");
+				return;
+			}
+
+			if (UserId == null) {
+				window.location.href = '/user/login';
+			}
+
+			$.ajax({
+				url: '/user/bookService',
+				type: 'POST',
+				data: {
+					userId: UserId,
+					serviceId: selectedServiceId,
+					startDate: date,
+					price: price
+				},
+				success: function (response, textStatus, xhr) {
+					if (xhr.status === 200) {
+						showNotification(response, "success");
+						closePopup();
+					} else {
+						showNotification("Failed to create order: " + response, "error");
+					}
+				},
+				error: function (xhr) {
+					if (xhr.status === 409) {
+						showNotification("Service is already booked.", "warning");
+					} else {
+						console.error('Error:', xhr.responseText);
+						showNotification("Error: " + xhr.responseText, "error");
+					}
+				}
+			});
+		}
+
+		function showNotification(message, type) {
+			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
+			$('body').append(notification);
+			notification.fadeIn('slow').delay(3000).fadeOut('slow', function () {
+				$(this).remove();
+			});
+		}
+	</script>
+</body>
+
+</html>

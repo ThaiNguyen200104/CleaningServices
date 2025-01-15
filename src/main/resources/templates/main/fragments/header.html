@@ -1,4 +1,7 @@
 <div class="header home" th:fragment="mainHeader">
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
 	<div class="container-fluid">
 		<div class="header-top row align-items-center">
 			<div class="col-lg-3">
@@ -24,6 +27,11 @@
 					<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 						<div class="navbar-nav ml-auto">
 							<a class="nav-item nav-link" th:href="@{/}">Home</a>
+
+							<a class="nav-item nav-link" th:href="@{/service}"
+								th:classappend="${currentPage == 'service' ? 'active' : ''}">
+								Service
+							</a>
 
 							<a class="nav-item nav-link" th:href="@{/blog}"
 								th:classappend="${currentPage == 'blog' ? 'active' : ''}">
