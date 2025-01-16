@@ -1,6 +1,7 @@
 package pack.repositories;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import pack.models.Staff;
 import pack.modelviews.Staff_mapper;
+import pack.utils.SecurityUtility;
 import pack.utils.Views;
 
 @Repository
@@ -43,6 +45,57 @@ public class StaffRepository {
 			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { email });
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	/***
+	 * update account in table staffs
+	 * 
+	 * @return updated staff's account
+	 */
+	public String editProfile(Staff st) {
+		try {
+			StringBuilder queryBuilder = new StringBuilder("UPDATE " + Views.TBL_STAFFS + " SET ");
+			List<Object> params = new ArrayList<>();
+
+			if (st.getFullname() != null && !st.getFullname().isEmpty()) {
+				queryBuilder.append("fullname = ?, ");
+				params.add(st.getFullname());
+			}
+
+			if (st.getPassword() != null && !st.getPassword().isEmpty()) {
+				queryBuilder.append("password = ?, ");
+				String hashPassword = SecurityUtility.encryptBcrypt(st.getPassword());
+				params.add(hashPassword);
+			}
+
+			if (st.getEmail() != null && !st.getEmail().isEmpty()) {
+				queryBuilder.append("email = ?, ");
+				params.add(st.getEmail());
+			}
+
+			if (st.getPhone() != null && !st.getPhone().isEmpty()) {
+				queryBuilder.append("phone = ?, ");
+				params.add(st.getPhone());
+			}
+
+			if (st.getImage() != null && !st.getImage().isEmpty()) {
+				queryBuilder.append("image = ?, ");
+				params.add(st.getImage());
+			}
+
+			if (params.isEmpty()) {
+				return "No field needs to update.";
+			}
+
+			queryBuilder.setLength(queryBuilder.length() - 2);
+			queryBuilder.append(" WHERE " + Views.COL_STAFFS_ID + " = ?");
+			params.add(st.getId());
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
 		}
 	}
 

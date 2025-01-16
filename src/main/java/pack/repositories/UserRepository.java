@@ -172,7 +172,7 @@ public class UserRepository {
 				params.add(user.getAddress());
 			}
 			if (user.getImage() != null && !user.getImage().isEmpty()) {
-				queryBuilder.append("images = ?, ");
+				queryBuilder.append("image = ?, ");
 				params.add(user.getImage());
 			}
 
@@ -434,8 +434,8 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status = 'completed' in table order_details update status =
-	 * 'available'in table staffs
+	 * update status = 'completed' in table order_details 
+	 * update status = 'available'in table staffs
 	 * 
 	 * @return updated order_details & staffs status
 	 */
@@ -443,6 +443,7 @@ public class UserRepository {
 		try {
 			String str_query = "update order_details set status = 'completed' where id = ?";
 			String staffs_query = "update staffs set status = 'available' where id in (select s.staff_id from schedules s where s.detail_id = ?)";
+      
 			int rowaccepted = db.update(str_query, new Object[] { detailId });
 			if (rowaccepted == 1) {
 				db.update(staffs_query, new Object[] { detailId });

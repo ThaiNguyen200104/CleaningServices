@@ -4,14 +4,12 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Sign Up</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
@@ -20,24 +18,21 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="wrapper">
-		<div class="signup-container">
-			<div class="form-container">
-				<h2>Join us as a Member</h2>
-				<form th:action="@{/user/newUser}" method="post" th:object="${new_item}">
-					<div th:if="${error}" class="error-message" th:text="${error}"></div>
-					<div class="form-group">
+	<div class="login-container">
+		<div class="form-container">
+			<h2 class="mb-4">Join us as a Member</h2>
+			<form th:action="@{/user/newUser}" method="post" th:object="${new_item}">
+				<div th:if="${error}" class="error-message" th:text="${error}"></div>
+				<div class="input-form">
+
+					<div class="mb-2">
 						<label for="fullname">Full Name <span style="color: red;">(*)</span></label>
 						<input type="text" th:field="*{fullname}" required>
 					</div>
-					<div class="row form-group">
+					<div class="row mb-2">
 						<div class="col-6">
 							<label for="username">Username <span style="color: red;">(*)</span></label>
 							<input type="text" th:field="*{username}" required>
@@ -47,11 +42,11 @@
 							<input type="text" th:field="*{phone}" required>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="mb-2">
 						<label for="email">Email Address <span style="color: red;">(*)</span></label>
 						<input type="email" th:field="*{email}" required>
 					</div>
-					<div class="row form-group">
+					<div class="row mb-2">
 						<div class="col-6">
 							<label for="password">Password <span style="color: red;">(*)</span></label>
 							<input type="password" th:field="*{password}" required>
@@ -61,25 +56,21 @@
 							<input type="password" th:field="*{confirmPassword}" required>
 						</div>
 					</div>
-					<button type="submit" class="btn-primary">Signup</button>
-					<div class="form-footer">
-						<p>Already have an account? <a class="acc-link" th:href="@{/user/login}">Login</a></p>
-					</div>
-				</form>
-			</div>
-		</div>
+				</div>
+				<button type="submit" class="btn-primary">Signup</button>
 
+				<div class="form-footer">
+					<a class="acc-link" th:href="@{/user/login}">Already have an account? Login now!</a>
+				</div>
+			</form>
+		</div>
 	</div>
+
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
 
 	<script>
 		setTimeout(function () {

@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	
+
 	<title>Cleanex - Staff Dashboard</title>
 
 	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
@@ -39,6 +39,32 @@
 				</div>
 			</div>
 		</section>
+		
+		<div class="wrapper">
+			<div class="acc-container mt-5">
+				<div class="row">
+					<div class="col-3 text-center">
+						<img th:if="${staff.image == null}" src="../front/img/none-user.png"
+							class="rounded-circle mb-3" width="150px" height="150px" />
+						<img th:if="${staff.image != null}" th:src="'/upload/'+${staff.image}"
+							class="rounded-circle mb-3" width="150px" height="150px" />
+						<h3 th:text="${staff.fullname}"></h3>
+						<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
+					</div>
+					<div class="col-9">
+						<h2 class="mb-4">Profile</h2>
+						<dl class="row">
+							<dt class="col-3">Username:</dt>
+							<dd class="col-9" th:text="${staff.username}"></dd>
+							<dt class="col-3">Email:</dt>
+							<dd class="col-9" th:text="${staff.email}"></dd>
+							<dt class="col-3">Phone:</dt>
+							<dd class="col-9" th:text="${staff.phone}"></dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
 	</main>
 
 	<script src="../back/js/bootstrap.bundle.min.js"></script>

@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="shortcut icon" href="../back/images/favicon.svg" type="image/x-icon" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Admin Dashboard</title>
+	<title>Cleanex - Edit Account</title>
 
 	<link rel="stylesheet" href="../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../back/css/lineicons.css" />
@@ -29,34 +28,27 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
-		<section class="section">
+		<div class="wrapper">
 			<div class="container-fluid">
-				<div class="title-wrapper pt-30">
-					<div class=" align-items-center">
-						<div class="title">
-							<h2>Dashboard</h2>
+				<h2 class="my-4">Edit your profile</h2>
+				<form th:action="@{/admin/updateProfile}" method="post" th:object="${edit_item}"
+					enctype="multipart/form-data">
+					<div th:if="${error}" class="error-message" th:text="${error}"></div>
+					<input type="hidden" id="id" name="id" th:field="*{id}" />
+					<div class="mb-3 row">
+						<div class="col-6">
+							<label class="form-label" for="email">Email</label>
+							<input class="form-control" type="text" id="email" th:value="*{email}" />
+						</div>
+						<div class="col-6">
+							<label class="form-label" for="password">Password</label>
+							<input class="form-control" type="password" id="password" />
 						</div>
 					</div>
-				</div>
-			</div>
-		</section>
-
-		<div class="wrapper">
-			<div class="acc-container mt-5">
-				<div class="row">
-					<div class="d-flex justify-content-center align-items-center col-2">
-						<a class="btn btn-primary mt-3" th:href="@{/admin/editProfile}">Edit Profile</a>
+					<div class="d-flex justify-content-end">
+						<button type="submit" class="btn btn-success">Save</button>
 					</div>
-					<div class="col-10">
-						<h2 class="mb-4">Profile</h2>
-						<dl class="row">
-							<dt class="col-3">Username:</dt>
-							<dd class="col-9" th:text="${admin.username}"></dd>
-							<dt class="col-3">Email:</dt>
-							<dd class="col-9" th:text="${admin.email}"></dd>
-						</dl>
-					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</main>

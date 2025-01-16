@@ -1,4 +1,7 @@
 <div class="header home" th:fragment="userHeader">
+	<div id="preloader">
+		<div class="spinner"></div>
+	</div>
 	<div class="container-fluid">
 		<div class="header-top row align-items-center">
 			<div class="col-lg-3">
@@ -24,6 +27,7 @@
 					<div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
 						<div class="navbar-nav ml-auto">
 							<a class="nav-item nav-link" th:href="@{/}">Home</a>
+							<a class="nav-item nav-link" th:href="@{/service}">Service</a>
 							<a class="nav-item nav-link" th:href="@{/blog}">Blog</a>
 							<a class="nav-item nav-link" th:href="@{/about}">About</a>
 							<a class="nav-item nav-link" th:href="@{/contact}">Contact</a>
@@ -38,7 +42,7 @@
 							<a class="nav-item nav-link" th:href="@{/user/orders}"
 								th:classappend="${currentPage == 'orders' ? 'active' : ''}"
 								th:if="${session.usrId != null}">Orders</a>
-								
+
 							<a class="nav-item nav-link" th:href="@{/user/logout}"
 								th:if="${session.usrId != null}">Logout</a>
 

@@ -109,6 +109,41 @@ public class AdminRepository {
 		}
 	}
 
+	/***
+	 * update account in table admin
+	 * 
+	 * @return updated admin's account
+	 */
+	public String editProfile(Admin admin) {
+		try {
+			StringBuilder queryBuilder = new StringBuilder("UPDATE " + Views.TBL_ADMIN + " SET ");
+			List<Object> params = new ArrayList<>();
+			
+			if (admin.getEmail() != null && !admin.getEmail().isEmpty()) {
+				queryBuilder.append("email = ?, ");
+				params.add(admin.getEmail());
+			}
+			
+			if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
+				queryBuilder.append("password = ?, ");
+				String hashPassword = SecurityUtility.encryptBcrypt(admin.getPassword());
+				params.add(hashPassword);
+			}
+
+			if (params.isEmpty()) {
+				return "No field needs to update.";
+			}
+
+			queryBuilder.setLength(queryBuilder.length() - 2);
+			queryBuilder.append(" WHERE " + Views.COL_ADMIN_ID + " = ?");
+			params.add(admin.getId());
+
+			int rowsAffected = db.update(queryBuilder.toString(), params.toArray());
+			return rowsAffected == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+	}
 	// -------------------- SERVICES -------------------- //
 
 	/***
@@ -380,6 +415,23 @@ public class AdminRepository {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
+		}
+	}
+
+	/***
+	 * delete a specific blog from table blogs
+	 * 
+	 * @return deleted blog by id
+	 */
+	public String deleteBlog(int id) {
+		try {
+			String str_query = String.format("DELETE FROM %s WHERE %s = ?", Views.TBL_BLOG, Views.COL_BLOG_ID);
+
+			int rowAccepted = db.update(str_query, new Object[] { id });
+			return rowAccepted == 1 ? "succeed" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
 		}
 	}
 
@@ -771,9 +823,9 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update new staff into table schedules
-	 * update both old & new staff's status from table staffs
-	 * update schedule_request's status from table schedule_requests
+	 * update new staff into table schedules update both old & new staff's status
+	 * from table staffs update schedule_request's status from table
+	 * schedule_requests
 	 * 
 	 * @return updated fields in schedules, staffs & schedule_requests
 	 */
@@ -804,9 +856,8 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update new staff for table schedules
-	 * update both old & new staff's status for table staffs
-	 * update schedule_request's status from for schedule_requests
+	 * update new staff for table schedules update both old & new staff's status for
+	 * table staffs update schedule_request's status from for schedule_requests
 	 * 
 	 * @return updated fields for schedules, staffs & schedule_requests
 	 */

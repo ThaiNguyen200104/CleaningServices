@@ -4,142 +4,66 @@
 <head>
 	<meta charset="utf-8" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
 
 	<title>Cleanex - Blog</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 	<link href="../front/img/favicon.ico" rel="icon" />
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
-	<style>
-		.blog-card {
-			margin-bottom: 2rem;
-			box-shadow: rgba(0, 0, 0, 0.1) -4px 9px 25px -6px;
-		}
-
-		.blog-image {
-			width: 100%;
-			height: 400px;
-			object-fit: cover;
-			border-radius: .25rem;
-		}
-
-		.blog-meta {
-			color: #666666;
-			font-size: 0.9rem;
-		}
-
-		.blog-title {
-			color: #000;
-			text-decoration: none !important;
-		}
-
-		.blog-title h1 {
-			font-size: 2.5rem;
-			margin-bottom: 0.75rem;
-			font-weight: 600;
-		}
-
-		.title-h1:hover {
-			color: #ffd662;
-		}
-
-		.blog-content {
-			color: #495057;
-			line-height: 1.6;
-		}
-
-		.blog-content p {
-			word-wrap: break-word;
-			overflow-wrap: break-word;
-			white-space: normal;
-			margin-bottom: 1rem;
-		}
-
-		@media (max-width: 768px) {
-			.blog-card {
-				flex-direction: column;
-			}
-
-			.blog-image-container {
-				margin-bottom: 1rem;
-			}
-		}
-	</style>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- Header -->
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
 
-	<div class="wrapper">
-		<!-- Blog -->
-		<div class="blog">
-			<div class="container">
-				<div class="section-header">
-					<p>Recently Blogs</p>
-					<h2>Where we shows our works</h2>
-				</div>
+	<!-- Blog -->
+	<div class="blog">
+		<div class="container">
+			<div th:if="${!#lists.isEmpty(blogs)}" class="section-header">
+				<p>Recently Blogs</p>
+				<h2>Where we show our works</h2>
+			</div>
 
-				<div th:if="${#lists.isEmpty(blogs)}" class="text-center">
-					<p>There are currently no blogs available.</p>
-				</div>
+			<div th:if="${#lists.isEmpty(blogs)}" class="section-header mb-5">
+				<h2>There are no recent posts.</h2>
+			</div>
 
-				<div class="projcard-container row" th:if="${!#lists.isEmpty(blogs)}">
-					<div class="blog-posts mt-5">
-						<article th:each="item : ${blogs}" class="blog-card">
-							<div class="row">
-								<div class="col-md-6 blog-image-container">
-									<a th:href="@{/blogDetail(id=${item.id})}">
-										<img class="blog-image" loading="lazy" th:if="${item.image != null}"
-											th:src="'/upload/'+${item.image}" th:alt="${item.title}" />
-										<img class="blog-image" loading="lazy" th:unless="${item.image != null}"
-											th:src="'../../front/img/none-img.png'" th:alt="${item.title}" />
-									</a>
-								</div>
-								<div class="col-md-6 blog-content">
-									<div class="blog-meta my-2">
-										<span th:text="${item.createDate}"></span>
-									</div>
-									<a th:href="@{/blogDetail(id=${item.id})}" class="blog-title">
-										<h1 class="title-h1" th:text="${item.title}"></h1>
-									</a>
-									<p class="blog-content" th:utext="${item.content}"></p>
-								</div>
+			<div class="blog-posts mt-5" th:if="${!#lists.isEmpty(blogs)}">
+				<article th:each="item : ${blogs}" class="blog-card">
+					<div class="row">
+						<div class="col-md-6 blog-image-container">
+							<a th:href="@{/blogDetail(id=${item.id})}">
+								<img class="blog-image" loading="lazy" th:if="${item.image != null}"
+									th:src="'/upload/'+${item.image}" th:alt="${item.title}" />
+								<img class="blog-image" loading="lazy" th:unless="${item.image != null}"
+									th:src="'../../front/img/none-img.png'" th:alt="${item.title}" />
+							</a>
+						</div>
+						<div class="col-md-6 blog-content">
+							<div class="blog-meta my-2">
+								Pulish date: &nbsp; <span th:text="${item.createDate}"></span>
 							</div>
-						</article>
+							<a th:href="@{/blogDetail(id=${item.id})}" class="blog-title">
+								<h1 class="title-h1" th:text="${item.title}"></h1>
+							</a>
+							<p class="blog-description" th:utext="${item.content}"></p>
+						</div>
 					</div>
-				</div>
+				</article>
 			</div>
 		</div>
 	</div>
-
-	<!-- Footer -->
-	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
-
+	
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
+	
+	<!-- Footer -->
+	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 </body>
 
 </html>
