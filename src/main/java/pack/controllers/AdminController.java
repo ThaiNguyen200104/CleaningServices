@@ -15,10 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -120,7 +118,7 @@ public class AdminController {
 		try {
 			Admin oldAdminInfo = rep.getAdminById((int) req.getSession().getAttribute("adminId"));
 
-			if (admin.getEmail() != null) {
+			if (admin.getEmail() != null && admin.getEmail() == oldAdminInfo.getEmail()) {
 				model.addAttribute("error", "You have used this email before. Please choose a different one.");
 				return Views.ADMIN_EDIT_PROFILE;
 			}
@@ -192,7 +190,7 @@ public class AdminController {
 
 		req.getSession().setAttribute("adminId", admin.getId());
 		req.getSession().setAttribute("username", admin.getUsername());
-		return "redirect:/admin/accounts";
+		return "redirect:/admin";
 	}
 
 	// -------------------- BLOGS --------------------//
@@ -201,7 +199,12 @@ public class AdminController {
 	public String blog_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
+		pv.setPageSize(4);
+
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
 
 		model.addAttribute("blogs", rep.getBlogs(pv));
 		model.addAttribute("pv", pv);
@@ -323,11 +326,17 @@ public class AdminController {
 	@GetMapping("/services/list")
 	public String service_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
 
-		model.addAttribute("services", rep.getServices(pv));
-		model.addAttribute("pv", pv);
+		List<Service> services = rep.getServices(pv);
+		if (services != null) {
+			model.addAttribute("services", services);
+			model.addAttribute("pv", pv);
+		}
 		return Views.ADMIN_SERVICES_LIST;
 	}
 
@@ -466,8 +475,11 @@ public class AdminController {
 	@GetMapping("/staffs/list")
 	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
 
 		model.addAttribute("staffs", rep.getStaffs(pv));
 		model.addAttribute("pv", pv);
@@ -504,12 +516,6 @@ public class AdminController {
 		}
 	}
 
-	@GetMapping("/staffs/accounts")
-	public String staff_accounts(int id, Model model) {
-		model.addAttribute("staffs", rep.getStaffById(id));
-		return Views.ADMIN_STAFFS_INFO;
-	}
-
 	@PostMapping("/staffs/disabledAccount")
 	public ResponseEntity<String> disabled_account(@RequestParam int id) {
 		String result = rep.disableStaff(id);
@@ -524,8 +530,11 @@ public class AdminController {
 	@GetMapping("/orders/list")
 	public String order_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
 
 		model.addAttribute("pv", pv);
 		model.addAttribute("orders", rep.getOrders(pv));
@@ -639,17 +648,18 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders/request")
-	public String order_request(Model model) {
-		model.addAttribute("requests", rep.getRequestList());
-		return Views.ADMIN_ORDERS_REQUEST;
-	}
+	public String order_request(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
 
-	@GetMapping("/request/staffForReplace")
-	public String replace_staff_view(@RequestParam int scrId, @RequestParam int oldStaff, Model model) {
-		model.addAttribute("scrId", scrId);
-		model.addAttribute("oldStaff", oldStaff);
-		model.addAttribute("staffs", rep.staffListForAssignRequest());
-		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
+		model.addAttribute("pv", pv);
+		model.addAttribute("requests", rep.getRequestList());
+
+		return Views.ADMIN_ORDERS_REQUEST;
 	}
 
 	@GetMapping("/orders/request/replaceStaff")
@@ -666,16 +676,35 @@ public class AdminController {
 	// -------------------- USER REQUESTS -------------------- //
 
 	@GetMapping("/request/list")
-	public String requestList(Model model) {
-		model.addAttribute("requests", rep.getRequestDetails());
+	public String requestList(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("requests", rep.getRequestDetails(pv));
 		model.addAttribute("staffCheck", rep.countAvailableStaff());
+
 		return Views.ADMIN_REQUEST_LIST;
 	}
 
 	@GetMapping("/request/staffsForAssign")
-	public String staffList(@RequestParam int urdId, Model model) {
-		model.addAttribute("staffs", rep.staffListForAssignRequest());
+	public String staffList(@RequestParam int urdId, Model model,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("staffs", rep.staffListForAssignRequest(pv));
 		model.addAttribute("urdId", urdId);
+
 		return Views.ADMIN_REQUEST_ASSIGN;
 	}
 
@@ -688,4 +717,20 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to assign, please try again.");
 	}
 
+	@GetMapping("/request/staffForReplace")
+	public String replace_staff_view(@RequestParam int scrId, @RequestParam int oldStaff, Model model,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("scrId", scrId);
+		model.addAttribute("oldStaff", oldStaff);
+		model.addAttribute("staffs", rep.staffListForAssignRequest(pv));
+		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
+	}
 }

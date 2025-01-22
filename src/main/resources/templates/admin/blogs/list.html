@@ -17,16 +17,37 @@
 	<style>
 		.table thead tr th,
 		.table tbody tr td {
-			text-align: center;
+			text-align: center !important;
+
+			@media(max-width: 768px) {
+				font-size: 12px;
+			}
+		}
+
+		.table tbody tr td img {
+			width: 80px;
+			height: 100px;
+
+			@media(max-width: 768px) {
+				width: 40px;
+				height: 50px;
+			}
+		}
+
+		.table tbody tr td svg {
+			@media(max-width: 768px) {
+				height: 24px;
+				width: 24px;
+			}
+		}
+
+		.form-inline {
+			display: inline-block;
 		}
 	</style>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -36,7 +57,7 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
-		<div class="mx-5 mt-5">
+		<div class="mx-3 mt-5">
 			<div class="d-flex">
 				<h2 class="flex-grow-1">Blog List</h2>
 				<div>
@@ -55,9 +76,9 @@
 					<thead>
 						<tr>
 							<th>No.</th>
+							<th>Image</th>
 							<th>Title</th>
 							<th>Content</th>
-							<th>Image</th>
 							<th>Created Date</th>
 							<th>Updated Date</th>
 							<th>Actions</th>
@@ -66,6 +87,10 @@
 					<tbody>
 						<tr th:each="item : ${blogs}">
 							<td th:text="${item.id}"></td>
+							<td>
+								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}" />
+								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
+							</td>
 							<td th:text="${item.title}"></td>
 							<td>
 								<button type="button" data-bs-toggle="popover" title="Content"
@@ -81,12 +106,7 @@
 									</svg>
 								</button>
 							</td>
-							<td>
-								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}"
-									style="width: 75px; height: 92px;" />
-								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'"
-									style="width: 75px; height: 92px;" />
-							</td>
+
 							<td th:text="${item.createDate != null ? item.createDate : 'N/A'}"></td>
 							<td th:text="${item.updateDate != null ? item.updateDate : 'N/A'}"></td>
 							<td>
@@ -113,6 +133,20 @@
 						</tr>
 					</tbody>
 				</table>
+				<nav class="mt-5" th:if="${pv.totalPage > 1}">
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/blogs/list(cp=${pv.pageCurrent - 1})}">Previous</a>
+						</li>
+						<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
+							th:classappend="${page == pv.pageCurrent} ? 'active'">
+							<a class="page-link" th:href="@{/admin/blogs/list(cp=${page})}" th:text="${page}"></a>
+						</li>
+						<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/blogs/list(cp=${pv.pageCurrent + 1})}">Next</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</main>

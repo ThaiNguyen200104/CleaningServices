@@ -18,15 +18,44 @@
 		.table thead tr th,
 		.table tbody tr td {
 			text-align: center !important;
+
+			@media(max-width: 768px) {
+				font-size: 12px;
+			}
+		}
+
+		.table tbody tr td img {
+			width: 80px;
+			height: 100px;
+
+			@media(max-width: 768px) {
+				width: 40px;
+				height: 50px;
+			}
+		}
+
+		.table tbody tr td svg {
+			@media(max-width: 768px) {
+				height: 24px;
+				width: 24px;
+			}
+		}
+
+		.table tbody tr td a {
+			transition: 0.25s;
+
+			@media(max-width: 768px) {
+				scale: calc(0.75);
+			}
+		}
+
+		.form-inline {
+			display: inline-block;
 		}
 	</style>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -36,9 +65,9 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
-		<div class="mx-5 mt-5">
+		<div class="mx-3 mt-5">
 			<div class="d-flex">
-				<h2 class="flex-grow-1">Staff replacement list</h2>
+				<h2 class="flex-grow-1">Staff Replacement List</h2>
 			</div>
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">

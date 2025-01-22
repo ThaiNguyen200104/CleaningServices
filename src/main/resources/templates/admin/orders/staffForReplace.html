@@ -23,10 +23,6 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -36,9 +32,9 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
-		<div class="mx-5 mt-5">
+		<div class="mx-3 mt-5">
 			<div class="d-flex">
-				<h2 class="flex-grow-1">Staff replacement list</h2>
+				<h2 class="flex-grow-1">Staff Replacement List</h2>
 			</div>
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">
@@ -59,7 +55,7 @@
 							<td th:text="${item.fullname}"></td>
 							<td th:text="${item.status}"></td>
 							<td>
-								<a class="btn btn-success"
+								<a class="btn btn-primary"
 									th:href="@{/admin/replaceStaff(detailId=${detailId}, currentStaff=${currentStaff}, newStaff=${item.id})}">Select</a>
 							</td>
 						</tr>
@@ -68,6 +64,7 @@
 			</div>
 		</div>
 	</main>
+	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="../../back/js/bootstrap.bundle.min.js"></script>
 	<script src="../../back/js/Chart.min.js"></script>

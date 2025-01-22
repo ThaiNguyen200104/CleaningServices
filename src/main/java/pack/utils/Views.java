@@ -20,7 +20,6 @@ public class Views {
 
 	// ADMIN/STAFFS
 	public static String ADMIN_STAFFS_LIST = "admin/staffs/list";
-	public static String ADMIN_STAFFS_INFO = "admin/staffs/accounts";
 	public static String ADMIN_STAFFS_CREATE_ACCOUNT = "admin/staffs/create_account";
 
 	// ADMIN/BLOGS
@@ -164,14 +163,6 @@ public class Views {
 	public static String COL_STAFFS_CREATEDATE = "create_date";
 	public static String COL_STAFFS_STATUS = "status";
 
-	// STAFF_REQUESTS
-	public static String TBL_STAFF_REQUESTS = "staff_requests";
-	public static String COL_SR_ID = "id";
-	public static String COL_SR_TITLE = "title";
-	public static String COL_SR_REASON = "reason";
-	public static String COL_SR_CREATEDATE = "create_date";
-	public static String COL_SR_STATUS = "status";
-
 	// SCHEDULES
 	public static String TBL_SCHEDULES = "schedules";
 	public static String COL_SCHEDULES_ID = "id";
@@ -190,13 +181,6 @@ public class Views {
 	public static String COL_SCHEDULE_REQUESTS_REASON = "reason";
 	public static String COL_SCHEDULE_REQUESTS_CREATEDATE = "create_date";
 	public static String COL_SCHEDULE_REQUESTS_STATUS = "status";
-
-	// PAYMENT_ACCOUNTS
-	public static String TBL_PAYMENT_ACCOUNTS = "payment_accounts";
-	public static String COL_PAYMENT_ACCOUNTS_ID = "id";
-	public static String COL_PAYMENT_ACCOUNTS_ACCOUNT_NUMBER = "account_number";
-	public static String COL_PAYMENT_ACCOUNTS_ACCOUNT_NAME = "account_name";
-	public static String COL_PAYMENT_ACCOUNTS_BANK_NAME = "bank_name";
 
 	// PAYMENTS
 	public static String TBL_PAYMENTS = "payments";

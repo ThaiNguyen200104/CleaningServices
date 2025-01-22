@@ -16,10 +16,6 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
-
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -28,21 +24,21 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
-		<div class="mx-5 mt-5">
+		<div class="mx-3 mt-5">
 			<h2 class="mb-4">Create Service</h2>
 			<div th:if="${catchError}" class="error-message" th:text="${catchError}"></div>
 			<form th:action="@{/admin/services/createService}" method="post" enctype="multipart/form-data">
 				<div class="mb-3 row">
-					<div class="col-5">
+					<div class="col-lg-5 col-md-6 col-sm-6 mb-3">
 						<label class="form-label" for="serName">Service Name <span
 								style="color: red;">(*)</span></label>
 						<input class="form-control" type="text" id="serName" name="serName" required />
 					</div>
-					<div class="col-3">
+					<div class="col-lg-3 col-md-6 col-sm-6 mb-3">
 						<label class="form-label" for="image">Image</label>
 						<input class="form-control" type="file" id="image" name="image" accept="image/*" />
 					</div>
-					<div class="col-2">
+					<div class="col-lg-2 col-md-6 col-sm-6 mb-3">
 						<label class="form-label" for="basePrice">Base Price <span
 								style="color: red;">(*)</span></label>
 						<div class="input-group">
@@ -53,7 +49,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-2">
+					<div class="col-lg-2 col-md-6 col-sm-6">
 						<label class="form-label" for="staffRequired">Staff Required <span
 								style="color: red;">(*)</span></label>
 						<input class="form-control" type="number" id="staffRequired" name="staffRequired" required />
