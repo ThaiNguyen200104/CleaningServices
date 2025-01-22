@@ -22,6 +22,7 @@ public class User_mapper implements RowMapper<User> {
 		item.setImage(rs.getString(Views.COL_USER_IMAGES));
 		item.setCreateDate(rs.getDate(Views.COL_USER_CREATEDATE));
 		item.setFullname(rs.getString(Views.COL_USER_FULLNAME));
+		item.setVerified(rs.getBoolean("is_verified"));
 		return item;
 	}
 }
