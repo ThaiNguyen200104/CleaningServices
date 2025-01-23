@@ -59,7 +59,7 @@
 								<a class="nav-item nav-link" th:href="@{/user/login}" th:if="${session.usrId == null}">
 									Login
 								</a>
-                
+
 								<a class="nav-item nav-link" th:href="@{/user/accounts}"
 									th:if="${session.usrId != null}">
 									Your Account
@@ -171,13 +171,24 @@
 		</div>
 	</div>
 	<!-- Popup Modal -->
-	<div id="bookingModal" style="display: none;">
-		<div class="modal-content">
-			<h3>Select Service Date</h3>
-			<input class="form-control my-4" type="date" id="serviceDate" required />
-			<div class="d-flex justify-content-between">
-				<button class="btn btn-success" onclick="confirmBooking()">Confirm Booking</button>
-				<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+	<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Select Service Date</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<input type="date" class="form-control" id="serviceDate" required>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -345,99 +356,9 @@
 		</div>
 	</div>
 
-	<!-- Pricing Plan -->
-	<div class="price" id="PlanningPrice">
-		<div class="container">
-			<div class="section-header">
-				<p>For your convenience, we offer three packages that are suited to our usual clients needs.</p>
-				<h2>Pricing Plan Reference</h2>
-			</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="price-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-home"></i>
-							</div>
-							<div class="price-title">
-								<h2>Basic Clean</h2>
-							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>49</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>Basic Bathroom & Kitchen Cleaning</li>
-									<li>Vacuuming & Dusting</li>
-									<li>Surface Wipe-Down</li>
-									<li>Floor Cleaning</li>
-									<li>Complete Within 4 hours</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="price-item featured-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-star"></i>
-							</div>
-							<div class="price-title">
-								<h2>Deep Clean</h2>
-							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>79</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>Bathroom & Kitchen Sanitization</li>
-									<li>Carpet & Upholstery Cleaning</li>
-									<li>Complete Room Cleaning</li>
-									<li>Window & Glass Polishing</li>
-									<li>Complete Within 6 hours</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="price-item">
-						<div class="price-header">
-							<div class="price-icon">
-								<i class="fa fa-gift"></i>
-							</div>
-							<div class="price-title">
-								<h2>Ultimate Clean</h2>
-							</div>
-							<div class="price-pricing">
-								<h2><small>$</small>129</h2>
-							</div>
-						</div>
-						<div class="price-body">
-							<div class="price-des">
-								<ul>
-									<li>Exterior Cleaning (Windows, Porch, etc.)</li>
-									<li>Special Requests (Pets, Allergies)</li>
-									<li>Customized Cleaning Plan</li>
-									<li>All Deep Clean Services</li>
-									<li>Complete Within 12 Hours</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-	
+
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 
@@ -445,34 +366,48 @@
 		let selectedServiceId = null;
 		let UserId = null;
 		let price = null;
-		const inputDate = document.getElementById("serviceDate");
-		const currentYear = new Date().getFullYear();
-		inputDate.max = `${currentYear + 2}-12-31`;
 
+		// Initialize date restrictions on page load
+		document.addEventListener('DOMContentLoaded', function () {
+			const inputDate = document.getElementById("serviceDate");
+			const currentYear = new Date().getFullYear();
+			// Set maximum date to 2 years from now
+			inputDate.max = `${currentYear + 2}-12-31`;
+			// Set minimum date to today
+			const today = new Date().toISOString().split('T')[0];
+			inputDate.min = today;
+		});
+
+		// Show booking modal
 		function showBookingPopup(event) {
-			var item = event.target
+			const item = event.currentTarget;
 			selectedServiceId = item.getAttribute("serId");
 			UserId = item.getAttribute("userId");
 			price = item.getAttribute("serPrice");
-			document.getElementById("bookingModal").style.display = "flex";
+
+			// Show modal using Bootstrap
+			$('#bookingModal').modal('show');
 			document.body.classList.add("no-scroll");
 		}
 
+		// Close booking modal
 		function closePopup() {
-			document.getElementById("bookingModal").style.display = "none";
+			$('#bookingModal').modal('hide');
 			document.body.classList.remove("no-scroll");
 		}
 
+		// Handle booking confirmation
 		function confirmBooking() {
 			const date = document.getElementById("serviceDate").value;
 
 			if (!date) {
-				alert("Please select a date.");
+				showNotification("Please select a date.", "warning");
 				return;
 			}
 
 			if (UserId == null) {
 				window.location.href = '/user/login';
+				return;
 			}
 
 			$.ajax({
@@ -503,6 +438,7 @@
 			});
 		}
 
+		// Notification
 		function showNotification(message, type) {
 			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
 			$('body').append(notification);
@@ -510,6 +446,11 @@
 				$(this).remove();
 			});
 		}
+
+		// Handle modal events
+		$('#bookingModal').on('hidden.bs.modal', function () {
+			document.body.classList.remove("no-scroll");
+		});
 	</script>
 </body>
 

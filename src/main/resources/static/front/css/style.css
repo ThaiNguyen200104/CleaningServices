@@ -510,19 +510,36 @@ a:hover, a:active, a:focus {
 	padding: 45px 0 15px 0;
 }
 
+.service-grid {
+	position: relative;
+}
+
+.service-item-wrapper {
+	transition: all 0.3s ease-in-out;
+}
+
+.service-item-wrapper.hidden-service {
+	display: none;
+}
+
+.service-item-wrapper.showing {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
 .service .service-item {
 	position: relative;
 	width: 100%;
 	height: 100%;
 	text-align: center;
-	background: #ffffff;
 	border-radius: 5px;
 	margin-bottom: 15px;
-	box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+	background: -webkit-linear-gradient(180deg, #00539c, #4b86b9, #a5c2dc);
+	background: linear-gradient(180deg, #00539c, #4b86b9, #a5c2dc);
 }
 
 .service .service-item img {
 	width: 100%;
+	border-radius: 5px;
 }
 
 .service .service-item h3 {
@@ -530,13 +547,14 @@ a:hover, a:active, a:focus {
 	padding: 25px 15px 15px 15px;
 	font-size: 20px;
 	font-weight: 300;
-	color: #00539C;
+	color: #FFD662;
 }
 
 .service .service-item p {
 	margin: 0;
 	padding: 0 25px 25px 25px;
 	font-size: 16px;
+	color: #ffffff;
 }
 
 .service .service-item a.btn {
@@ -549,19 +567,14 @@ a:hover, a:active, a:focus {
 	border: none;
 	border-radius: 5px;
 	background: #FFD662;
-	transition: .3s;
-}
-
-.service .service-item:hover a.btn {
-	color: #ffffff;
-	background: #00539C;
+	transition: .3s ease-in-out;
 }
 
 .service .service-item a.btn:hover {
-	color: #000000;
-	background: #FFD662;
+	scale: calc(1.15);
 }
 
+/* SERVICE CAROUSEL */
 .service-container {
 	display: flex;
 	justify-content: center;
@@ -726,51 +739,70 @@ a:hover, a:active, a:focus {
 }
 
 /* MODALS */
-#bookingModal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	z-index: 9999;
-}
-
 .modal-content {
-	background: white;
-	padding: 20px;
-	text-align: center;
-	width: 25vw;
-	z-index: 10000;
-	position: relative;
+	border: none;
+	border-radius: 15px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px
+		-2px 6px 0px inset;
 }
 
+.modal-header {
+	background: -webkit-linear-gradient(180deg, #00539c, #4b86b9, #a5c2dc);
+	background: linear-gradient(180deg, #00539c, #4b86b9, #a5c2dc);
+	color: #ffffff;
+	background: linear-gradient(180deg, #00539c, #4b86b9, #a5c2dc);
+}
+
+.modal-header .close {
+	color: #ffffff;
+	opacity: 1;
+}
+
+.modal-body {
+	padding: 20px;
+}
+
+.modal-footer {
+	border-top: none;
+	padding: 0 20px 20px;
+}
+
+/* Notification Styles */
 .notification {
 	position: fixed;
 	top: 20px;
 	right: 20px;
-	padding: 15px;
-	border-radius: 4px;
-	color: white;
-	font-weight: bold;
+	padding: 15px 25px;
+	border-radius: 8px;
+	color: #ffffff;
+	font-size: 16px;
 	z-index: 9999;
+	display: none;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	max-width: 350px;
 }
 
-.success {
-	background-color: #4CAF50;
-	z-index: 10000;
+.notification.success {
+	background-color: #28a745;
+	border-left: 4px solid #1e7e34;
 }
 
-.error {
-	background-color: #f44336;
-	z-index: 10000;
+.notification.error {
+	background-color: #dc3545;
+	border-left: 4px solid #bd2130;
 }
 
+.notification.warning {
+	background-color: #ffc107;
+	border-left: 4px solid #d39e00;
+	color: #000000;
+}
+
+/* Modal scroll prevention */
 body.no-scroll {
-	overflow: hidden !important;
+	overflow: hidden;
+	padding-right: 15px;
 }
 
 /*******************************/
@@ -1952,8 +1984,45 @@ body.no-scroll {
 		height: 40px;
 		font-size: 18px;
 	}
+	.modal-dialog {
+		margin: 0.5rem;
+		padding: 0 10px;
+	}
 	.modal-content {
-		width: 75vw;
+		border-radius: 10px;
+	}
+	.modal-header {
+		padding: 15px;
+	}
+	.modal-header h5 {
+		font-size: 18px;
+	}
+	.modal-body {
+		padding: 15px;
+	}
+	.modal-footer {
+		padding: 10px 15px;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.modal-footer .btn {
+		width: 100%;
+		margin: 0;
+	}
+	.notification {
+		top: 10px;
+		right: 10px;
+		left: 10px;
+		max-width: none;
+		font-size: 14px;
+		padding: 12px 20px;
+	}
+	.service-item-wrapper {
+		margin-bottom: 20px;
+	}
+	#loadMoreBtn {
+		width: 90%;
+		max-width: 300px;
 	}
 	.blog-card {
 		flex-direction: column;

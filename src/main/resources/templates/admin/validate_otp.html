@@ -16,9 +16,9 @@
 
 <body>
 	<div class="wrapper">
-		<div class="container">
+		<div class="container my-5">
 			<h2 class="mb-4">Enter your OTP</h2>
-			<form th:action="@{/user/verification}" method="post">
+			<form th:action="@{/admin/verification}" method="post">
 				<div th:if="${error}" class="error-message" th:text="${error}"></div>
 				<div class="mb-3">
 					<input class="form-control" placeholder="Enter your OTP:" type="text" id="otp" name="otp"
@@ -26,10 +26,10 @@
 				</div>
 				<div class="row">
 					<div class="col-6">
-						<button class="btn btn-success" type="submit">Submit</button>
+						<a class="btn btn-outline-warning" th:href="@{/admin/resendOtp}" id="resend">Resend OTP</a>
 					</div>
 					<div class="col-6 d-flex justify-content-end">
-						<a class="btn btn-outline-warning" th:href="@{/admin/resendOtp}" id="resend">Resend OTP</a>
+						<button class="btn btn-success" type="submit">Submit</button>
 					</div>
 				</div>
 			</form>

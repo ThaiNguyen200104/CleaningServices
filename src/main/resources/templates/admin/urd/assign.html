@@ -13,12 +13,32 @@
 	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
+
+	<style>
+		.table thead tr th,
+		.table tbody tr td {
+			text-align: center !important;
+
+			@media(max-width: 768px) {
+				font-size: 12px;
+			}
+		}
+
+		.table tbody tr td button {
+			transition: 0.25s;
+
+			@media(max-width: 768px) {
+				scale: calc(0.75);
+			}
+		}
+
+		.form-inline {
+			display: inline-block;
+		}
+	</style>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -27,9 +47,9 @@
 
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
-		<div class="mx-5 mt-5">
+		<div class="mx-3 mt-5">
 			<div class="col-12">
-				<h2 class="mb-4">Staff list</h2>
+				<h2 class="mb-4">Available Staffs</h2>
 				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<div class="table-responsive border-1">
 					<table class="table table-hover">
@@ -37,8 +57,7 @@
 							<tr>
 								<th>No.</th>
 								<th>Name</th>
-								<th>Start Date</th>
-								<th>Job Status</th>
+								<th>Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
@@ -46,27 +65,32 @@
 							<tr th:each="staff : ${staffs}">
 								<td th:text="${staff.id}"></td>
 								<td th:text="${staff.fullname}"></td>
-								<td th:text="${staff.jobOccupied}"></td>
 								<td th:text="${staff.status}"></td>
 								<td>
-									<button class="btn btn-warning changeSize" type="button"
-										onclick="assignStaff(event)"
+									<button class="btn btn-warning" type="button" onclick="assignStaff(event)"
 										th:attr="staffid=${staff.id}, urdId=${urdId}">Assign
 									</button>
-									
-									<button class="svg-icon" type="button" onclick="assignStaff(event)"
-										th:attr="staffid=${staff.id}, urdId=${urdId}">
-										<svg data-name="Layer 1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M20.64 15.772a3.468 3.468 0 0 0 .86-2.272 3.5 3.5 0 0 0-7 0 3.468 3.468 0 0 0 .86 2.272A4.988 4.988 0 0 0 13 20a1 1 0 0 0 2 0 3 3 0 0 1 6 0 1 1 0 0 0 2 0 4.988 4.988 0 0 0-2.36-4.228ZM18 15a1.5 1.5 0 1 1 1.5-1.5A1.502 1.502 0 0 1 18 15ZM6.793 7.707l2 2a1 1 0 0 0 1.414-1.414L9.914 8h4.172l-.293.293a1 1 0 1 0 1.414 1.414l2-2a1.004 1.004 0 0 0 0-1.414l-2-2a1 1 0 0 0-1.414 1.414l.293.293H9.914l.293-.293a1 1 0 0 0-1.414-1.414l-2 2a1.004 1.004 0 0 0 0 1.414Zm1.847 8.065A3.468 3.468 0 0 0 9.5 13.5a3.5 3.5 0 0 0-7 0 3.468 3.468 0 0 0 .86 2.272A4.988 4.988 0 0 0 1 20a1 1 0 0 0 2 0 3 3 0 0 1 6 0 1 1 0 0 0 2 0 4.988 4.988 0 0 0-2.36-4.228ZM6 15a1.5 1.5 0 1 1 1.5-1.5A1.502 1.502 0 0 1 6 15Z"
-												fill="#ffd662" class="fill-6563ff"></path>
-										</svg>
-									</button>
-
 								</td>
 							</tr>
 						</tbody>
 					</table>
+					<nav class="mt-5" th:if="${pv.totalPage > 1}">
+						<ul class="pagination justify-content-center">
+							<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
+								<a class="page-link"
+									th:href="@{/admin/request/staffsForAssign(cp=${pv.pageCurrent - 1})}">Previous</a>
+							</li>
+							<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
+								th:classappend="${page == pv.pageCurrent} ? 'active'">
+								<a class="page-link" th:href="@{/admin/request/staffsForAssign(cp=${page})}"
+									th:text="${page}"></a>
+							</li>
+							<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
+								<a class="page-link"
+									th:href="@{/admin/request/staffsForAssign(cp=${pv.pageCurrent + 1})}">Next</a>
+							</li>
+						</ul>
+					</nav>
 				</div>
 			</div>
 		</div>

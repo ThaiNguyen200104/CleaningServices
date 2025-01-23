@@ -118,12 +118,12 @@ public class AdminRepository {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("UPDATE " + Views.TBL_ADMIN + " SET ");
 			List<Object> params = new ArrayList<>();
-			
+
 			if (admin.getEmail() != null && !admin.getEmail().isEmpty()) {
 				queryBuilder.append("email = ?, ");
 				params.add(admin.getEmail());
 			}
-			
+
 			if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
 				queryBuilder.append("password = ?, ");
 				String hashPassword = SecurityUtility.encryptBcrypt(admin.getPassword());
@@ -154,14 +154,19 @@ public class AdminRepository {
 	public List<Service> getServices(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM services", Integer.class);
-			int total_page = count / pageItem.getPageSize();
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format("SELECT * FROM %s ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_SERVICES, Views.COL_SERVICES_ID);
-			return db.query(str_query, new Service_mapper(),
-					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			return db.query(str_query, new Service_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -311,13 +316,17 @@ public class AdminRepository {
 	public List<Blog> getBlogs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM blogs", Integer.class);
-			int totalPage = count / pageItem.getPageSize();
-			pageItem.setTotalPage(totalPage);
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format("SELECT * FROM %s ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_BLOG, Views.COL_BLOG_ID);
-			return db.query(str_query, new Blog_mapper(),
-					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			return db.query(str_query, new Blog_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			return null;
 		}
@@ -445,14 +454,18 @@ public class AdminRepository {
 	public List<Staff> getStaffs(PageView pageItem) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM staffs WHERE status != 'disabled'", Integer.class);
-			int totalPage = count / pageItem.getPageSize();
-			pageItem.setTotalPage(totalPage);
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format(
 					"SELECT * FROM %s WHERE %s != 'disabled' ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
-			return db.query(str_query, new Staff_mapper(),
-					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			return db.query(str_query, new Staff_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			return null;
 		}
@@ -468,14 +481,19 @@ public class AdminRepository {
 			int count = db.queryForObject(
 					"SELECT count(*) FROM staffs WHERE status != 'disabled' AND status != 'unavailable'",
 					Integer.class);
-			int totalPage = count / pageItem.getPageSize();
-			pageItem.setTotalPage(totalPage);
+
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format(
 					"SELECT * FROM %s WHERE %s != 'disabled' AND status != 'unavailable' ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
-			return db.query(str_query, new Staff_mapper(),
-					new Object[] { (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			return db.query(str_query, new Staff_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			return null;
 		}
@@ -539,11 +557,20 @@ public class AdminRepository {
 	 * 
 	 * @return list of available staffs
 	 */
-	public List<Staff> staffListForAssignRequest() {
+	public List<Staff> staffListForAssignRequest(PageView pageItem) {
 		try {
+			int count = db.queryForObject("SELECT count(*) FROM staffs WHERE status = 'available'", Integer.class);
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
+
 			String str_query = String.format("SELECT * FROM %s WHERE %s = 'available'", Views.TBL_STAFFS,
 					Views.COL_STAFFS_STATUS);
-			return db.query(str_query, new Staff_mapper());
+			return db.query(str_query, new Staff_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -555,13 +582,28 @@ public class AdminRepository {
 	 * 
 	 * @return a specific staff
 	 */
-	public List<Map<String, Object>> getRequestDetails() {
+	public List<Map<String, Object>> getRequestDetails(PageView pageItem) {
 		try {
-			String str_query = String.format(
-					"SELECT urd.*, s.service_name, u.fullname FROM %s urd JOIN %s s ON urd.service_id = s.id "
-							+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing' ORDER BY create_date DESC",
+			String countQuery = String.format("SELECT COUNT(*) FROM %s urd JOIN %s s ON urd.service_id = s.id "
+					+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing'",
 					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER);
-			return db.queryForList(str_query);
+
+			int count = db.queryForObject(countQuery, Integer.class);
+
+			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(totalPage);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), totalPage);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
+
+			String str_query = String.format("SELECT urd.*, s.service_name, u.fullname FROM %s urd "
+					+ "JOIN %s s ON urd.service_id = s.id JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing' "
+					+ "ORDER BY create_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", Views.TBL_USER_REQUEST_DETAILS,
+					Views.TBL_SERVICES, Views.TBL_USER);
+
+			return db.queryForList(str_query, offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -749,18 +791,30 @@ public class AdminRepository {
 	 */
 	public List<Map<String, Object>> getOrders(PageView pageItem) {
 		try {
-			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
-			int totalPage = count / pageItem.getPageSize();
+			String countQuery = String.format(
+					"SELECT COUNT(*) FROM %s od JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
+							+ "JOIN %s u ON ur.user_id = u.id JOIN services s ON od.service_id = s.id",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER);
+
+			int count = db.queryForObject(countQuery, Integer.class);
+
+			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(totalPage);
 
-			String str_query = String.format("SELECT od.*, o.*, u.fullname, s.staff_required, "
-					+ "CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
-					+ "THEN 1 ELSE 0 END AS hasAssignedStaff " + "FROM %s od " + "JOIN %s o ON od.order_id = o.id "
-					+ "JOIN %s ur ON o.usrReq_id = ur.id JOIN %s u ON ur.user_id = u.id JOIN services s ON od.service_id = s.id "
-					+ "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", Views.TBL_ORDER_DETAIL, Views.TBL_ORDER,
-					Views.TBL_USER_REQUEST, Views.TBL_USER, Views.COL_ORDER_DETAIL_CREATEDATE);
-			return db.queryForList(str_query, (pageItem.getPageCurrent() - 1) * pageItem.getPageSize(),
-					pageItem.getPageSize());
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), totalPage);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
+
+			String str_query = String.format(
+					"SELECT od.*, o.*, u.fullname, s.staff_required, CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
+							+ "THEN 1 ELSE 0 END AS hasAssignedStaff FROM %s od JOIN %s o ON od.order_id = o.id "
+							+ "JOIN %s ur ON o.usrReq_id = ur.id JOIN %s u ON ur.user_id = u.id "
+							+ "JOIN services s ON od.service_id = s.id ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER,
+					Views.COL_ORDER_DETAIL_CREATEDATE);
+
+			return db.queryForList(str_query, offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

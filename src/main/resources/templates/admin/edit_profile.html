@@ -16,9 +16,6 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{admin/fragment/aside::adminAside}"></aside>
 
@@ -38,7 +35,7 @@
 					<div class="mb-3 row">
 						<div class="col-6">
 							<label class="form-label" for="email">Email</label>
-							<input class="form-control" type="text" id="email" th:value="*{email}" />
+							<input class="form-control" type="text" id="email" th:field="*{email}" th:value="*{email}" />
 						</div>
 						<div class="col-6">
 							<label class="form-label" for="password">Password</label>
