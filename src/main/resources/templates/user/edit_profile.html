@@ -21,43 +21,43 @@
 	<!-- Header -->
 	<div th:replace="~{user/fragments/header::userHeader}"></div>
 
-	<div class="acc-container mx-5">
+	<div class="acc-container mx-3">
 		<h2 class="mb-5">Edit your profile</h2>
 		<form th:action="@{/user/updateProfile}" method="post" enctype="multipart/form-data">
 			<div th:if="${error}" class="error-message" th:text="${error}"></div>
 			<input class="form-control" type="hidden" name="id" th:value="${user.id}">
 
 			<div class="mb-4 row">
-				<div class="col-6">
+				<div class="col-lg-6 col-md-6 col-sm-6 mb-3">
 					<label class="form-label" for="fullname">FullName</label>
 					<input class="form-control" type="text" id="fullname" name="fullname" th:value="${user.fullname}" />
 				</div>
-				<div class="col-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<label class="form-label" for="email">Email</label>
 					<input class="form-control" type="email" id="email" name="email" th:value="${user.email}" />
 				</div>
 			</div>
 			<div class="mb-4 row">
-				<div class="col-6">
+				<div class="col-lg-6 col-md-6 col-sm-6 mb-3">
 					<label class="form-label" for="password">Password</label>
 					<input class="form-control" type="password" id="password" name="password" />
 				</div>
-				<div class="col-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<label class="form-label" for="confirmPassword">Confirm Password</label>
 					<input class="form-control" type="password" id="confirmPassword" name="confirmPassword" />
 				</div>
 			</div>
 			<div class="mb-4 row">
-				<div class="col-3">
+				<div class="col-lg-3 col-md-3 col-sm-3 mb-3">
 					<label class="form-label" for="image">Profile Image</label>
 					<input class="form-control" style="border: none; padding: .375rem 0;" type="file" id="image"
 						name="file" accept="image/*" />
 				</div>
-				<div class="col-3">
+				<div class="col-lg-3 col-md-3 col-sm-3 mb-3">
 					<label class="form-label" for="phone">Phone</label>
 					<input class="form-control" type="text" id="phone" name="phone" th:value="${user.phone}" />
 				</div>
-				<div class="col-6">
+				<div class="col-lg-6 col-md-6 col-sm-6">
 					<label class="form-label" for="address">Address</label>
 					<input class="form-control" type="text" id="address" name="address" th:value="${user.address}" />
 				</div>

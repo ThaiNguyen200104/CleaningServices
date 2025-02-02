@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -249,18 +247,22 @@ public class UserRepository {
 	 * 
 	 * @return order list for browse_more.html
 	 */
-	public List<Map<String, Object>> getAllOrderDetailsForAccount(PageView pageItem, int userId) {
+	public List<Map<String, Object>> getAllOrderDetailsForAccount(PageView pageItem, String userId) {
 		try {
 			int count = db.queryForObject("SELECT COUNT(*) FROM order_details", Integer.class);
-			int total_page = (int) Math.ceil((double) count / pageItem.getPageSize());
+			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(total_page);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = "SELECT o.id, od.start_date, od.status, s.service_name FROM services s "
 					+ "JOIN order_details od ON s.id = od.service_id JOIN orders o ON od.order_id = o.id "
 					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id "
 					+ "WHERE u.id = ? ORDER BY od.start_date OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-			return db.queryForList(str_query, new Object[] { userId,
-					(pageItem.getPageCurrent() - 1) * pageItem.getPageSize(), pageItem.getPageSize() });
+			return db.queryForList(str_query, offset, new Object[] { userId }, pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -287,13 +289,29 @@ public class UserRepository {
 	 * 
 	 * @return order list for orders.html
 	 */
-	public List<Map<String, Object>> getUserRequestDetailById(int userId) {
+	public List<Map<String, Object>> getUserRequestDetailById(PageView pageItem, int userId) {
 		try {
-			String str_query = String.format(
-					"SELECT urd.*, urd.price, s.service_name, s.base_price FROM %s urd JOIN %s ur ON urd.usrReq_id = ur.id "
-							+ "JOIN %s s ON urd.service_id = s.id WHERE urd.user_id = ? AND urd.status != 'canceled'",
+			String countQuery = String.format(
+					"SELECT COUNT(*) FROM %s urd JOIN %s ur ON urd.usrReq_id = ur.id JOIN %s s ON urd.service_id = s.id "
+							+ "WHERE urd.user_id = ? AND urd.status != 'canceled'",
 					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_SERVICES);
-			return db.queryForList(str_query, new Object[] { userId });
+			int count = db.queryForObject(countQuery, new Object[] { userId }, Integer.class);
+
+			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(totalPage);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), totalPage);
+			pageItem.setPageCurrent(currentPage);
+
+			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
+			int limit = pageItem.getPageSize();
+
+			String str_query = String.format(
+					"SELECT urd.*, s.id AS serId, s.service_name, s.base_price FROM %s urd JOIN %s ur ON urd.usrReq_id = ur.id "
+							+ "JOIN %s s ON urd.service_id = s.id WHERE urd.user_id = ? AND urd.status != 'canceled' "
+							+ "ORDER BY urd.id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_USER_REQUEST, Views.TBL_SERVICES);
+			return db.queryForList(str_query, new Object[] { userId, offset, limit });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -305,10 +323,12 @@ public class UserRepository {
 	 * 
 	 * @return order list for order_details.html
 	 */
-	public OrderDetail getOrderDetails(int orderId) {
+	public List<Map<String, Object>> getOrderDetails(int orderId) {
 		try {
-			String str_query = "select od.*, s.service_name from order_details od join services s on od.service_id = s.id where od.id = ?";
-			return db.queryForObject(str_query, new OrderDetail_mapper(), new Object[] { orderId });
+			String str_query = String.format(
+					"SELECT od.*, s.service_name FROM %s od JOIN %s s ON od.service_id = s.id WHERE od.id = ?",
+					Views.TBL_ORDER_DETAIL, Views.TBL_SERVICES);
+			return db.queryForList(str_query, orderId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -434,8 +454,8 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status = 'completed' in table order_details 
-	 * update status = 'available'in table staffs
+	 * update status = 'completed' in table order_details update status =
+	 * 'available'in table staffs
 	 * 
 	 * @return updated order_details & staffs status
 	 */
@@ -443,7 +463,7 @@ public class UserRepository {
 		try {
 			String str_query = "update order_details set status = 'completed' where id = ?";
 			String staffs_query = "update staffs set status = 'available' where id in (select s.staff_id from schedules s where s.detail_id = ?)";
-      
+
 			int rowaccepted = db.update(str_query, new Object[] { detailId });
 			if (rowaccepted == 1) {
 				db.update(staffs_query, new Object[] { detailId });
@@ -471,4 +491,40 @@ public class UserRepository {
 			return "failed";
 		}
 	}
+
+	public List<Service> serviceListForChange(int userId) {
+		try {
+			String str_query = String.format(
+					"select * from %s where id not in (SELECT service_id FROM %s WHERE user_id = ? and status != 'canceled' ) and status != 'disabled'",
+					Views.TBL_SERVICES, Views.TBL_USER_REQUEST_DETAILS);
+			return db.query(str_query, new Service_mapper(), new Object[] { userId });
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String changeService(int oldSerId, int newSerId, int userId) {
+		try {
+			String str_query = "update user_request_details set service_id = ? where user_id = ? and service_id = ? and status = 'pending'";
+			int rowaccepted = db.update(str_query, new Object[] { newSerId, userId, oldSerId });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	public String changePass(String username, String password) {
+		try {
+			String str_query = "update users set password = ? where username = ?";
+			String hashPass = SecurityUtility.encryptBcrypt(password);
+			int rowaccepted = db.update(str_query, new Object[] { hashPass, username });
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
 }

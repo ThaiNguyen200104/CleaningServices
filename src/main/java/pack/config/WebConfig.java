@@ -32,7 +32,8 @@ public class WebConfig implements WebMvcConfigurer {
 
 		// STAFF INTERCEPTOR
 		registry.addInterceptor(new StaffInterceptor()).addPathPatterns("/staff/**").excludePathPatterns("/staff/login",
-				"/staff/checkLogin");
+				"/staff/checkLogin", "/staff/forgotPassword", "/staff/getOtp", "/staff/validateOtp",
+				"/staff/verification");
 
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}

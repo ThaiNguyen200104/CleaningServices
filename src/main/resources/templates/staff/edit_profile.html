@@ -16,9 +16,6 @@
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
 
@@ -36,12 +33,12 @@
 					<div th:if="${error}" class="error-message" th:text="${error}"></div>
 					<input type="hidden" id="id" name="id" th:field="*{id}" />
 					<div class="mb-3 row">
-						<div class="col-6">
+						<div class="col-lg-6 col-md-6 col-sm-6 mb-4">
 							<label class="form-label" for="password">Password</label>
 							<input class="form-control" type="password" id="password" />
 						</div>
 
-						<div class="col-6">
+						<div class="col-lg-6 col-md-6 col-sm-6 mb-4">
 							<label class="form-label" for="image">Profile Image</label>
 							<input class="form-control" type="file" name="file" accept="image/*" />
 						</div>

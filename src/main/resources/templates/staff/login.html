@@ -12,6 +12,14 @@
 	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
 	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../../back/css/main.css" />
+	<style>
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+	</style>
 </head>
 
 <body>
@@ -23,11 +31,11 @@
 				<form th:action="@{/staff/checkLogin}" method="post" class="mt-3">
 					<div class="form-group">
 						<label for="username">Username <span style="color: red;">(*)</span></label>
-						<input type="text" id="acc" name="acc" required />
+						<input type="text" id="acc" name="acc" placeholder="Enter your username:" required />
 					</div>
 					<div class="form-group">
 						<label for="password">Password <span style="color: red;">(*)</span></label>
-						<input type="password" id="password" name="pw" required />
+						<input type="password" id="password" name="pw" placeholder="Enter your password:" required />
 					</div>
 					<button type="submit" class="btn btn-primary mb-4">Login</button>
 					<a class="acc-link" th:href="@{/staff/forgotPassword}">Forgot Password?</a>

@@ -6502,51 +6502,48 @@ to {
 
 }
 .login-container {
-	max-width: 500px;
-	height: 100%;
-	margin: 100px auto;
-	padding: 50px 30px;
-	background: rgba(0, 83, 156, 0.1);
+	padding: 40px 40px;
+	background: -webkit-linear-gradient(180deg, #fff, #a5c2dc, #00539c);
+	background: linear-gradient(180deg, #fff, #a5c2dc, #00539c);
 	border-radius: 10px;
-	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
 }
 
 .login-container h2 {
-	color: #00539C;
+	color: #00539c;
 	font-size: 32px;
 	text-align: center;
+	font-weight: 500;
 }
 
 .login-container form {
 	margin-top: 20px;
 }
 
+.login-container label {
+	color: #000;
+	margin-bottom: 5px;
+}
+
 .login-container input[type="text"], .login-container input[type="password"],
-	.login-container button {
+	.login-container input[type="email"], .login-container button {
 	width: 100%;
 	padding: 10px;
 	margin-bottom: 15px;
-	border: 1px solid rgba(0, 83, 156, 0.3);
+	border: none;
 	border-radius: 5px;
 }
 
-.login-container input[type="text"], .login-container input[type="password"]
-	{
-	background: rgba(0, 83, 156, 0.1);
-	color: #00539C;
-}
-
 .login-container button {
-	background: #FFD662;
-	color: #000000;
-	border: none;
-	font-size: 16px;
+	margin-top: 20px;
+	background: #ffd662;
+	color: #000;
 	transition: background 0.3s;
 }
 
 .login-container button:hover {
-	background: #00539C;
-	color: #ffffff;
+	background: #00539c;
+	color: #fff;
 }
 
 .login-container .link {
@@ -6557,13 +6554,21 @@ to {
 }
 
 .login-container .link a {
-	color: #00539C;
+	color: #00539c;
 	text-decoration: none;
 	transition: color 0.3s;
 }
 
 .login-container .link a:hover {
-	color: #FFD662;
+	color: #ffd662;
+}
+
+.acc-link {
+	color: #fff;
+}
+
+.acc-link:hover {
+	color: #ffd662;
 }
 
 .error-message {
@@ -6583,7 +6588,7 @@ to {
 
 .acc-container h2 {
 	color: #000;
-	border-bottom: 2px solid #00539C;
+	border-bottom: 2px solid #00539c;
 	padding-bottom: 10px;
 }
 
@@ -6606,4 +6611,67 @@ to {
 		display: none;
 		border: none;
 	}
+}
+
+/* MODAL */
+.modal-content {
+	border: none;
+	border-radius: 15px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px
+		-2px 6px 0px inset;
+}
+
+.modal-header {
+	background: -webkit-linear-gradient(#00539c, #4b86b9, #a5c2dc);
+	background: linear-gradient(#00539c, #4b86b9, #a5c2dc);
+	background: linear-gradient(#00539c, #4b86b9, #a5c2dc);
+}
+
+.modal-header h5 {
+	color: #fff;
+}
+
+.modal-body {
+	padding: 20px;
+}
+
+.modal-footer {
+	border-top: none;
+	padding: 0 20px 20px;
+}
+
+.notification {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	padding: 15px 25px;
+	border-radius: 8px;
+	color: #fff;
+	font-size: 16px;
+	z-index: 9999;
+	display: none;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	max-width: 350px;
+}
+
+.notification.success {
+	background-color: #28a745;
+	border-left: 4px solid #1e7e34;
+}
+
+.notification.error {
+	background-color: #dc3545;
+	border-left: 4px solid #bd2130;
+}
+
+.notification.warning {
+	background-color: #ffc107;
+	border-left: 4px solid #d39e00;
+	color: #000;
+}
+
+body.no-scroll {
+	overflow: hidden;
+	padding-right: 15px;
 }

@@ -15,6 +15,56 @@
 	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../front/css/style.css" rel="stylesheet" />
+	<style>
+		.table thead tr th,
+		.table tbody tr td {
+			text-align: center !important;
+
+			@media(max-width: 768px) {
+				font-size: 12px;
+				padding: 0 5px;
+			}
+		}
+
+		.left-info {
+			text-align: center;
+
+			@media(max-width: 768px) {
+				margin-bottom: 40px;
+			}
+		}
+
+		.left-info img {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin-bottom: 10px;
+
+			@media(max-width: 768px) {
+				width: 120px;
+				height: 120px;
+			}
+		}
+
+		.left-info h3 {
+			font-weight: 500;
+			color: #000;
+			margin: 15px 0;
+
+			@media(max-width: 768px) {
+				font-size: 30px;
+			}
+		}
+
+		.left-info a {
+			margin-top: 10px;
+		}
+
+		.right-info dt {
+			color: #000;
+		}
+	</style>
 </head>
 
 <body>
@@ -23,15 +73,13 @@
 
 	<div class="acc-container my-5 mx-3">
 		<div class="row">
-			<div class="col-3 text-center">
-				<img th:if="${user.image == null}" src="../front/img/none-user.png" class="rounded-circle mb-3"
-					width="150px" height="150px" />
-				<img th:unless="${user.image == null}" th:src="'/upload/' + ${user.image}" class="rounded-circle mb-3"
-					width="150px" height="150px" />
+			<div class="col-lg-3 col-md-3 col-sm-3 left-info">
+				<img th:if="${user.image == null}" src="../front/img/none-user.png" />
+				<img th:unless="${user.image == null}" th:src="'/upload/'+${user.image}" />
 				<h3 th:text="${user.fullname}"></h3>
-				<a class="btn btn-primary mt-3" th:href="@{/user/editProfile}">Edit Profile</a>
+				<a class="btn btn-primary" th:href="@{/user/editProfile}">Edit Profile</a>
 			</div>
-			<div class="col-9">
+			<div class="col-lg-9 col-md-9 col-sm-9 right-info">
 				<h2 class="mb-4">Profile</h2>
 				<dl class="row">
 					<dt class="col-3">Username:</dt>
@@ -53,10 +101,10 @@
 			<h2 class="mb-4">Orders History</h2>
 
 			<div th:if="${#lists.isEmpty(orderDetails)}" class="text-center mt-5">
-				<p>You have not booked any services.</p>
+				<p>You have not booked any services yet.</p>
 			</div>
-      
-			<div th:if="${!#lists.isEmpty(orderDetails)}" class="table-container">
+
+			<div th:unless="${#lists.isEmpty(orderDetails)}" class="table-container">
 				<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 				<table class="booking-table">
 					<thead>
@@ -74,18 +122,10 @@
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.serName}"></td>
 							<td th:text="${item.price} + '$'"></td>
-							<td th:text="${item.startDate}"></td>
 							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 							<td th:text="${item.status}"></td>
 							<td>
-								<a th:href="@{/user/seeMore(id=${item.orderId})}">
-									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px"
-										height="50px">
-										<path
-											d="M12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm-7 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm14 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2Z"
-											fill="#000000" class="fill-6563ff"></path>
-									</svg>
-								</a>
+								<a class="btn btn-info" th:href="@{/user/accounts/seeMore(id=${item.id})}">Details</a>
 							</td>
 						</tr>
 					</tbody>

@@ -30,17 +30,17 @@
 			<h2>There are no services ordered</h2>
 		</div>
 
-		<div th:unless="${#lists.isEmpty(orders)}">
+		<div th:unless="${#lists.isEmpty(orders)}" class="table-container">
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<table class="booking-table">
 				<thead>
 					<tr>
 						<th>No.</th>
 						<th>Service</th>
-						<th>Base Price</th>
-						<th>Confirmed Price</th>
+						<th>Service Price</th>
+						<th>Dealed Price</th>
 						<th>Start Date</th>
-						<th th:if="${!statusCheck}">Status</th>
+						<th>Status</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -51,40 +51,40 @@
 						<td th:text="${item.base_price} + '$'"></td>
 						<td th:text="${item.price} + '$'"></td>
 						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
-						<td th:text="${item.status}" th:if="${item.status == 'confirmed'}"></td>
+						<td th:text="${item.status}" th:if="${item.status != 'pending'}"></td>
+						<td th:unless="${item.status != 'pending'}">processing</td>
 						<td>
 							<a class="btn btn-outline-info" th:href="@{/user/orders/orderDetails(id=${item.id})}"
 								th:if="${item.status == 'confirmed'}">Detail</a>
 
-							<a class="btn btn-success changeSize" onclick="confirmAction(event)"
-								th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staff_id=${item.staff_id}"
-								th:if="${item.status == 'reviewing'}">Confirm</a>
-							<a class="svg-icon" onclick="confirmAction(event)"
-								th:attr="urdId=${item.usrReqId}, serId=${item.serId}, price=${item.price}, startDate=${item.startDate}, staff_id=${item.staff_id}"
-								th:if="${item.status == 'reviewing'}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
-									<path
-										d="m14.72 8.79-4.29 4.3-1.65-1.65a1 1 0 1 0-1.41 1.41l2.35 2.36a1 1 0 0 0 .71.29 1 1 0 0 0 .7-.29l5-5a1 1 0 0 0 0-1.42 1 1 0 0 0-1.41 0ZM12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"
-										fill="#365cf5" class="fill-6563ff"></path>
-								</svg>
-							</a>
+							<a class="btn btn-warning" th:href="@{/user/changeService(serId=${item.service_id})}"
+								th:if="${item.status == 'pending'}">Change</a>
 
-							<a class="btn btn-danger changeSize" onclick="cancel(event)"
-								th:attr="requestId=${item.id}, staff_id=${item.staff_id}"
+							<a class="btn btn-success" onclick="confirmAction(event)"
+								th:attr="urdId=${item.id}, serId=${item.service_id}, price=${item.price}, startDate=${item.start_date}, staffId=${item.staff_id}"
+								th:if="${item.status == 'reviewing'}">Confirm</a>
+
+							<a class="btn btn-danger" onclick="cancel(event)"
+								th:attr="requestId=${item.id}, staffId=${item.staff_id}"
 								th:if="${item.status == 'pending' || item.status == 'reviewing'}">Cancel</a>
-							<a class="svg-icon" onclick="cancel(event)"
-								th:attr="requestId=${item.id}, staff_id=${item.staff_id}"
-								th:if="${item.status == 'pending' || item.status == 'reviewing'}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px">
-									<path
-										d="M15.71 8.29a1 1 0 0 0-1.42 0L12 10.59l-2.29-2.3a1 1 0 0 0-1.42 1.42l2.3 2.29-2.3 2.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l2.29-2.3 2.29 2.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12l2.3-2.29a1 1 0 0 0 0-1.42ZM19 2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
-										fill="#dc3545" class="fill-6563ff fill-ed1411"></path>
-								</svg>
-							</a>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<nav class="mt-5" th:if="${pv.totalPage > 1}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
+						<a class="page-link" th:href="@{/user/orders(cp=${pv.pageCurrent - 1})}">Previous</a>
+					</li>
+					<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
+						th:classappend="${page == pv.pageCurrent} ? 'active'">
+						<a class="page-link" th:href="@{/user/orders(cp=${page})}" th:text="${page}"></a>
+					</li>
+					<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
+						<a class="page-link" th:href="@{/user/orders(cp=${pv.pageCurrent + 1})}">Next</a>
+					</li>
+				</ul>
+			</nav>
 		</div>
 	</div>
 
@@ -93,6 +93,8 @@
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="../front/js/userOrder.js"></script>
 </body>
 
 </html>

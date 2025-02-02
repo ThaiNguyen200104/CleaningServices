@@ -2,57 +2,49 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8" />
-	<title>Cleanex - Phone Number Confirmation</title>
-	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<meta content="Cleanex - Home Cleaning Service" name="keywords" />
-	<meta content="Cleanex - Home Cleaning Service" name="description" />
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+	<title>Staff - Verify OTP</title>
 
-	<link href="../front/img/favicon.ico" rel="icon" />
-	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-	<link href="../front/css/style.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../back/css/lineicons.css" />
+	<link rel="stylesheet" href="../../back/css/materialdesignicons.min.css" />
+	<link rel="stylesheet" href="../../back/css/fullcalendar.css" />
+	<link rel="stylesheet" href="../../back/css/main.css" />
 </head>
 
 <body>
-	<!-- Header -->
-	<div th:replace="~{user/fragments/header::userHeader}"></div>
-
 	<div class="wrapper">
-		<div class="container">
-			<h2 class="mb-4">Confirm your phone number</h2>
-			<form th:action="@{/staff/verification}" method="post" class="needs-validation" novalidate>
+		<div class="container my-5">
+			<h2 class="mb-4">Enter your OTP</h2>
+			<form th:action="@{/staff/verification}" method="post">
 				<div th:if="${error}" class="error-message" th:text="${error}"></div>
 				<div class="mb-3">
 					<input class="form-control" placeholder="Enter your OTP:" type="text" id="otp" name="otp"
 						maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);" required />
-					<div class="valid-feedback">Valid.</div>
-					<div class="invalid-feedback">Please enter your OTP.</div>
 				</div>
 				<div class="row">
-					<button class="btn btn-primary col-6" type="submit">Submit</button>
-					<a class="btn btn-warning col-6" th:href="@{/staff/resendOtp}" id="resend">Resend OTP</a>
+					<div class="col-6">
+						<a class="btn btn-outline-warning" th:href="@{/staff/resendOtp}" id="resend">Resend OTP</a>
+					</div>
+					<div class="col-6 d-flex justify-content-end">
+						<button class="btn btn-success" type="submit">Submit</button>
+					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 
-	<!-- Footer -->
-	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-	<script src="../front/lib/easing/easing.min.js"></script>
-	<script src="../front/lib/owlcarousel/owl.carousel.min.js"></script>
-	<script src="../front/lib/isotope/isotope.pkgd.min.js"></script>
-	<script src="../front/lib/lightbox/js/lightbox.min.js"></script>
-	<script src="../front/js/main.js"></script>
-
+	<script src="../../back/js/bootstrap.bundle.min.js"></script>
+	<script src="../../back/js/Chart.min.js"></script>
+	<script src="../../back/js/dynamic-pie-chart.js"></script>
+	<script src="../../back/js/moment.min.js"></script>
+	<script src="../../back/js/fullcalendar.js"></script>
+	<script src="../../back/js/jvectormap.min.js"></script>
+	<script src="../../back/js/world-merc.js"></script>
+	<script src="../../back/js/polyfill.js"></script>
+	<script src="../../back/js/main.js"></script>
 </body>
 
 </html>

@@ -1,12 +1,10 @@
 package pack.controllers;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,7 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import pack.IService.TokenInterface;
 import pack.models.OrderDetail;
 import pack.models.PageView;
-import pack.models.TokenRecord;
 import pack.models.User;
 import pack.repositories.UserRepository;
 import pack.services.EmailService;
@@ -58,6 +53,7 @@ public class UserController {
 
 	@GetMapping("/signup")
 	public String signup(Model model) {
+		model.addAttribute("currentPage", "login");
 		model.addAttribute("new_item", new User());
 		return Views.USER_SIGNUP;
 	}
@@ -139,26 +135,31 @@ public class UserController {
 		model.addAttribute("orderDetails", orderDetail);
 		model.addAttribute("browseMore", orderDetail.size() > 4);
 		model.addAttribute("currentPage", "accounts");
-    
+
 		return Views.USER_ACCOUNTS;
 	}
 
-	@GetMapping("/seeMore")
+	@GetMapping("/accounts/seeMore")
 	public String see_more(@RequestParam int id, Model model) {
 		model.addAttribute("seeMore", rep.getOrderDetailsForAccount(id));
 		return Views.USER_SEE_MORE;
 	}
 
-	@GetMapping("/browseMore")
+	@GetMapping("/accounts/browseMore")
 	public String browse_more(HttpServletRequest req, Model model,
 			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
+		pv.setPageSize(5);
+		if (cp < 1) {
+			cp = 1;
+		}
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
-
 		model.addAttribute("pv", pv);
-		model.addAttribute("browseMore",
-				rep.getAllOrderDetailsForAccount(pv, (int) req.getSession().getAttribute("usrId")));
+
+		String usrId = req.getSession().getAttribute("usrId").toString();
+		List<Map<String, Object>> browseMore = rep.getAllOrderDetailsForAccount(pv, usrId);
+
+		model.addAttribute("browseMore", browseMore);
 		return Views.USER_BROWSE_MORE;
 	}
 
@@ -248,22 +249,61 @@ public class UserController {
 			return Views.USER_VALIDATE;
 		}
 
-		req.getSession().setAttribute("usrId", user.getId());
 		req.getSession().setAttribute("username", user.getUsername());
-		return "redirect:/user/accounts";
+		return "redirect:/user/changePassword";
+	}
+
+	@GetMapping("/changePassword")
+	public String changePassPage() {
+		return Views.USER_CHANGE_PASSWORD;
+	}
+
+	@PostMapping("/changePassAction")
+	public String changePassAction(@RequestParam String password, @RequestParam String confirmPassword,
+			HttpServletRequest req, Model model) {
+		String email = req.getSession().getAttribute("email").toString();
+		User user = rep.checkEmailExists(email);
+		if (!password.equals(confirmPassword)) {
+			model.addAttribute("error", "Confirm Password does not match the password");
+			return Views.USER_CHANGE_PASSWORD;
+		}
+		if (SecurityUtility.compareBcrypt(user.getPassword(), password)) {
+			model.addAttribute("error", "Your new password matches your old password");
+			return Views.USER_CHANGE_PASSWORD;
+		}
+		String result = rep.changePass(req.getSession().getAttribute("username").toString(), password);
+		if (result.equals("success")) {
+			return "redirect:/user/login";
+		}
+		model.addAttribute("error", "Fail to implement action, please try again later.");
+		return Views.USER_CHANGE_PASSWORD;
 	}
 
 	// -------------------- SERVICES -------------------- //
 
 	@GetMapping("/orders")
-	public String orders(Model model, HttpServletRequest request) {
-		List<Map<String, Object>> orders = rep
-				.getUserRequestDetailById((int) request.getSession().getAttribute("usrId"));
+	public String orders(Model model, HttpServletRequest req,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+		model.addAttribute("pv", pv);
+
+		Integer usrId = (int) req.getSession().getAttribute("usrId");
+		List<Map<String, Object>> orders = rep.getUserRequestDetailById(pv, usrId);
+
+		boolean statusCheck = false;
+		if (orders != null && !orders.isEmpty()) {
+			statusCheck = orders.stream()
+					.anyMatch(order -> !order.get("status").toString().equalsIgnoreCase("confirmed"));
+		}
+		model.addAttribute("statusCheck", statusCheck);
 		model.addAttribute("orders", orders);
-		model.addAttribute("statusCheck",
-				orders.stream().anyMatch(order -> !order.get("status").toString().equalsIgnoreCase("confirmed")));
 		model.addAttribute("currentPage", "orders");
-		
+
 		return Views.USER_ORDERS;
 	}
 
@@ -271,16 +311,18 @@ public class UserController {
 	public String order_details(Model model, @RequestParam("id") int usrReqId) {
 		List<Map<String, Object>> details = rep.getOrderDetails(usrReqId);
 		model.addAttribute("orderDetails", details);
-    
+		model.addAttribute("currentPage", "orders");
+		
 		return Views.USER_ORDER_DETAILS;
 	}
 
 	@PostMapping("/confirmOrder")
 	public ResponseEntity<String> confirmOrder(@RequestParam int urdId, @RequestParam int serId,
-			@RequestParam Date startDate, @RequestParam double price, @RequestParam int staffId) {
+			@RequestParam String startDate, @RequestParam double price, @RequestParam int staffId) {
 		String result = rep.confirmOrder(urdId);
+
 		if (result.equals("success")) {
-			String confirm = rep.newOrder(urdId, serId, startDate, price);
+			String confirm = rep.newOrder(urdId, serId, Date.valueOf(startDate), price);
 			if (confirm.equals("success")) {
 				rep.updateStaffStatusToAvailable(staffId);
 				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
@@ -358,5 +400,23 @@ public class UserController {
 			return "redirect:/user/orders/orderDetails?id=" + id;
 		}
 		return Views.USER_ORDERS;
+	}
+
+	@GetMapping("/changeService")
+	public String changeServicePage(Model model, HttpServletRequest req, @RequestParam int serId) {
+		model.addAttribute("Services", rep.serviceListForChange((int) req.getSession().getAttribute("usrId")));
+		model.addAttribute("oldServiceId", serId);
+		return Views.USER_CHANGE_SERVICE;
+	}
+
+	@GetMapping("/ServiceChange")
+	public String changeServiceAction(@RequestParam int oldSerId, @RequestParam int newSerId, Model model,
+			HttpServletRequest req) {
+		String result = rep.changeService(oldSerId, newSerId, (int) req.getSession().getAttribute("usrId"));
+		if (result.equals("success")) {
+			return "redirect:/user/orders";
+		}
+		model.addAttribute("error", "Fail to implement action, please try again later.");
+		return Views.USER_CHANGE_SERVICE;
 	}
 }

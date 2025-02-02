@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Orders Management</title>
+	<title>Admin - Orders Management</title>
 
 	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../../back/css/lineicons.css" />
@@ -35,7 +35,6 @@
 								<th>No.</th>
 								<th>Name</th>
 								<th>Expected Start Date</th>
-								<th>Job Status</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
@@ -44,7 +43,6 @@
 								<td th:text="${staff.id}"></td>
 								<td th:text="${staff.fullname}"></td>
 								<td th:text="${detail.startDate}"></td>
-								<td th:text="${staff.jobOccupied}"></td>
 								<td>
 									<button class="btn btn-primary" type="button" onclick="selectStaff(event)"
 										th:attr="staffid=${staff.id}, ordId = ${Ord_id}">Select</button>
@@ -57,7 +55,7 @@
 					<h4 class="mb-3">Selected Staff for Assignment:</h4>
 					<ul id="selectedStaffList"></ul>
 					<div style="display: inline-flex;">
-						<input class="form-control" type="datetime-local" id="startDate" required />
+						<input class="form-control" th:value="${formatedDate}" id="startDate" required />
 						<button class="btn btn-success mx-2" onclick="assignStaff()">Assign</button>
 					</div>
 				</div>
@@ -105,17 +103,14 @@
 		}
 
 		function assignStaff() {
-			var startDateTime = document.getElementById("startDate").value;
+			var startDate = document.getElementById("startDate").value;
 
-			if (selectedStaffIds.length === 0) {
-				alert("Please select at least one staff member.");
+			if (!startDate) {
+				alert("Please select a start date.");
 				return;
 			}
 
-			if (!startDateTime) {
-				alert("Please select a start date and time.");
-				return;
-			}
+			var startDateTime = startDate + "T00:00:00";
 
 			$.ajax({
 				url: '/admin/newSchedule',
@@ -140,6 +135,7 @@
 				}
 			});
 		}
+
 	</script>
 </body>
 

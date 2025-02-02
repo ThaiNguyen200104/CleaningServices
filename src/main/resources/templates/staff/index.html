@@ -13,12 +13,49 @@
 	<link rel="stylesheet" href="../back/css/materialdesignicons.min.css" />
 	<link rel="stylesheet" href="../back/css/fullcalendar.css" />
 	<link rel="stylesheet" href="../back/css/main.css" />
+	<style>
+		.left-info {
+			text-align: center;
+
+			@media(max-width: 768px) {
+				margin-bottom: 40px;
+			}
+		}
+
+		.left-info img {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin-bottom: 10px;
+
+			@media(max-width: 768px) {
+				width: 120px;
+				height: 120px;
+			}
+		}
+
+		.left-info h3 {
+			font-weight: 500;
+			color: #000;
+			margin: 15px 0;
+
+			@media(max-width: 768px) {
+				font-size: 30px;
+			}
+		}
+
+		.left-info a {
+			margin-top: 10px;
+		}
+
+		.right-info dt {
+			color: #000;
+		}
+	</style>
 </head>
 
 <body>
-	<div id="preloader">
-		<div class="spinner"></div>
-	</div>
 	<!-- ASIDE -->
 	<aside class="sidebar-nav-wrapper" th:replace="~{staff/fragment/aside::staffAside}"></aside>
 
@@ -39,19 +76,17 @@
 				</div>
 			</div>
 		</section>
-		
+
 		<div class="wrapper">
 			<div class="acc-container mt-5">
 				<div class="row">
-					<div class="col-3 text-center">
-						<img th:if="${staff.image == null}" src="../front/img/none-user.png"
-							class="rounded-circle mb-3" width="150px" height="150px" />
-						<img th:if="${staff.image != null}" th:src="'/upload/'+${staff.image}"
-							class="rounded-circle mb-3" width="150px" height="150px" />
+					<div class="col-lg-3 col-md-3 col-sm-3 left-info">
+						<img loading="lazy" th:if="${staff.image != null}" th:src="'/upload/'+${staff.image}" />
+						<img loading="lazy" th:unless="${staff.image != null}" src="../front/img/none-user.png" />
 						<h3 th:text="${staff.fullname}"></h3>
 						<a class="btn btn-primary mt-3" th:href="@{/staff/editProfile}">Edit Profile</a>
 					</div>
-					<div class="col-9">
+					<div class="col-lg-9 col-md-9 col-sm-9 right-info">
 						<h2 class="mb-4">Profile</h2>
 						<dl class="row">
 							<dt class="col-3">Username:</dt>

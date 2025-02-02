@@ -1,8 +1,6 @@
 package pack.repositories;
 
 import java.sql.Date;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -559,7 +557,7 @@ public class AdminRepository {
 	 */
 	public List<Staff> staffListForAssignRequest(PageView pageItem) {
 		try {
-			int count = db.queryForObject("SELECT count(*) FROM staffs WHERE status = 'available'", Integer.class);
+			int count = db.queryForObject("SELECT COUNT(*) FROM staffs WHERE status = 'available'", Integer.class);
 			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(total_page);
 
@@ -568,8 +566,9 @@ public class AdminRepository {
 
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
-			String str_query = String.format("SELECT * FROM %s WHERE %s = 'available'", Views.TBL_STAFFS,
-					Views.COL_STAFFS_STATUS);
+			String str_query = String.format(
+					"SELECT * FROM %s WHERE %s = 'available' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS);
 			return db.query(str_query, new Staff_mapper(), offset, pageItem.getPageSize());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -587,7 +586,6 @@ public class AdminRepository {
 			String countQuery = String.format("SELECT COUNT(*) FROM %s urd JOIN %s s ON urd.service_id = s.id "
 					+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing'",
 					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER);
-
 			int count = db.queryForObject(countQuery, Integer.class);
 
 			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
@@ -681,19 +679,6 @@ public class AdminRepository {
 	 */
 	public String assignStaff(Schedule item) {
 		try {
-			String latestScheduleQuery = String.format("SELECT MAX(start_date) FROM %s WHERE staff_id = ?",
-					Views.TBL_SCHEDULES);
-
-			LocalDateTime latestStartDate = db.queryForObject(latestScheduleQuery, LocalDateTime.class,
-					new Object[] { item.getStaffId() });
-
-			if (latestStartDate != null) {
-				Duration timeDifference = Duration.between(latestStartDate, item.getStartDate());
-
-				if (timeDifference.toHours() < 5) {
-					return "The new start date must be at least 5 hours after the latest assigned schedule for this staff member.";
-				}
-			}
 			String str_query = String.format("INSERT INTO %s (staff_id, detail_id, start_date) VALUES (?,?,?)",
 					Views.TBL_SCHEDULES);
 			String staff_query = String.format("UPDATE %s SET %s = 'unavailable' WHERE %s = ?", Views.TBL_STAFFS,
@@ -701,7 +686,8 @@ public class AdminRepository {
 			int rowaccepted = db.update(str_query,
 					new Object[] { item.getStaffId(), item.getDetailId(), item.getStartDate() });
 			if (rowaccepted == 1) {
-				int row2accepted = db.update(staff_query, new Object[] { item.getStaffId() });
+				db.update(staff_query, new Object[] { item.getStaffId() });
+				return "success";
 			}
 			return "failed";
 		} catch (Exception e) {
@@ -749,7 +735,8 @@ public class AdminRepository {
 	 * @return list of available staffs
 	 */
 	public List<Staff> getAvailableStaffToReplace(int orderId, int excludeStaffId) {
-		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?)";
+		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?) "
+				+ "and id not in (select staff_id from user_request_details where staff_id is not null)";
 		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
 	}
 
@@ -793,8 +780,9 @@ public class AdminRepository {
 		try {
 			String countQuery = String.format(
 					"SELECT COUNT(*) FROM %s od JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
-							+ "JOIN %s u ON ur.user_id = u.id JOIN services s ON od.service_id = s.id",
-					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER);
+							+ "JOIN %s u ON ur.user_id = u.id JOIN %s s ON od.service_id = s.id",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER,
+					Views.TBL_SERVICES);
 
 			int count = db.queryForObject(countQuery, Integer.class);
 
@@ -807,12 +795,17 @@ public class AdminRepository {
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format(
-					"SELECT od.*, o.*, u.fullname, s.staff_required, CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
-							+ "THEN 1 ELSE 0 END AS hasAssignedStaff FROM %s od JOIN %s o ON od.order_id = o.id "
-							+ "JOIN %s ur ON o.usrReq_id = ur.id JOIN %s u ON ur.user_id = u.id "
-							+ "JOIN services s ON od.service_id = s.id ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
-					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER,
-					Views.COL_ORDER_DETAIL_CREATEDATE);
+					"SELECT od.*, o.*, u.fullname, STRING_AGG(st.username, ', ') AS staff_username, "
+							+ "CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
+							+ "THEN 1 ELSE 0 END AS hasAssignedStaff FROM %s od "
+							+ "JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
+							+ "JOIN %s u ON ur.user_id = u.id JOIN %s s ON od.service_id = s.id "
+							+ "LEFT JOIN %s urd ON urd.usrReq_id = ur.id LEFT JOIN %s st ON urd.staff_id = st.id "
+							+ "GROUP BY od.id, od.order_id, od.service_id, od.create_date, od.start_date, od.complete_date, od.status,"
+							+ "od.beforeImage, od.afterImage, o.id, o.usrReq_id, od.price, u.fullname "
+							+ "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER, Views.TBL_SERVICES,
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_STAFFS, Views.COL_ORDER_DETAIL_CREATEDATE);
 
 			return db.queryForList(str_query, offset, pageItem.getPageSize());
 		} catch (Exception e) {

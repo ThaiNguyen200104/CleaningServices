@@ -39,9 +39,9 @@
 						<div class="col-md-6 blog-image-container">
 							<a th:href="@{/blogDetail(id=${item.id})}">
 								<img class="blog-image" loading="lazy" th:if="${item.image != null}"
-									th:src="'/upload/'+${item.image}" th:alt="${item.title}" />
+									th:src="'/upload/'+${item.image}" alt="Blog Image" />
 								<img class="blog-image" loading="lazy" th:unless="${item.image != null}"
-									th:src="'../../front/img/none-img.png'" th:alt="${item.title}" />
+									th:src="'../../front/img/no-service.png'" alt="Blog Image" />
 							</a>
 						</div>
 						<div class="col-md-6 blog-content">
@@ -58,10 +58,10 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-	
+
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 </body>
