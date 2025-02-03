@@ -20,71 +20,74 @@
 <body>
 	<!-- Header -->
 	<div th:replace="~{main/fragments/header::mainHeader}"></div>
-	
-		<!-- Contact -->
-		<div class="contact">
-			<div class="container">
-				<div class="section-header">
-					<h2>Find Your Answer / Look For Us</h2>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="faqs">
-							<div id="accordion">
-								<div class="card">
-									<div class="card-header">
-										<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
-											aria-expanded="true">
-											<span>1</span> What areas do you serve?
-										</a>
-									</div>
-									<div id="collapseOne" class="collapse show" data-parent="#accordion">
-										<div class="card-body">
-											We provide services across the city and its surrounding suburbs. Contact us
-											to see if we cover your location.
-										</div>
+
+	<!-- Contact -->
+	<div class="contact">
+		<div class="container">
+			<div class="section-header">
+				<h2>Find Your Answer / Look For Us</h2>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="faqs">
+						<div id="accordion">
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link collapsed" data-toggle="collapse" href="#collapseOne"
+										aria-expanded="true">
+										<span>1</span> What areas do you serve?
+									</a>
+								</div>
+								<div id="collapseOne" class="collapse show" data-parent="#accordion">
+									<div class="card-body">
+										We provide services across the city and its surrounding suburbs. Contact us
+										to see if we cover your location.
 									</div>
 								</div>
-								<div class="card">
-									<div class="card-header">
-										<a class="card-link" data-toggle="collapse" href="#collapseTwo">
-											<span>2</span> Do you use eco-friendly products?
-										</a>
-									</div>
-									<div id="collapseTwo" class="collapse" data-parent="#accordion">
-										<div class="card-body">
-											Yes, we prioritize the use of eco-friendly and non-toxic products to ensure
-											the safety of our clients and the environment.
-										</div>
+							</div>
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
+										<span>2</span> Do you use eco-friendly products?
+									</a>
+								</div>
+								<div id="collapseTwo" class="collapse" data-parent="#accordion">
+									<div class="card-body">
+										Yes, we prioritize the use of eco-friendly and non-toxic products to ensure
+										the safety of our clients and the environment.
 									</div>
 								</div>
-								<div class="card">
-									<div class="card-header">
-										<a class="card-link" data-toggle="collapse" href="#collapseThree">
-											<span>3</span> How do I book a service?
-										</a>
-									</div>
-									<div id="collapseThree" class="collapse" data-parent="#accordion">
-										<div class="card-body">
-											You can book a service by calling us, visiting our website, or filling out
-											the form online. We offer flexible scheduling to suit your needs.
-										</div>
+							</div>
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseThree">
+										<span>3</span> How do I book a service?
+									</a>
+								</div>
+								<div id="collapseThree" class="collapse" data-parent="#accordion">
+									<div class="card-body">
+										You can book a service by calling us, visiting our website, or filling out
+										the form online. We offer flexible scheduling to suit your needs.
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div id="googleMap" style="width:100%;height:400px;"></div>
-					</div>
+				</div>
+				<div class="col-md-6">
+					<iframe
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.0624975859337!2d106.7113408746134!3d10.806525389344111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528a30e6d1381%3A0x30b3aeb2be70e5be!2zMzUgxJDGsOG7nW5nIEQ1LCBQaMaw4budbmcgMjUsIELDrG5oIFRo4bqhbmgsIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1738393367928!5m2!1svi!2s"
+						width="470px" height="400px" style="border:0;" allowfullscreen="" loading="lazy"
+						referrerpolicy="no-referrer-when-downgrade"></iframe>
 				</div>
 			</div>
 		</div>
 	</div>
+	</div>
 
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-	
+
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 </body>

@@ -38,7 +38,12 @@ public class HomeController {
 	public String service(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
-		pv.setPageSize(20);
+		pv.setPageSize(8);
+
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
 		model.addAttribute("services", rep.getAllServices(pv));
@@ -58,15 +63,26 @@ public class HomeController {
 	@GetMapping("/blogDetail")
 	public String blog_detail(Model model, @RequestParam int id) {
 		model.addAttribute("blogDetails", rep.getBlogById(id));
-
+		model.addAttribute("currentPage", "blog");
+		
 		return Views.MAIN_BLOG_DETAIL;
 	}
 
 	@GetMapping("/about")
-	public String about(Model model) {
-		model.addAttribute("staffs", rep.getTop4Staffs());
+	public String about(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageCurrent(cp);
+		pv.setPageSize(4);
+
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("staffs", rep.getAllStaffs(pv));
 		model.addAttribute("currentPage", "about");
-		
+
 		return Views.MAIN_ABOUT;
 	}
 

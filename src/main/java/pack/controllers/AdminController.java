@@ -548,6 +548,7 @@ public class AdminController {
 		model.addAttribute("staffs", rep.staffListForAssign(id));
 		model.addAttribute("Ord_id", id);
 		model.addAttribute("detail", rep.getDetailById(id));
+		model.addAttribute("formatedDate", rep.getDetailById(id).getStartDate().toLocalDate());
 		return Views.ADMIN_ORDERS_ASSIGN_STAFF;
 	}
 
@@ -565,8 +566,9 @@ public class AdminController {
 		}
 
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 			LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
+
 			for (Integer staffId : staffIds) {
 				Schedule schedule = new Schedule();
 				schedule.setStaffId(staffId);
@@ -673,7 +675,24 @@ public class AdminController {
 		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
 	}
 
-	// -------------------- USER REQUESTS -------------------- //
+	@GetMapping("/orders/request/staffForReplace")
+	public String replace_staff_view(@RequestParam int scrId, @RequestParam int oldStaff, Model model,
+			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+		PageView pv = new PageView();
+		pv.setPageSize(4);
+		if (cp < 1) {
+			cp = 1;
+		}
+		pv.setPageCurrent(cp);
+
+		model.addAttribute("pv", pv);
+		model.addAttribute("scrId", scrId);
+		model.addAttribute("oldStaff", oldStaff);
+		model.addAttribute("staffs", rep.staffListForAssignRequest(pv));
+		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
+	}
+
+	// -------------------- CLIENTS REQUESTS -------------------- //
 
 	@GetMapping("/request/list")
 	public String requestList(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
@@ -701,9 +720,9 @@ public class AdminController {
 		}
 		pv.setPageCurrent(cp);
 
+		model.addAttribute("urdId", urdId);
 		model.addAttribute("pv", pv);
 		model.addAttribute("staffs", rep.staffListForAssignRequest(pv));
-		model.addAttribute("urdId", urdId);
 
 		return Views.ADMIN_REQUEST_ASSIGN;
 	}
@@ -717,20 +736,4 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to assign, please try again.");
 	}
 
-	@GetMapping("/request/staffForReplace")
-	public String replace_staff_view(@RequestParam int scrId, @RequestParam int oldStaff, Model model,
-			@RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
-		PageView pv = new PageView();
-		pv.setPageSize(4);
-		if (cp < 1) {
-			cp = 1;
-		}
-		pv.setPageCurrent(cp);
-
-		model.addAttribute("pv", pv);
-		model.addAttribute("scrId", scrId);
-		model.addAttribute("oldStaff", oldStaff);
-		model.addAttribute("staffs", rep.staffListForAssignRequest(pv));
-		return Views.ADMIN_REQUESTS_STAFF_FOR_REPLACE;
-	}
 }

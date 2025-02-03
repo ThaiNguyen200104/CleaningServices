@@ -15,6 +15,7 @@
 	<link href="../../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 	<link href="../../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../../front/css/style.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -30,40 +31,39 @@
 			<h2>Something went wrong, please try again later.</h2>
 		</div>
 
-		<div th:unless="${#lists.isEmpty(orderDetails)}">
+		<div th:unless="${#lists.isEmpty(orderDetails)}" class="table-container">
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<table class="booking-table">
 				<thead>
 					<tr>
-						<th>No.</th>
 						<th>Service</th>
-						<th>Price</th>
-						<th>Started Date</th>
-						<th>Completed Date</th>
-						<th>Before</th>
-						<th>After</th>
+						<th>Dealed Price</th>
+						<th>Dealed Start Date</th>
+						<th>Complete Date</th>
+						<th>Before Image</th>
+						<th>After Image</th>
 						<th>Status</th>
 						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="item : ${orderDetails}">
-						<td th:text="${item.id}"></td>
-						<td th:text="${item.serName}"></td>
+						<td th:text="${item.service_name}"></td>
 						<td th:text="${item.price + '$'}"></td>
-						<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${item.start_date != null ? #dates.format(item.start_date, 'yyyy-MM-dd') : 'N/A'}">
+						</td>
 						<td
-							th:text="${item.completeDate != null ? #dates.format(item.completeDate, 'yyyy-MM-dd') : 'N/A'}">
+							th:text="${item.complete_date != null ? #dates.format(item.complete_date, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
 						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" width="50" height="50"
-								alt="Before" th:if="${item.status == 'verifying'}" />
-							<p th:if="${item.status != 'verifying'}">None</p>
+							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" alt="Before"
+								th:if="${item.status == 'verifying'}" />
+							<p style="margin-top: 15px;" th:if="${item.status != 'verifying'}">N/A</p>
 						</td>
 						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" width="50" height="50"
-								alt="After" th:if="${item.status == 'verifying'}" />
-							<p th:if="${item.status != 'verifying'}">None</p>
+							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" alt="After"
+								th:if="${item.status == 'verifying'}" />
+							<p style="margin-top: 15px;" th:if="${item.status != 'verifying'}">N/A</p>
 						</td>
 						<td th:text="${item.status}"></td>
 						<td>
@@ -83,11 +83,6 @@
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
-
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 	<script src="../../front/lib/easing/easing.min.js"></script>
 	<script src="../../front/lib/owlcarousel/owl.carousel.min.js"></script>

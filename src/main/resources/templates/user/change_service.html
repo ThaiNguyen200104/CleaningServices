@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<title>Cleanex - Change Service</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link href="../front/img/favicon.ico" rel="icon" />
+	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../front/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<!-- Header -->
+	<div th:replace="~{main/fragments/header::mainHeader}"></div>
+
+	<!-- Service -->
+	<div class="service">
+		<div class="container">
+			<div th:if="${!#lists.isEmpty(Services)}" class="section-header mb-5">
+				<p>Our Services</p>
+				<h2>Commit to Making Your Home Fresher</h2>
+			</div>
+
+			<div th:if="${#lists.isEmpty(Services)}" class="section-header mb-5">
+				<h2>There are currently no services available.</h2>
+			</div>
+
+			<div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+			<div th:if="${!#lists.isEmpty(Services)}" class="service-grid">
+				<div class="row" id="serviceContainer">
+					<div class="col-lg-3 col-md-6 pb-4 service-item-wrapper" th:each="item, iterStat : ${Services}"
+						th:if="${item.status != 'disabled'}">
+						<div class="service-item">
+							<div class="service-image">
+								<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+									alt="Service Image" />
+								<img loading="lazy" th:if="${item.image == null}" src="../front/img/no-service.png"
+									alt="Service Image" />
+							</div>
+							<div class="service-content">
+								<h3 th:text="${item.serName}"></h3>
+								<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
+								<p th:text="${item.description}"></p>
+								<a class="btn justify-content-end"
+									th:href="@{/user/ServiceChange(oldSerId=${oldServiceId}, newSerId=${item.id})}">
+									Rebook
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+	<!-- Footer -->
+	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
+</body>
+
+</html>

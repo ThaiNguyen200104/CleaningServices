@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-	<title>Cleanex - Service Management</title>
+	<title>Admin - Service Management</title>
 
 	<link rel="stylesheet" href="../../back/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../../back/css/lineicons.css" />
@@ -21,20 +21,45 @@
 
 			@media(max-width: 768px) {
 				font-size: 12px;
+				padding: 0 5px;
 			}
 		}
 
 		.table tbody tr td img {
-			width: 100px;
-			height: 80px;
+			width: 80px;
+			height: 100px;
+			object-fit: cover;
 
 			@media(max-width: 768px) {
-				width: 50px;
-				height: 40px;
+				width: 40px;
+				height: 50px;
+			}
+		}
+
+		.table tbody tr td img:hover {
+			scale: calc(2);
+		}
+
+		.table tbody tr td a,
+		.table tbody tr td button {
+			transition: 0.25s;
+
+			@media(max-width: 768px) {
+				scale: calc(0.75);
+			}
+		}
+
+		.table tbody tr td a:hover,
+		.table tbody tr td button:hover {
+			@media(max-width: 768px) {
+				scale: calc(1);
 			}
 		}
 
 		.table tbody tr td svg {
+			height: 50px;
+			width: 50px;
+
 			@media(max-width: 768px) {
 				height: 24px;
 				width: 24px;
@@ -89,8 +114,9 @@
 						<tr th:each="item : ${services}">
 							<td th:text="${item.id}"></td>
 							<td>
-								<img th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}" />
-								<img th:unless="${item.image != null}" th:src="'../../front/img/none-img.png'" />
+								<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+ ${item.image}" />
+								<img loading="lazy" th:unless="${item.image != null}"
+									src="'../../front/img/no-service.png'" />
 							</td>
 							<td th:text="${item.serName}"></td>
 							<td>
@@ -110,14 +136,14 @@
 							<td th:text="${item.basePrice} + '$'"></td>
 							<td th:text="${item.staffRequired}"></td>
 							<td th:if="${item.status == 'activated'}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path
 										d="M18.71 7.21a1 1 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1 1 0 1 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a1 1 0 0 0 0-1.47Z"
 										fill="#19c836" class="fill-6563ff"></path>
 								</svg>
 							</td>
 							<td th:if="${item.status == 'disabled'}">
-								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px">
+								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path
 										d="m13.41 12 4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42Z"
 										fill="#dc3545" class="fill-6563ff"></path>
@@ -125,38 +151,17 @@
 							</td>
 
 							<td>
-								<a class="btn btn-warning changeSize"
+								<a class="btn btn-warning form-inline"
 									th:href="@{/admin/services/edit(id=${item.id})}">Edit</a>
-								<a class="svg-icon" th:href="@{/admin/services/edit(id=${item.id})}">
-									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-										<path
-											d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1Zm-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83-6.94 6.93a1 1 0 0 0-.29.71Zm10.76-8.35 2.83 2.83-1.42 1.42-2.83-2.83ZM8 13.17l5.93-5.93 2.83 2.83L10.83 16H8Z"
-											fill="#ffc107" class="fill-6563ff"></path>
-									</svg>
-								</a>
 
-								<form th:action="@{/admin/services/disable(id=${item.id})}" method="post"
-									class="form-inline" th:if="${item.status == 'activated'}">
-									<button class="btn btn-danger changeSize" type="submit">Disable</button>
-									<button class="svg-icon">
-										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M15.71 8.29a1 1 0 0 0-1.42 0L12 10.59l-2.29-2.3a1 1 0 0 0-1.42 1.42l2.3 2.29-2.3 2.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l2.29-2.3 2.29 2.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12l2.3-2.29a1 1 0 0 0 0-1.42ZM19 2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
-												fill="#dc3545" class="fill-6563ff"></path>
-										</svg>
-									</button>
+								<form class="form-inline" th:if="${item.status == 'activated'}"
+									th:action="@{/admin/services/disable(id=${item.id})}" method="post">
+									<button class="btn btn-danger" type="submit">Disable</button>
 								</form>
 
-								<form th:action="@{/admin/services/activate(id=${item.id})}" method="post"
-									class="form-inline" th:if="${item.status == 'disabled'}">
-									<button class="btn btn-success changeSize" type="submit">Activate</button>
-									<button class="svg-icon">
-										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="m14.72 8.79-4.29 4.3-1.65-1.65a1 1 0 1 0-1.41 1.41l2.35 2.36a1 1 0 0 0 .71.29 1 1 0 0 0 .7-.29l5-5a1 1 0 0 0 0-1.42 1 1 0 0 0-1.41 0ZM12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"
-												fill="#19c836" class="fill-6563ff"></path>
-										</svg>
-									</button>
+								<form class="form-inline" th:if="${item.status == 'disabled'}"
+									th:action="@{/admin/services/activate(id=${item.id})}" method="post">
+									<button class="btn btn-success" type="submit">Activate</button>
 								</form>
 							</td>
 						</tr>

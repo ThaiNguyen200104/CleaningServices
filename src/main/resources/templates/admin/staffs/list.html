@@ -21,6 +21,7 @@
 
 			@media(max-width: 768px) {
 				font-size: 12px;
+				padding: 0 5px;
 			}
 		}
 
@@ -172,7 +173,7 @@
 			event.preventDefault();
 			var item = event.target;
 			var staffId = item.getAttribute("id");
-			if (confirm('Are you sure you want to deactivate this staff member?')) {
+			if (confirm('Are you certain you want to deactivate this staff member? This account cannot be activated again!')) {
 				$.ajax({
 					url: '/admin/staffs/disabledAccount',
 					type: 'POST',

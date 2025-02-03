@@ -11,10 +11,35 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
-	<link href="../front/img/favicon.ico" rel="icon" />
-	<link href="../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-	<link href="../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-	<link href="../front/css/style.css" rel="stylesheet" />
+	<link href="../../front/img/favicon.ico" rel="icon" />
+	<link href="../../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../../front/css/style.css" rel="stylesheet" />
+
+	<style>
+		.table thead tr th,
+		.table tbody tr td {
+			text-align: center !important;
+
+			@media(max-width: 768px) {
+				font-size: 12px;
+				padding: 0 5px;
+			}
+		}
+
+		.table tbody tr td img {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			border-radius: 50%;
+			margin-bottom: 10px;
+
+			@media(max-width: 768px) {
+				width: 120px;
+				height: 120px;
+			}
+		}
+	</style>
 </head>
 
 <body>
@@ -30,7 +55,7 @@
 			<h2>Something went wrong, please try again later</h2>
 		</div>
 
-		<div th:unless="${#lists.isEmpty(seeMore)}">
+		<div th:unless="${#lists.isEmpty(seeMore)}" class="table-container">
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<table class="booking-table">
 				<thead>
@@ -50,20 +75,20 @@
 						<td th:text="${item.id}"></td>
 						<td th:text="${item.service_name}"></td>
 						<td th:text="${item.price + '$'}"></td>
-
 						<td th:text="${#dates.format(item.start_date, 'yyyy-MM-dd')}"></td>
 						<td
 							th:text="${item.complete_date != null ? #dates.format(item.complete_date, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
 
-						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" width="50" height="50"
-								alt="Before" />
+						<td th:if="${item.beforeImage != null}">
+							<img loading="lazy" th:src="'/upload/'+${item.beforeImage}" alt="Before" />
 						</td>
-						<td>
-							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" width="50" height="50"
-								alt="After" />
+						<td th:unless="${item.beforeImage != null}">N/A</td>
+
+						<td th:if="${item.afterImage != null}">
+							<img loading="lazy" th:src="'/upload/'+${item.afterImage}" alt="After" />
 						</td>
+						<td th:unless="${item.afterImage != null}">N/A</td>
 						<td th:text="${item.status}"></td>
 					</tr>
 				</tbody>
@@ -76,6 +101,12 @@
 
 	<!-- Footer -->
 	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="../../front/lib/easing/easing.min.js"></script>
+	<script src="../../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../../front/js/main.js"></script>
 </body>
 
 </html>

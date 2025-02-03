@@ -24,7 +24,7 @@
 	<!-- Service -->
 	<div class="service">
 		<div class="container">
-			<div th:if="${!#lists.isEmpty(services)}" class="section-header">
+			<div th:if="${!#lists.isEmpty(services)}" class="section-header mb-5">
 				<p>Our Services</p>
 				<h2>Commit to Making Your Home Fresher</h2>
 			</div>
@@ -39,7 +39,10 @@
 						th:if="${item.status != 'disabled'}" th:classappend="${iterStat.index >= 8} ? 'hidden-service'">
 						<div class="service-item">
 							<div class="service-image">
-								<img loading="lazy" th:src="'/upload/'+${item.image}" />
+								<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+									alt="Service Image" />
+								<img loading="lazy" th:if="${item.image == null}" src="../front/img/no-service.png"
+									alt="Service Image" />
 							</div>
 							<div class="service-content">
 								<h3 th:text="${item.serName}"></h3>
@@ -68,19 +71,17 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title">Select Service Date</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
 						</div>
 						<div class="modal-body">
 							<div class="form-group">
-								<input type="date" class="form-control" id="serviceDate" required>
+								<input type="date" class="form-control" id="serviceDate" required />
 							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="button" class="btn btn-primary" onclick="confirmBooking()">Confirm
-								Booking</button>
+							<button type="button" class="btn btn-success" onclick="confirmBooking()">
+								Confirm Booking
+							</button>
 						</div>
 					</div>
 				</div>
@@ -117,7 +118,6 @@
 			UserId = item.getAttribute("userId");
 			price = item.getAttribute("serPrice");
 
-			// Show modal using Bootstrap
 			$('#bookingModal').modal('show');
 			document.body.classList.add("no-scroll");
 		}

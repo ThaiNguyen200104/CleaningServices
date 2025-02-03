@@ -33,12 +33,13 @@ function confirmAction(event) {
 	var startDate = item.getAttribute("startDate");
 	var price = item.getAttribute("price");
 	var staffId = item.getAttribute("staffId");
+	var formattedDate = new Date(startDate).toISOString().split('T')[0];
 
 	if (confirm("Are you sure you want to confirm this request?")) {
 		const formData = new FormData();
 		formData.append('urdId', requestId);
 		formData.append('serId', serId);
-		formData.append('startDate', startDate);
+		formData.append('startDate', formattedDate);
 		formData.append('price', price);
 		formData.append('staffId', staffId);
 

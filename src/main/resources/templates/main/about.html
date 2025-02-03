@@ -24,12 +24,12 @@
 	<!-- Team -->
 	<div class="team">
 		<div class="container">
-			<div th:if="${!#lists.isEmpty(staffs)}" class="section-header mt-5">
+			<div th:if="${!#lists.isEmpty(staffs)}" class="section-header">
 				<p>Team Member</p>
 				<h2>Meet Our Expert Cleaners</h2>
 			</div>
 
-			<div th:if="${#lists.isEmpty(staffs)}" class="section-header mt-5">
+			<div th:if="${#lists.isEmpty(staffs)}" class="section-header">
 				<h2>There are currently no staff available</h2>
 			</div>
 		</div>
@@ -42,7 +42,10 @@
 							th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'">
 							<div class="member-info">
 								<div class="member-img">
-									<img loading="lazy" th:src="'/upload/'+${item.image}" alt="Staff Image" />
+									<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
+										alt="Staff Image" />
+									<img loading="lazy" th:unless="${item.image != null}"
+										src="../front/img/none-user.png" alt="Staff Image" />
 								</div>
 								<div class="member-content">
 									<h3 th:text="${item.fullname}"></h3>
