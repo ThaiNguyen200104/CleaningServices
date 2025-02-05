@@ -16,6 +16,28 @@
 	<link href="../../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
 	<link href="../../front/css/style.css" rel="stylesheet" />
 
+	<style>
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 9999;
+		}
+
+		.success {
+			background-color: #4CAF50;
+			z-index: 10000;
+		}
+
+		.error {
+			background-color: #f44336;
+			z-index: 10000;
+		}
+	</style>
 </head>
 
 <body>
@@ -67,8 +89,7 @@
 						</td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
-								th:href="@{/user/orderApprove(id=${item.id})}">Approve</a>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}" th:href="@{/user/banking(id=${item.id})}">Pay</a>
 							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
 								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
 						</td>
@@ -89,6 +110,11 @@
 	<script src="../../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../../front/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+
+	</script>
 </body>
 
 </html>

@@ -1,6 +1,8 @@
 package pack.controllers;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +28,11 @@ import pack.IService.TokenInterface;
 import pack.models.OrderDetail;
 import pack.models.PageView;
 import pack.models.User;
+import pack.repositories.PaymentRepository;
 import pack.repositories.UserRepository;
 import pack.services.EmailService;
 import pack.services.OtpService;
+import pack.services.VNPayService;
 import pack.utils.FileUtility;
 import pack.utils.SecurityUtility;
 import pack.utils.Views;
@@ -48,6 +52,12 @@ public class UserController {
 
 	@Autowired
 	EmailService emailService;
+
+	@Autowired
+	private VNPayService vnPayService;
+
+	@Autowired
+	PaymentRepository paymentRepository;
 
 	// -------------------- INDEX -------------------- //
 
@@ -312,7 +322,7 @@ public class UserController {
 		List<Map<String, Object>> details = rep.getOrderDetails(usrReqId);
 		model.addAttribute("orderDetails", details);
 		model.addAttribute("currentPage", "orders");
-		
+
 		return Views.USER_ORDER_DETAILS;
 	}
 
@@ -321,8 +331,10 @@ public class UserController {
 			@RequestParam String startDate, @RequestParam double price, @RequestParam int staffId) {
 		String result = rep.confirmOrder(urdId);
 
+		LocalDate localDate = LocalDate.parse(startDate);
+		Date sqlDate = Date.valueOf(localDate);
 		if (result.equals("success")) {
-			String confirm = rep.newOrder(urdId, serId, Date.valueOf(startDate), price);
+			String confirm = rep.newOrder(urdId, serId, sqlDate, price);
 			if (confirm.equals("success")) {
 				rep.updateStaffStatusToAvailable(staffId);
 				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/user/orders").body("");
@@ -384,15 +396,6 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/orderApprove")
-	public String completeConfirm(@RequestParam int id) {
-		String result = rep.orderApprove(id);
-		if (result.equals("success")) {
-			return "redirect:/user/orders/orderDetails?id=" + id;
-		}
-		return Views.USER_ORDERS;
-	}
-
 	@GetMapping("/orderDecline")
 	public String orderDecline(@RequestParam int id) {
 		String result = rep.orderDecline(id);
@@ -419,4 +422,59 @@ public class UserController {
 		model.addAttribute("error", "Fail to implement action, please try again later.");
 		return Views.USER_CHANGE_SERVICE;
 	}
+
+// PAYMENT SECTION
+	@GetMapping("/banking")
+	public String processBankingPayment(@RequestParam("id") int orderDetailId) {
+		try {
+			Map<String, Object> orderDetail = paymentRepository.getOrderDetailWithUser(orderDetailId);
+
+			double price = Double.parseDouble(orderDetail.get("price").toString());
+			int amount = (int) price;
+			int userId = (int) orderDetail.get("user_id");
+			int orderId = (int) orderDetail.get("order_id");
+
+			vnPayService.processInitialPayment(orderDetailId, userId, amount);
+
+			String paymentUrl = vnPayService.createPaymentUrl(orderId, amount);
+
+			return "redirect:" + paymentUrl;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/user/error";
+		}
+	}
+
+	@GetMapping("/payment-callback")
+	public String paymentCallback(HttpServletRequest request) {
+		try {
+			if (!vnPayService.validatePaymentResponse(request)) {
+				System.out.println("Payment validation failed");
+				return "redirect:/user/payment-failed?error=validation-failed";
+			}
+
+			String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+			String vnp_TxnRef = request.getParameter("vnp_TxnRef");
+
+			vnPayService.processVNPayCallback(request);
+
+			if ("00".equals(vnp_ResponseCode)) {
+				int orderId = Integer.parseInt(vnp_TxnRef);
+				Map<String, Object> orderDetail = paymentRepository.getOrderDetailByOrderId(orderId);
+
+				if (orderDetail == null) {
+					return "redirect:/user/error";
+				}
+
+				int orderDetailId = (int) orderDetail.get("id");
+				return "redirect:/user/orders/orderDetails?id=" + orderDetailId;
+			} else {
+				return "redirect:/user/error";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/user/error";
+		}
+	}
+
 }

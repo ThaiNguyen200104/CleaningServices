@@ -419,8 +419,8 @@ public class UserRepository {
 	 * @return a specific service
 	 */
 	public boolean isServiceInRequest(int userId, int serId) {
-		String str_query = String.format("SELECT count(*) FROM %s WHERE %s = ? and %s = ? and %s != 'canceled'",
-				Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_USRID, Views.COL_URD_SERID, Views.COL_URD_STATUS);
+		String str_query = String.format("SELECT count(*) FROM %s WHERE %s = ? and %s = ? and %s != 'canceled' and %s != 'confirmed'",
+				Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_USRID, Views.COL_URD_SERID, Views.COL_URD_STATUS, Views.COL_URD_STATUS);
 		Integer count = db.queryForObject(str_query, Integer.class, new Object[] { userId, serId });
 		return count != null && count > 0;
 	}
@@ -447,29 +447,6 @@ public class UserRepository {
 				System.err.println("userRequestId retrieval failed.");
 				return "failed";
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "failed";
-		}
-	}
-
-	/***
-	 * update status = 'completed' in table order_details update status =
-	 * 'available'in table staffs
-	 * 
-	 * @return updated order_details & staffs status
-	 */
-	public String orderApprove(int detailId) {
-		try {
-			String str_query = "update order_details set status = 'completed' where id = ?";
-			String staffs_query = "update staffs set status = 'available' where id in (select s.staff_id from schedules s where s.detail_id = ?)";
-
-			int rowaccepted = db.update(str_query, new Object[] { detailId });
-			if (rowaccepted == 1) {
-				db.update(staffs_query, new Object[] { detailId });
-				return "success";
-			}
-			return "failed";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "failed";
@@ -526,5 +503,4 @@ public class UserRepository {
 			return "failed";
 		}
 	}
-
 }
