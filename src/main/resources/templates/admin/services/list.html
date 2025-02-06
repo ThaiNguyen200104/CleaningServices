@@ -133,7 +133,7 @@
 									</svg>
 								</button>
 							</td>
-							<td th:text="${item.basePrice} + '$'"></td>
+							<td th:text="${#numbers.formatInteger(item.basePrice, 0, 'COMMA') + ' vnd'}"></td>
 							<td th:text="${item.staffRequired}"></td>
 							<td th:if="${item.status == 'activated'}">
 								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

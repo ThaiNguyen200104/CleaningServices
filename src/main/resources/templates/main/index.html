@@ -159,7 +159,8 @@
 								<div class="service-inner-content">
 									<span class="service-name" th:text="${item.serName}"></span>
 									<span class="service-slash">/</span>
-									<span class="service-price" th:text="${item.basePrice} + '$'"></span>
+									<span class="service-price"
+										th:text="${#numbers.formatInteger(item.basePrice, 0, 'COMMA') + ' vnd'}"></span>
 								</div>
 								<span class="service-des" th:text="${item.description}"></span>
 								<a class="btn-book" href="javascript:void(0);" onclick="showBookingPopup(event)"

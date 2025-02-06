@@ -100,14 +100,27 @@ public class StaffRepository {
 	}
 
 	// REQUEST
-	public List<Map<String, Object>> getStaffAssginedRequest(int staffId) {
+	public List<Map<String, Object>> getStaffAssignedRequest(int staffId, String search) {
 		try {
+			List<Object> params = new ArrayList<>();
+			String searchQuery = "";
+
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " AND (s.service_name LIKE ? OR u.fullname LIKE ? OR u.phone LIKE ? OR urd.status LIKE ?)";
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+			}
+
 			String str_query = String.format(
-					"SELECT urd.*, s.service_name, u.fullname FROM %s urd "
-							+ "JOIN %s s on urd.service_id = s.id JOIN %s u on urd.user_id = u.id "
-							+ "WHERE urd.%s = ? AND urd.status != 'canceled' AND urd.status != 'confirmed'",
-					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER, Views.COL_URD_STAFFID);
-			return db.queryForList(str_query, new Object[] { staffId });
+					"SELECT urd.*, s.service_name, u.fullname, u.phone FROM %s urd JOIN %s s ON urd.service_id = s.id "
+							+ "JOIN %s u ON urd.user_id = u.id WHERE urd.%s = ? AND urd.status NOT IN ('canceled', 'confirmed') %s",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER, Views.COL_URD_STAFFID,
+					searchQuery);
+			params.add(0, staffId);
+
+			return db.queryForList(str_query, params.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -127,13 +140,29 @@ public class StaffRepository {
 	}
 
 	// ORDER
-	public List<Map<String, Object>> getAssignedOrders(int staffId) {
+	public List<Map<String, Object>> getAssignedOrders(int staffId, String search) {
 		try {
-			String str_query = "SELECT od.*, s.service_name, u.fullname, sc.id AS scheId FROM schedules sc "
-					+ "JOIN order_details od ON sc.detail_id = od.id JOIN orders o ON od.order_id = o.id "
-					+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN users u ON ur.user_id = u.id "
-					+ "JOIN services s ON od.service_id = s.id WHERE sc.staff_id = ? ORDER BY od.create_date asc";
-			return db.queryForList(str_query, new Object[] { staffId });
+			List<Object> params = new ArrayList<>();
+			String searchQuery = "";
+
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " AND (s.service_name LIKE ? OR u.fullname LIKE ? OR u.phone LIKE ? OR od.status LIKE ?)";
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+			}
+
+			String str_query = String.format(
+					"SELECT od.*, s.service_name, u.fullname, u.phone, sc.id AS scheId FROM %s sc "
+							+ "JOIN %s od ON sc.detail_id = od.id JOIN %s o ON od.order_id = o.id "
+							+ "JOIN %s ur ON o.usrReq_id = ur.id JOIN %s u ON ur.user_id = u.id "
+							+ "JOIN %s s ON od.service_id = s.id WHERE sc.staff_id = ? %s ORDER BY od.create_date ASC",
+					Views.TBL_SCHEDULES, Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST,
+					Views.TBL_USER, Views.TBL_SERVICES, searchQuery);
+			params.add(0, staffId);
+
+			return db.queryForList(str_query, params.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

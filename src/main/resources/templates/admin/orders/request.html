@@ -58,82 +58,89 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 		<div class="mx-3 mt-5">
-			<div class="col-12">
-				<h2 class="mb-4">Request List</h2>
-				<div class="table-responsive border-1">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Request By</th>
-								<th>Type</th>
-								<th>Expected Start Date</th>
-								<th>New Date</th>
-								<th>Reason</th>
-								<th>Create Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${requests}">
-								<td th:text="${item.schrId}"></td>
-								<td th:text="${item.fullname}"></td>
-								<td th:text="${item.type}"></td>
-								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${#dates.format(item.date_adjust, 'dd-MM-yyyy')}"
-									th:if="${item.date_adjust != null}"></td>
-								<td th:if="${item.date_adjust == null}">None</td>
+			<div class="d-flex row">
+				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Request List</h2>
+				<div class="col-lg-6 col-md-12 col-sm-12">
+					<form th:action="@{/admin/orders/request}" method="get" class="d-flex">
+						<input type="text" name="search" class="form-control me-2" placeholder="Search..."
+							th:value="${search}">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
+				</div>
+			</div>
+			<div class="table-responsive border-1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Request By</th>
+							<th>Phone</th>
+							<th>Type</th>
+							<th>Expected Start Date</th>
+							<th>New Date</th>
+							<th>Reason</th>
+							<th>Create Date</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${requests}">
+							<td th:text="${item.schrId}"></td>
+							<td th:text="${item.fullname}"></td>
+							<td th:text="${item.phone}"></td>
+							<td th:text="${item.type}"></td>
+							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${#dates.format(item.date_adjust, 'dd-MM-yyyy')}"
+								th:if="${item.date_adjust != null}"></td>
+							<td th:if="${item.date_adjust == null}">None</td>
 
-								<td>
-									<button type="button" data-bs-toggle="popover" title="Staff's Reason"
-										class="btn btn-outline-info changeSize" th:data-bs-content="${item.reason}">
-										Reason
-									</button>
-									<button class="svg-icon" type="button" data-bs-toggle="popover" title="Reason"
-										th:data-bs-content="${item.reason}">
-										<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 1.25 1.25A1.25 1.25 0 0 0 12 7.5Z"
-												fill="#56d7f5" class="fill-6563ff"></path>
-										</svg>
-									</button>
-								</td>
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Staff's Reason"
+									class="btn btn-outline-info changeSize" th:data-bs-content="${item.reason}">
+									Reason
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover" title="Reason"
+									th:data-bs-content="${item.reason}">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 1.25 1.25A1.25 1.25 0 0 0 12 7.5Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
+								</button>
+							</td>
 
-								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.schrStatus}"></td>
-								<td>
-									<a class="btn btn-info" onclick="approve(event)"
-										th:if="${item.type == 'adjustDate'}" th:attr="schrId=${item.schrId}, scheId=${item.schedule_id},
+							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${item.schrStatus}"></td>
+							<td>
+								<a class="btn btn-info" onclick="approve(event)" th:if="${item.type == 'adjustDate'}"
+									th:attr="schrId=${item.schrId}, scheId=${item.schedule_id},
 										newDate=${#dates.format(item.date_adjust, 'yyyy-MM-dd')}, type=${item.type}">Approve</a>
 
-									<a class="btn btn-info" th:if="${item.type == 'cancel'}"
-										th:href="@{/admin/request/staffForReplace(scrId=${item.schrId}, oldStaff=${item.oldStaff})}">Approve</a>
+								<a class="btn btn-info" th:if="${item.type == 'cancel'}"
+									th:href="@{/admin/request/staffForReplace(scrId=${item.schrId}, oldStaff=${item.oldStaff})}">Approve</a>
 
-									<a class="btn btn-danger" onclick="denyRequest(event)"
-										th:attr="schrId=${item.schrId}">Deny</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<nav class="mt-5" th:if="${pv.totalPage > 1}">
-						<ul class="pagination justify-content-center">
-							<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/admin/orders/request(cp=${pv.pageCurrent - 1})}">Previous</a>
-							</li>
-							<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
-								th:classappend="${page == pv.pageCurrent} ? 'active'">
-								<a class="page-link" th:href="@{/admin/orders/request(cp=${page})}"
-									th:text="${page}"></a>
-							</li>
-							<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/admin/orders/request(cp=${pv.pageCurrent + 1})}">Next</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+								<a class="btn btn-danger" onclick="denyRequest(event)"
+									th:attr="schrId=${item.schrId}">Deny</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<nav class="mt-5" th:if="${pv.totalPage > 1}">
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
+							<a class="page-link"
+								th:href="@{/admin/orders/request(cp=${pv.pageCurrent - 1})}">Previous</a>
+						</li>
+						<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
+							th:classappend="${page == pv.pageCurrent} ? 'active'">
+							<a class="page-link" th:href="@{/admin/orders/request(cp=${page})}" th:text="${page}"></a>
+						</li>
+						<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/orders/request(cp=${pv.pageCurrent + 1})}">Next</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</main>

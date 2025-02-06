@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import pack.models.Admin;
 import pack.models.Blog;
 import pack.models.PageView;
@@ -473,7 +474,15 @@ public class AdminController {
 	// -------------------- STAFFS -------------------- //
 
 	@GetMapping("/staffs/list")
-	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String staff_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search, HttpSession session) {
+
+		if (search == null) {
+			search = (String) session.getAttribute("search");
+		} else {
+			session.setAttribute("search", search);
+		}
+
 		PageView pv = new PageView();
 		pv.setPageSize(4);
 		if (cp < 1) {
@@ -481,8 +490,9 @@ public class AdminController {
 		}
 		pv.setPageCurrent(cp);
 
-		model.addAttribute("staffs", rep.getStaffs(pv));
 		model.addAttribute("pv", pv);
+		model.addAttribute("staffs", rep.getStaffs(pv, search));
+		model.addAttribute("search", search);
 
 		return Views.ADMIN_STAFFS_LIST;
 	}
@@ -528,7 +538,15 @@ public class AdminController {
 	// -------------------- ORDERS --------------------//
 
 	@GetMapping("/orders/list")
-	public String order_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String order_list(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search, HttpSession session) {
+
+		if (search == null) {
+			search = (String) session.getAttribute("search");
+		} else {
+			session.setAttribute("search", search);
+		}
+
 		PageView pv = new PageView();
 		pv.setPageSize(4);
 		if (cp < 1) {
@@ -537,8 +555,9 @@ public class AdminController {
 		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("orders", rep.getOrders(pv));
+		model.addAttribute("orders", rep.getOrders(pv, search));
 		model.addAttribute("staffs", rep.getStaffsForOrder(pv));
+		model.addAttribute("search", search);
 
 		return Views.ADMIN_ORDERS_LIST;
 	}
@@ -650,7 +669,15 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders/request")
-	public String order_request(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String order_request(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search, HttpSession session) {
+
+		if (search == null) {
+			search = (String) session.getAttribute("search");
+		} else {
+			session.setAttribute("search", search);
+		}
+
 		PageView pv = new PageView();
 		pv.setPageSize(4);
 		if (cp < 1) {
@@ -659,7 +686,8 @@ public class AdminController {
 		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("requests", rep.getRequestList());
+		model.addAttribute("requests", rep.getRequestList(search));
+		model.addAttribute("search", search);
 
 		return Views.ADMIN_ORDERS_REQUEST;
 	}
@@ -695,7 +723,14 @@ public class AdminController {
 	// -------------------- CLIENTS REQUESTS -------------------- //
 
 	@GetMapping("/request/list")
-	public String requestList(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String requestList(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search, HttpSession session) {
+		if (search == null) {
+			search = (String) session.getAttribute("search");
+		} else {
+			session.setAttribute("search", search);
+		}
+
 		PageView pv = new PageView();
 		pv.setPageSize(4);
 		if (cp < 1) {
@@ -704,8 +739,9 @@ public class AdminController {
 		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("requests", rep.getRequestDetails(pv));
+		model.addAttribute("requests", rep.getRequestDetails(pv, search));
 		model.addAttribute("staffCheck", rep.countAvailableStaff());
+		model.addAttribute("search", search);
 
 		return Views.ADMIN_REQUEST_LIST;
 	}

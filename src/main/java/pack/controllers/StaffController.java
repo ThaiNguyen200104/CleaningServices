@@ -178,8 +178,13 @@ public class StaffController {
 
 	// REQUEST
 	@GetMapping("/request/list")
-	public String getRequestlist(HttpServletRequest request, Model model) {
-		model.addAttribute("requests", rep.getStaffAssginedRequest((int) request.getSession().getAttribute("staffId")));
+	public String getRequestlist(HttpServletRequest request, Model model,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
+		Integer staffId = (int) request.getSession().getAttribute("staffId");
+
+		model.addAttribute("requests", rep.getStaffAssignedRequest(staffId, search));
+		model.addAttribute("search", search);
+
 		return Views.STAFF_REQUEST_LIST;
 	}
 
@@ -201,9 +206,10 @@ public class StaffController {
 
 	// ORDER
 	@GetMapping("/order/list")
-	public String getOrderOfStaff(Model model, HttpServletRequest request) {
+	public String getOrderOfStaff(Model model, HttpServletRequest request,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
 		int staffId = (int) request.getSession().getAttribute("staffId");
-		List<Map<String, Object>> orders = rep.getAssignedOrders(staffId);
+		List<Map<String, Object>> orders = rep.getAssignedOrders(staffId, search);
 
 		for (Map<String, Object> order : orders) {
 			int scheId = (int) order.get("scheId");
@@ -216,6 +222,8 @@ public class StaffController {
 		}
 
 		model.addAttribute("orders", orders);
+		model.addAttribute("search", search);
+
 		return Views.STAFF_ORDER_LIST;
 	}
 

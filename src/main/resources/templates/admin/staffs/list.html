@@ -60,7 +60,7 @@
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 
 		<div class="mx-3 mt-5">
-			<div class="d-flex">
+			<div class="d-flex mb-3">
 				<h2 class="flex-grow-1">Staff List</h2>
 				<div>
 					<a class="btn btn-primary changeSize" th:href="@{/admin/staffs/create}">Provide Account</a>
@@ -72,7 +72,13 @@
 						</svg>
 					</a>
 				</div>
-
+			</div>
+			<div class="mb-3">
+				<form th:action="@{/admin/staffs/list}" method="get" class="d-flex">
+					<input type="text" name="search" class="form-control me-2" placeholder="Search..."
+						th:value="${search}">
+					<button type="submit" class="btn btn-primary">Search</button>
+				</form>
 			</div>
 			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
 			<div class="table-responsive mt-4">

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<title>400 - Bad Request</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+
+	<style>
+		body::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		body::-webkit-scrollbar-track {
+			background-color: transparent;
+		}
+
+		body::-webkit-scrollbar-thumb {
+			background-color: #00539c;
+		}
+
+		body::-webkit-scrollbar-thumb:hover {
+			background-color: #00539c;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Roboto', sans-serif;
+			background: #f5f5f5;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.error-container {
+			text-align: center;
+			padding: 2rem;
+			max-width: 600px;
+		}
+
+		.error-animation {
+			position: relative;
+			width: 200px;
+			height: 200px;
+			margin: 0 auto 2rem;
+		}
+
+		.vacuum-body {
+			width: 150px;
+			height: 80px;
+			background: #2196F3;
+			border-radius: 40px;
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			animation: hover 2s ease-in-out infinite;
+		}
+
+		.vacuum-head {
+			width: 100px;
+			height: 40px;
+			background: #1976D2;
+			border-radius: 20px;
+			position: absolute;
+			bottom: -10px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.dust {
+			position: absolute;
+			width: 8px;
+			height: 8px;
+			background: #90A4AE;
+			border-radius: 50%;
+			animation: float 4s linear infinite;
+		}
+
+		@keyframes hover {
+
+			0%,
+			100% {
+				transform: translateX(-50%) translateY(0);
+			}
+
+			50% {
+				transform: translateX(-50%) translateY(-10px);
+			}
+		}
+
+		@keyframes float {
+			0% {
+				bottom: 0;
+				opacity: 1;
+			}
+
+			100% {
+				bottom: 100px;
+				opacity: 0;
+			}
+		}
+
+		h1 {
+			color: #1976D2;
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.error-code {
+			color: #90A4AE;
+			font-size: 1.2rem;
+			margin-bottom: 1.5rem;
+		}
+
+		p {
+			color: #546E7A;
+			font-size: 1.1rem;
+			line-height: 1.6;
+			margin-bottom: 2rem;
+		}
+
+		.home-button {
+			display: inline-block;
+			padding: 1rem 2rem;
+			background: #2196F3;
+			color: white;
+			text-decoration: none;
+			border-radius: 30px;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
+
+		.home-button:hover {
+			background: #1976D2;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+		}
+
+		.tips-box {
+			margin-top: 2rem;
+			padding: 1rem;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.tip-title {
+			color: #1976D2;
+			font-weight: 500;
+			margin-bottom: 0.5rem;
+		}
+
+		.error-400 .home-button {
+			background: #2196F3;
+		}
+
+		.error-400 .home-button:hover {
+			background: #1976D2;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="error-container error-400">
+		<div class="error-animation">
+			<div class="vacuum-body">
+				<div class="vacuum-head"></div>
+			</div>
+			<div class="dust"></div>
+			<div class="dust"></div>
+			<div class="dust"></div>
+		</div>
+		<h1>Oops! Something's not clean.</h1>
+		<div class="error-code">Error 400 - Bad Request</div>
+		<p>Looks like your request needs a little "cleaning up". Don't worry, we'll get you back on track!</p>
+		<a th:href="@{/}" class="home-button"><i class="fas fa-home"></i> Back to home page</a>
+		<div class="tips-box">
+			<div class="tip-title">Tips:</div>
+			Regular cleaning not only keeps your home clean but also saves you time cleaning up later.
+		</div>
+	</div>
+</body>
+
+</html>
