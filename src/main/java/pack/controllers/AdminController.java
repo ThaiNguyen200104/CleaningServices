@@ -558,6 +558,7 @@ public class AdminController {
 		model.addAttribute("orders", rep.getOrders(pv, search));
 		model.addAttribute("staffs", rep.getStaffsForOrder(pv));
 		model.addAttribute("search", search);
+		rep.checkOrderDetailUpToDate();
 
 		return Views.ADMIN_ORDERS_LIST;
 	}
