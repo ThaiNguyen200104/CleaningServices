@@ -8,7 +8,6 @@ public class UserRequest {
 	}
 
 	public UserRequest(int id, int usrId) {
-		super();
 		this.id = id;
 		this.usrId = usrId;
 	}

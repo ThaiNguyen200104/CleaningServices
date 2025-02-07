@@ -77,7 +77,7 @@ public class AdminRepository {
 	}
 
 	/***
-	 * fetch email in table admin for duplication
+	 * fetch email from table admin for duplication
 	 * 
 	 * @return admin's email
 	 */
@@ -91,7 +91,7 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update admin's password in table admin
+	 * update admin's password from table admin
 	 * 
 	 * @return updated admin's password
 	 */
@@ -108,7 +108,7 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update account in table admin
+	 * update account from table admin
 	 * 
 	 * @return updated admin's account
 	 */
@@ -145,7 +145,7 @@ public class AdminRepository {
 	// -------------------- SERVICES -------------------- //
 
 	/***
-	 * fetch all data in table services
+	 * fetch all data from table services
 	 * 
 	 * @return list of services
 	 */
@@ -170,7 +170,7 @@ public class AdminRepository {
 	}
 
 	/***
-	 * fetch a service in table services with id
+	 * fetch a service from table services with id
 	 * 
 	 * @return specific service
 	 */
@@ -662,10 +662,10 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update status = 'reviewing' that specific staff(s) are in table
+	 * update status = 'reviewing' that specific staff(s) are from table
 	 * user_request_details
 	 * 
-	 * update status = 'unavailable' of that specific staff(s) in table staffs
+	 * update status = 'unavailable' of that specific staff(s) from table staffs
 	 * 
 	 * @return assigned staff(s) into table user_request_details along update both
 	 *         tables's status
@@ -768,18 +768,18 @@ public class AdminRepository {
 	}
 
 	/***
-	 * fetch all available staffs from table staffs in order to be replaced
+	 * fetch all available staffs from table staffs from order to be replaced
 	 * 
 	 * @return list of available staffs
 	 */
 	public List<Staff> getAvailableStaffToReplace(int orderId, int excludeStaffId) {
 		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?) "
-				+ "and id not in (select staff_id from user_request_details where staff_id is not null)";
+				+ "AND id NOT IN (select staff_id from user_request_details where staff_id is not null) AND status = 'available'";
 		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
 	}
 
 	/***
-	 * update staff_id in table schedules
+	 * update staff_id from table schedules
 	 * 
 	 * @return updated staff_id
 	 */
@@ -883,7 +883,7 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update status & new start_date in table order_details
+	 * update status & new start_date from table order_details
 	 * 
 	 * @return updated status & start_date
 	 */
@@ -935,7 +935,7 @@ public class AdminRepository {
 	 * from table staffs update schedule_request's status from table
 	 * schedule_requests
 	 * 
-	 * @return updated fields in schedules, staffs & schedule_requests
+	 * @return updated fields from schedules, staffs & schedule_requests
 	 */
 	@Transactional
 	public String approveCancelRequest(int newStaffId, int schrId, int oldStaffId) {

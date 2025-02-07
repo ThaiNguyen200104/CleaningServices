@@ -20,7 +20,6 @@ public class OrderDetail {
 
 	public OrderDetail(int id, int orderId, int serId, double price, Date startDate, Date completeDate, Date createDate,
 			String status, String serName, String beforeImage, String afterImage) {
-		super();
 		this.id = id;
 		this.orderId = orderId;
 		this.serId = serId;

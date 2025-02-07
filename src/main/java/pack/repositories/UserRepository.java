@@ -139,7 +139,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update account in table users
+	 * update account from table users
 	 * 
 	 * @return updated user's account
 	 */
@@ -364,7 +364,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table user_request_details
+	 * update status from table user_request_details
 	 * 
 	 * @return updated status = 'canceled'
 	 */
@@ -380,7 +380,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table user_request_details
+	 * update status from table user_request_details
 	 * 
 	 * @return updated status = 'confirmed'
 	 */
@@ -397,7 +397,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table staffs
+	 * update status from table staffs
 	 * 
 	 * @return updated status = 'available'
 	 */
@@ -454,7 +454,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status = 'completed' in table order_details update status =
+	 * update status = 'completed' from table order_details update status =
 	 * 'available'in table staffs
 	 * 
 	 * @return updated order_details & staffs status
@@ -477,7 +477,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status = 'progressing' in table order_details
+	 * update status = 'progressing' from table order_details
 	 * 
 	 * @return updated order_details status
 	 */

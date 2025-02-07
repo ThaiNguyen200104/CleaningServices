@@ -32,238 +32,239 @@
 			<div th:if="${#lists.isEmpty(staffs)}" class="section-header">
 				<h2>There are currently no staff available</h2>
 			</div>
+
+			<div class="mt-5 mb-3">
+				<div class="search-container">
+					<input type="text" name="search" class="search-input" placeholder="Search staff..."
+						th:value="${search}">
+				</div>
+			</div>
+
+			<div class="team-grid" th:if="${!#lists.isEmpty(staffs)}">
+				<div class="row" id="teamContainer">
+					<div class="col-lg-3 col-md-6 pb-4 team-item-wrapper" th:each="member, iterStat : ${staffs}"
+						th:if="${member.status != 'disabled'}" th:classappend="${iterStat.index >= 8} ? 'hidden-team'">
+						<div class="team-item">
+							<div class="team-image">
+								<img loading="lazy" th:if="${member.image != null}" th:src="'/upload/'+${member.image}"
+									alt="Team Member Image" />
+								<img loading="lazy" th:if="${member.image == null}" src="../front/img/none-user.png"
+									alt="Team Member Image" />
+							</div>
+							<div class="team-content">
+								<h3 th:text="${member.fullname}"></h3>
+								<p class="phone" th:text="${member.phone}"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-center mt-4 mb-5">
+					<button id="loadMoreTeam" class="btn btn-primary" style="display: none;"
+						onclick="toggleTeamMembers()">
+						More
+					</button>
+				</div>
+			</div>
 		</div>
 
-		<div class="team-container">
-			<div th:if="${!#lists.isEmpty(staffs)}" class="team-inner">
-				<div id="members" class="carousel slide" data-ride="carousel" data-interval="5000">
-					<div class="carousel-inner">
-						<div th:each="item, iterStat : ${staffs}"
-							th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'">
-							<div class="member-info">
-								<div class="member-img">
-									<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
-										alt="Staff Image" />
-									<img loading="lazy" th:unless="${item.image != null}"
-										src="../front/img/none-user.png" alt="Staff Image" />
+		<!-- Story -->
+		<div class="story">
+			<div class="container">
+				<div class="section-header">
+					<h2>Our Company Journey</h2>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="story-container">
+							<div class="story-end">
+								<p>Present</p>
+							</div>
+							<div class="story-continue">
+								<div class="row story-right">
+									<div class="col-md-6">
+										<p class="story-date">
+											01 Aug 2023
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Expansion to New Locations</h3>
+												<p>We proudly expanded our services to three new cities, bringing
+													top-notch cleaning solutions to more communities and homes. This
+													marks a significant milestone in our growth journey.</p>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="member-content">
-									<h3 th:text="${item.fullname}"></h3>
-									<i class="fa fa-phone-alt phone">
-										&nbsp;
-										<p th:text="${item.phone}"></p>
-									</i>
+								<div class="row story-left">
+									<div class="col-md-6 d-md-none d-block">
+										<p class="story-date">
+											15 Feb 2022
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Reaching 500+ Satisfied Clients</h3>
+												<p>We celebrated serving over 500 happy clients with exceptional
+													cleaning services tailored to their needs. Our customer satisfaction
+													rate has been our top priority.</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 d-md-block d-none">
+										<p class="story-date">
+											15 Feb 2022
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="story-year">
+											<p>2022</p>
+										</div>
+									</div>
+								</div>
+								<div class="row story-right">
+									<div class="col-md-6">
+										<p class="story-date">
+											01 May 2021
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>First Major Commercial Contract</h3>
+												<p>Secured our first major contract with a corporate client, providing
+													regular cleaning services for a large office complex. This was a
+													game-changer in our business growth and reputation.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row story-left">
+									<div class="col-md-6 d-md-none d-block">
+										<p class="story-date">
+											01 Oct 2020
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Introduction of Green Cleaning Products</h3>
+												<p>Launched our commitment to eco-friendly cleaning by introducing a
+													full range of green products. This initiative not only helped the
+													environment but also improved the health and safety of our clients.
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 d-md-block d-none">
+										<p class="story-date">
+											01 Oct 2020
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="story-year">
+											<p>2020</p>
+										</div>
+									</div>
+								</div>
+								<div class="row story-right">
+									<div class="col-md-6">
+										<p class="story-date">
+											01 Jan 2020
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Expansion to Commercial Cleaning</h3>
+												<p>We expanded our services to include commercial cleaning, catering to
+													offices, retail spaces, and industrial sites. This marked the
+													beginning of our journey into a broader market.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row story-left">
+									<div class="col-md-6 d-md-none d-block">
+										<p class="story-date">
+											01 Jul 2019
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Team Grows to 50+ Employees</h3>
+												<p>Our team grew to over 50 dedicated employees, each one trained to
+													deliver excellence. This expansion enabled us to serve more clients
+													while maintaining our high standards.</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 d-md-block d-none">
+										<p class="story-date">
+											01 Jul 2019
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="story-year">
+											<p>2019</p>
+										</div>
+									</div>
+								</div>
+								<div class="row story-right">
+									<div class="col-md-6">
+										<p class="story-date">
+											01 Jan 2018
+										</p>
+									</div>
+									<div class="col-md-6">
+										<div class="story-box">
+											<div class="story-text">
+												<h3>Company Launch</h3>
+												<p>We officially launched our cleaning company, driven by a passion for
+													creating healthier, cleaner spaces. Starting small with just a
+													handful of clients, our mission was clear from day one.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="story-start">
+								<p>Launch</p>
+							</div>
+							<div class="story-launch">
+								<div class="story-box">
+									<div class="story-text">
+										<h3>Our Story Begins</h3>
+										<p>On January 1st, 2018, we began our journey with a vision to redefine cleaning
+											services. Armed with a small, dedicated team and a big dream, we started
+											making homes and workplaces shine, one space at a time.</p>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<a class="carousel-control-prev" href="#members" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="sr-only">Previous</span>
-				</a>
-				<a class="carousel-control-next" href="#members" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
-				</a>
 			</div>
 		</div>
 	</div>
-
-	<!-- Story -->
-	<div class="story">
-		<div class="container">
-			<div class="section-header">
-				<h2>Our Company Journey</h2>
-			</div>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="story-container">
-						<div class="story-end">
-							<p>Present</p>
-						</div>
-						<div class="story-continue">
-							<div class="row story-right">
-								<div class="col-md-6">
-									<p class="story-date">
-										01 Aug 2023
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Expansion to New Locations</h3>
-											<p>We proudly expanded our services to three new cities, bringing
-												top-notch cleaning solutions to more communities and homes. This
-												marks a significant milestone in our growth journey.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row story-left">
-								<div class="col-md-6 d-md-none d-block">
-									<p class="story-date">
-										15 Feb 2022
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Reaching 500+ Satisfied Clients</h3>
-											<p>We celebrated serving over 500 happy clients with exceptional
-												cleaning services tailored to their needs. Our customer satisfaction
-												rate has been our top priority.</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6 d-md-block d-none">
-									<p class="story-date">
-										15 Feb 2022
-									</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12">
-									<div class="story-year">
-										<p>2022</p>
-									</div>
-								</div>
-							</div>
-							<div class="row story-right">
-								<div class="col-md-6">
-									<p class="story-date">
-										01 May 2021
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>First Major Commercial Contract</h3>
-											<p>Secured our first major contract with a corporate client, providing
-												regular cleaning services for a large office complex. This was a
-												game-changer in our business growth and reputation.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row story-left">
-								<div class="col-md-6 d-md-none d-block">
-									<p class="story-date">
-										01 Oct 2020
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Introduction of Green Cleaning Products</h3>
-											<p>Launched our commitment to eco-friendly cleaning by introducing a
-												full range of green products. This initiative not only helped the
-												environment but also improved the health and safety of our clients.
-											</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6 d-md-block d-none">
-									<p class="story-date">
-										01 Oct 2020
-									</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12">
-									<div class="story-year">
-										<p>2020</p>
-									</div>
-								</div>
-							</div>
-							<div class="row story-right">
-								<div class="col-md-6">
-									<p class="story-date">
-										01 Jan 2020
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Expansion to Commercial Cleaning</h3>
-											<p>We expanded our services to include commercial cleaning, catering to
-												offices, retail spaces, and industrial sites. This marked the
-												beginning of our journey into a broader market.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row story-left">
-								<div class="col-md-6 d-md-none d-block">
-									<p class="story-date">
-										01 Jul 2019
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Team Grows to 50+ Employees</h3>
-											<p>Our team grew to over 50 dedicated employees, each one trained to
-												deliver excellence. This expansion enabled us to serve more clients
-												while maintaining our high standards.</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-6 d-md-block d-none">
-									<p class="story-date">
-										01 Jul 2019
-									</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12">
-									<div class="story-year">
-										<p>2019</p>
-									</div>
-								</div>
-							</div>
-							<div class="row story-right">
-								<div class="col-md-6">
-									<p class="story-date">
-										01 Jan 2018
-									</p>
-								</div>
-								<div class="col-md-6">
-									<div class="story-box">
-										<div class="story-text">
-											<h3>Company Launch</h3>
-											<p>We officially launched our cleaning company, driven by a passion for
-												creating healthier, cleaner spaces. Starting small with just a
-												handful of clients, our mission was clear from day one.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="story-start">
-							<p>Launch</p>
-						</div>
-						<div class="story-launch">
-							<div class="story-box">
-								<div class="story-text">
-									<h3>Our Story Begins</h3>
-									<p>On January 1st, 2018, we began our journey with a vision to redefine cleaning
-										services. Armed with a small, dedicated team and a big dream, we started
-										making homes and workplaces shine, one space at a time.</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
+
+	<script src="../front/js/staffs.js"></script>
 </body>
 
 </html>

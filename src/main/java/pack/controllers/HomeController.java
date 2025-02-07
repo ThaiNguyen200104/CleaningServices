@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import pack.models.PageView;
 import pack.repositories.HomeRepository;
 import pack.utils.Views;
@@ -35,7 +36,8 @@ public class HomeController {
 	}
 
 	@GetMapping("/service")
-	public String service(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String service(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search) {
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(8);
@@ -46,7 +48,8 @@ public class HomeController {
 		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("services", rep.getAllServices(pv));
+		model.addAttribute("services", rep.getAllServices(pv, search));
+		model.addAttribute("search", search);
 		model.addAttribute("currentPage", "service");
 
 		return Views.MAIN_SERVICE;
@@ -64,12 +67,20 @@ public class HomeController {
 	public String blog_detail(Model model, @RequestParam int id) {
 		model.addAttribute("blogDetails", rep.getBlogById(id));
 		model.addAttribute("currentPage", "blog");
-		
+
 		return Views.MAIN_BLOG_DETAIL;
 	}
 
 	@GetMapping("/about")
-	public String about(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp) {
+	public String about(Model model, @RequestParam(name = "cp", required = false, defaultValue = "1") int cp,
+			@RequestParam(name = "search", required = false, defaultValue = "") String search, HttpSession session) {
+		
+		if (search == null) {
+			search = (String) session.getAttribute("search");
+		} else {
+			session.setAttribute("search", search);
+		}
+		
 		PageView pv = new PageView();
 		pv.setPageCurrent(cp);
 		pv.setPageSize(4);
@@ -80,7 +91,8 @@ public class HomeController {
 		pv.setPageCurrent(cp);
 
 		model.addAttribute("pv", pv);
-		model.addAttribute("staffs", rep.getAllStaffs(pv));
+		model.addAttribute("staffs", rep.getAllStaffs(pv, search));
+		model.addAttribute("search", search);
 		model.addAttribute("currentPage", "about");
 
 		return Views.MAIN_ABOUT;

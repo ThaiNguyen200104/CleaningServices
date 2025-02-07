@@ -467,22 +467,32 @@ a:hover, a:active, a:focus {
 }
 
 .service .service-item {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	text-align: center;
-	border-radius: 5px;
-	margin-bottom: 15px;
-	background: -webkit-linear-gradient(180deg, var(--primary-color),
-		#4b86b9, #a5c2dc);
-	background: linear-gradient(180deg, var(--primary-color), #4b86b9,
-		#a5c2dc);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: -webkit-linear-gradient(180deg, var(--primary-color), #4b86b9, #a5c2dc);
+    background: linear-gradient(180deg, var(--primary-color), #4b86b9, #a5c2dc);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service .service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .service .service-item img {
-	width: 100%;
-	height: 170px;
-	object-fit: cover;
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.service .service-item:hover img {
+    transform: scale(1.05);
 }
 
 .service .service-item h3 {
@@ -515,6 +525,47 @@ a:hover, a:active, a:focus {
 
 .service .service-item a.btn:hover {
 	scale: calc(1.15);
+}
+
+.service-grid {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.service-item-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-item-wrapper.hidden-service {
+    display: none;
+}
+
+.service-item-wrapper.filtering-in {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.service-item-wrapper.filtering-out {
+    animation: fadeOutDown 0.4s ease forwards;
+}
+
+
+
+.service-grid.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.4) 50%,
+        rgba(255,255,255,0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    pointer-events: none;
 }
 
 /* SERVICE CAROUSEL */
@@ -808,6 +859,99 @@ body.no-scroll {
 /*******************************/
 /*********** Team CSS **********/
 /*******************************/
+.team {
+    position: relative;
+    width: 100%;
+    padding: 30px 0 15px 0;
+}
+
+.team-grid {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.team-item-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.team-item-wrapper.hidden-team {
+    display: none;
+}
+
+.team-item-wrapper.filtering-in {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.team-item-wrapper.filtering-out {
+    animation: fadeOutDown 0.4s ease forwards;
+}
+
+.team .team-item {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  	background: -webkit-linear-gradient(270deg, #ffc107, #ffd350, #ffe9a7);
+	background: linear-gradient(270deg, #ffc107, #ffd350, #ffe9a7);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team .team-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.team .team-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.team .team-item:hover img {
+    transform: scale(1.05);
+}
+
+.team .team-content {
+    padding: 12px 10px;
+}
+
+.team .team-content h3 {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.team .team-content .phone {
+    font-size: 14px;
+    color: var(--white);
+    margin: 0;
+    padding: 0 0 8px 0;
+}
+
+.team-grid.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.4) 50%,
+        rgba(255,255,255,0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    pointer-events: none;
+}
+
+/* Team Carousel */
 .team {
 	position: relative;
 	width: 100%;
@@ -1850,7 +1994,72 @@ body.no-scroll {
 	font-weight: bold;
 }
 
-/* MEDIA SECTIONS */
+/* Search */
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: #f5f5f5;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/************************/
+/****** ANIMATION *******/
+/************************/
+/* New item appearing Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Item been filtered out Animation */
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+/* Loading Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/*********************/
+/****** MEDIA *******/
+/*********************/
 @media ( min-width : 768px) {
 	.svg-icon {
 		display: none;
