@@ -67,8 +67,7 @@
 						</td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
-								th:href="@{/user/orderApprove(id=${item.id})}">Approve</a>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}" th:href="@{/user/banking(id=${item.id})}">Pay</a>
 							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
 								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
 						</td>
@@ -89,6 +88,11 @@
 	<script src="../../front/lib/isotope/isotope.pkgd.min.js"></script>
 	<script src="../../front/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../../front/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+
+	</script>
 </body>
 
 </html>

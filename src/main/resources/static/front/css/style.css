@@ -491,10 +491,6 @@ a:hover, a:active, a:focus {
     transition: transform 0.5s ease;
 }
 
-.service .service-item:hover img {
-    transform: scale(1.05);
-}
-
 .service .service-item h3 {
 	margin: 0;
 	padding: 25px 15px 15px 15px;
@@ -910,10 +906,6 @@ body.no-scroll {
     height: auto;
     object-fit: cover;
     transition: transform 0.5s ease;
-}
-
-.team .team-item:hover img {
-    transform: scale(1.05);
 }
 
 .team .team-content {
@@ -1831,23 +1823,6 @@ body.no-scroll {
 	color: var(--white);
 }
 
-.login-container .link {
-	display: block;
-	text-align: center;
-	margin-top: 15px;
-	font-size: 14px;
-}
-
-.login-container .link a {
-	color: var(--primary-color);
-	text-decoration: none;
-	transition: color 0.3s;
-}
-
-.login-container .link a:hover {
-	color: var(--secondary-color);
-}
-
 .acc-link {
 	color: var(--white);
 }
@@ -1943,6 +1918,23 @@ body.no-scroll {
 	margin: 20px auto;
 	padding: 0 15px;
 	width: 100%;
+}
+
+.booking-table::-webkit-scrollbar {
+    height: 5px;
+}
+
+.booking-table::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.booking-table::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+}
+
+.booking-table::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
 }
 
 .booking-table {
@@ -2092,6 +2084,31 @@ body.no-scroll {
 }
 
 @media ( max-width : 767px) {
+	.login-container {
+		max-width: 450px;
+	}
+	.login-container .acc-link {
+		margin-top: 15px;
+		font-size: 13px;
+	}
+	.login-container h2 {
+		font-size: 28px;
+	}
+	.login-container form {
+		margin-top: 18px;
+	}
+	.login-container label {
+		font-size: 14px;
+	}
+	.login-container input[type="text"], .login-container input[type="password"],
+		.login-container input[type="email"], .login-container button {
+		padding: 8px;
+		margin-bottom: 8px;
+		font-size: 12px;
+	}
+	.login-container button {
+		font-size: 14px;
+	}
 	.header .hero .form {
 		margin-top: 45px;
 	}
@@ -2201,6 +2218,12 @@ body.no-scroll {
 	}
 	.blog-image-container {
 		margin-bottom: 1rem;
+	}
+	.team .team-content h3 {
+	    font-size: 20px;
+	}
+	.team .team-content .phone {
+	    font-size: 18px;
 	}
 	.team-inner {
 		padding: 1rem;

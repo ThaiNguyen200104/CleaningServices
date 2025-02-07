@@ -33,7 +33,10 @@ function confirmAction(event) {
 	var startDate = item.getAttribute("startDate");
 	var price = item.getAttribute("price");
 	var staffId = item.getAttribute("staffId");
-	var formattedDate = new Date(startDate).toISOString().split('T')[0];
+	var date = new Date(startDate);
+	var formattedDate = date.getFullYear() + '-' +
+		String(date.getMonth() + 1).padStart(2, '0') + '-' +
+		String(date.getDate()).padStart(2, '0');
 
 	if (confirm("Are you sure you want to confirm this request?")) {
 		const formData = new FormData();
