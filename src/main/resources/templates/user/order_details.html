@@ -71,7 +71,7 @@
 				<tbody>
 					<tr th:each="item : ${orderDetails}">
 						<td th:text="${item.service_name}"></td>
-						<td th:text="${item.price + '$'}"></td>
+						<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
 						<td th:text="${item.start_date != null ? #dates.format(item.start_date, 'yyyy-MM-dd') : 'N/A'}">
 						</td>
 						<td

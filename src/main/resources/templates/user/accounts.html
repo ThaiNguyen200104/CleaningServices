@@ -121,7 +121,7 @@
 						<tr th:each="item: ${orderDetails}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.serName}"></td>
-							<td th:text="${item.price} + '$'"></td>
+							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
 							<td th:text="${#dates.format(item.startDate, 'yyyy-MM-dd')}"></td>
 							<td th:text="${item.status}"></td>
 							<td>

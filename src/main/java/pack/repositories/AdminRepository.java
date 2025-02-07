@@ -449,22 +449,42 @@ public class AdminRepository {
 	 * 
 	 * @return a specific available staff
 	 */
-	public List<Staff> getStaffs(PageView pageItem) {
+	public List<Staff> getStaffs(PageView pageItem, String search) {
 		try {
-			int count = db.queryForObject("SELECT COUNT(*) FROM staffs WHERE status != 'disabled'", Integer.class);
-			int total_page = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
-			pageItem.setTotalPage(total_page);
+			String searchQuery = "";
+			List<Object> params = new ArrayList<>();
 
-			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), total_page);
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " AND (fullname LIKE ? OR phone LIKE ? OR email LIKE ?)";
+				String searchPattern = "%" + search + "%";
+				params.add(searchPattern);
+				params.add(searchPattern);
+				params.add(searchPattern);
+			}
+
+			String countQuery = String.format("SELECT COUNT(*) FROM %s WHERE %s != 'disabled' %s", Views.TBL_STAFFS,
+					Views.COL_STAFFS_STATUS, searchQuery);
+
+			int count = db.queryForObject(countQuery, Integer.class, params.toArray());
+
+			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
+			pageItem.setTotalPage(totalPage);
+
+			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), totalPage);
 			pageItem.setPageCurrent(currentPage);
 
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
-			String str_query = String.format(
-					"SELECT * FROM %s WHERE %s != 'disabled' ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
-					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, Views.COL_STAFFS_ID);
-			return db.query(str_query, new Staff_mapper(), offset, pageItem.getPageSize());
+			String query = String.format(
+					"SELECT * FROM %s WHERE %s != 'disabled' %s ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_STAFFS, Views.COL_STAFFS_STATUS, searchQuery, Views.COL_STAFFS_ID);
+
+			params.add(offset);
+			params.add(pageItem.getPageSize());
+
+			return db.query(query, new Staff_mapper(), params.toArray());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -577,16 +597,29 @@ public class AdminRepository {
 	}
 
 	/***
-	 * fetch specific staff by id from table staffs
+	 * fetch specific client's request by id from table user_request_details
 	 * 
-	 * @return a specific staff
+	 * @return a specific client's request
 	 */
-	public List<Map<String, Object>> getRequestDetails(PageView pageItem) {
+	public List<Map<String, Object>> getRequestDetails(PageView pageItem, String search) {
 		try {
-			String countQuery = String.format("SELECT COUNT(*) FROM %s urd JOIN %s s ON urd.service_id = s.id "
-					+ "JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing'",
-					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER);
-			int count = db.queryForObject(countQuery, Integer.class);
+			List<Object> params = new ArrayList<>();
+			String searchQuery = "";
+
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " AND (s.service_name LIKE ? OR u.fullname LIKE ? OR u.phone LIKE ? OR urd.status LIKE ?)";
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+			}
+
+			String countQuery = String.format(
+					"SELECT COUNT(*) FROM %s urd JOIN %s s ON urd.service_id = s.id JOIN %s u ON urd.user_id = u.id "
+							+ "WHERE (urd.status = 'pending' OR urd.status = 'reviewing') %s",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER, searchQuery);
+
+			int count = db.queryForObject(countQuery, Integer.class, params.toArray());
 
 			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(totalPage);
@@ -596,12 +629,17 @@ public class AdminRepository {
 
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
-			String str_query = String.format("SELECT urd.*, s.service_name, u.fullname FROM %s urd "
-					+ "JOIN %s s ON urd.service_id = s.id JOIN %s u ON urd.user_id = u.id WHERE urd.status = 'pending' OR urd.status = 'reviewing' "
-					+ "ORDER BY create_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", Views.TBL_USER_REQUEST_DETAILS,
-					Views.TBL_SERVICES, Views.TBL_USER);
+			String str_query = String.format(
+					"SELECT urd.*, s.service_name, u.fullname, u.phone FROM %s urd "
+							+ "JOIN %s s ON urd.service_id = s.id JOIN %s u ON urd.user_id = u.id "
+							+ "WHERE (urd.status = 'pending' OR urd.status = 'reviewing') %s "
+							+ "ORDER BY create_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_SERVICES, Views.TBL_USER, searchQuery);
 
-			return db.queryForList(str_query, offset, pageItem.getPageSize());
+			params.add(offset);
+			params.add(pageItem.getPageSize());
+
+			return db.queryForList(str_query, params.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -776,15 +814,25 @@ public class AdminRepository {
 	 * 
 	 * @return list of orders
 	 */
-	public List<Map<String, Object>> getOrders(PageView pageItem) {
+	public List<Map<String, Object>> getOrders(PageView pageItem, String search) {
 		try {
+			List<Object> params = new ArrayList<>();
+			String searchQuery = "";
+
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " WHERE u.fullname LIKE ? OR u.phone LIKE ? OR od.status LIKE ?";
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+			}
+
 			String countQuery = String.format(
 					"SELECT COUNT(*) FROM %s od JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
-							+ "JOIN %s u ON ur.user_id = u.id JOIN %s s ON od.service_id = s.id",
-					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER,
-					Views.TBL_SERVICES);
+							+ "JOIN %s u ON ur.user_id = u.id JOIN %s s ON od.service_id = s.id %s",
+					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER, Views.TBL_SERVICES,
+					searchQuery);
 
-			int count = db.queryForObject(countQuery, Integer.class);
+			int count = db.queryForObject(countQuery, Integer.class, params.toArray());
 
 			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(totalPage);
@@ -795,19 +843,22 @@ public class AdminRepository {
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String str_query = String.format(
-					"SELECT od.*, o.*, u.fullname, STRING_AGG(st.username, ', ') AS staff_username, "
+					"SELECT od.*, o.*, u.fullname, u.phone, STRING_AGG(st.username, ', ') AS staff_username, "
 							+ "CASE WHEN EXISTS (SELECT 1 FROM schedules s WHERE s.detail_id = od.id) "
-							+ "THEN 1 ELSE 0 END AS hasAssignedStaff FROM %s od "
-							+ "JOIN %s o ON od.order_id = o.id JOIN %s ur ON o.usrReq_id = ur.id "
-							+ "JOIN %s u ON ur.user_id = u.id JOIN %s s ON od.service_id = s.id "
-							+ "LEFT JOIN %s urd ON urd.usrReq_id = ur.id LEFT JOIN %s st ON urd.staff_id = st.id "
-							+ "GROUP BY od.id, od.order_id, od.service_id, od.create_date, od.start_date, od.complete_date, od.status,"
-							+ "od.beforeImage, od.afterImage, o.id, o.usrReq_id, od.price, u.fullname "
+							+ "THEN 1 ELSE 0 END AS hasAssignedStaff FROM %s od JOIN %s o ON od.order_id = o.id "
+							+ "JOIN %s ur ON o.usrReq_id = ur.id JOIN %s u ON ur.user_id = u.id "
+							+ "JOIN %s s ON od.service_id = s.id LEFT JOIN %s urd ON urd.usrReq_id = ur.id "
+							+ "LEFT JOIN %s st ON urd.staff_id = st.id %s "
+							+ "GROUP BY od.id, od.order_id, od.service_id, od.create_date, od.start_date, od.complete_date, od.status, "
+							+ "od.beforeImage, od.afterImage, o.id, o.usrReq_id, od.price, u.fullname, u.phone "
 							+ "ORDER BY %s DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
 					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_USER_REQUEST, Views.TBL_USER, Views.TBL_SERVICES,
-					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_STAFFS, Views.COL_ORDER_DETAIL_CREATEDATE);
+					Views.TBL_USER_REQUEST_DETAILS, Views.TBL_STAFFS, searchQuery, Views.COL_ORDER_DETAIL_CREATEDATE);
 
-			return db.queryForList(str_query, offset, pageItem.getPageSize());
+			params.add(offset);
+			params.add(pageItem.getPageSize());
+
+			return db.queryForList(str_query, params.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -854,15 +905,25 @@ public class AdminRepository {
 	 * 
 	 * @return list of schedule_requests
 	 */
-	public List<Map<String, Object>> getRequestList() {
+	public List<Map<String, Object>> getRequestList(String search) {
 		try {
+			List<Object> params = new ArrayList<>();
+			String searchQuery = "";
+
+			if (search != null && !search.trim().isEmpty()) {
+				searchQuery = " AND (st.fullname LIKE ? OR st.phone LIKE ? OR schr.status LIKE ?)";
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+				params.add("%" + search + "%");
+			}
+
 			String str_query = String.format(
-					"SELECT schr.*, schr.id AS schrId, schr.status AS schrStatus, "
-							+ "sc.staff_id AS oldStaff, sc.start_date, st.fullname FROM %s schr "
-							+ "JOIN %s sc ON schr.schedule_id = sc.id JOIN %s st ON sc.staff_id = st.id "
-							+ "WHERE schr.status = 'pending' ORDER BY create_date",
-					Views.TBL_SCHEDULE_REQUESTS, Views.TBL_SCHEDULES, Views.TBL_STAFFS);
-			return db.queryForList(str_query);
+					"SELECT schr.*, schr.id AS schrId, schr.status AS schrStatus, sc.staff_id AS oldStaff, sc.start_date, st.fullname, st.phone "
+							+ "FROM %s schr JOIN %s sc ON schr.schedule_id = sc.id JOIN %s st ON sc.staff_id = st.id "
+							+ "WHERE schr.status = 'pending' %s ORDER BY create_date",
+					Views.TBL_SCHEDULE_REQUESTS, Views.TBL_SCHEDULES, Views.TBL_STAFFS, searchQuery);
+
+			return db.queryForList(str_query, params.toArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

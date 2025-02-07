@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<title>401 - Unauthorized</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+
+	<style>
+		body::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		body::-webkit-scrollbar-track {
+			background-color: transparent;
+		}
+
+		body::-webkit-scrollbar-thumb {
+			background-color: #00539c;
+		}
+
+		body::-webkit-scrollbar-thumb:hover {
+			background-color: #00539c;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Roboto', sans-serif;
+			background: #f5f5f5;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.error-container {
+			text-align: center;
+			padding: 2rem;
+			max-width: 600px;
+		}
+
+		.error-animation {
+			position: relative;
+			width: 200px;
+			height: 200px;
+			margin: 0 auto 2rem;
+		}
+
+		.lock {
+			width: 100px;
+			height: 130px;
+			background: #FFC107;
+			border-radius: 10px;
+			position: relative;
+			margin: 50px auto;
+			animation: shake 0.5s ease-in-out infinite;
+		}
+
+		.lock::before {
+			content: '';
+			width: 70px;
+			height: 70px;
+			border: 15px solid #FFC107;
+			border-radius: 50px 50px 0 0;
+			position: absolute;
+			top: -45px;
+			left: 0;
+			right: 0;
+			margin: auto;
+		}
+
+		@keyframes shake {
+
+			0%,
+			100% {
+				transform: rotate(0);
+			}
+
+			25% {
+				transform: rotate(-10deg);
+			}
+
+			75% {
+				transform: rotate(10deg);
+			}
+		}
+
+		h1 {
+			color: #1976D2;
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.error-code {
+			color: #90A4AE;
+			font-size: 1.2rem;
+			margin-bottom: 1.5rem;
+		}
+
+		p {
+			color: #546E7A;
+			font-size: 1.1rem;
+			line-height: 1.6;
+			margin-bottom: 2rem;
+		}
+
+		.home-button {
+			display: inline-block;
+			padding: 1rem 2rem;
+			background: #2196F3;
+			color: white;
+			text-decoration: none;
+			border-radius: 30px;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
+
+		.home-button:hover {
+			background: #1976D2;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+		}
+
+		.tips-box {
+			margin-top: 2rem;
+			padding: 1rem;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.tip-title {
+			color: #1976D2;
+			font-weight: 500;
+			margin-bottom: 0.5rem;
+		}
+
+		.error-401 .home-button {
+			background: #FFC107;
+		}
+
+		.error-401 .home-button:hover {
+			background: #FFA000;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="error-container error-401">
+		<div class="error-animation">
+			<div class="lock"></div>
+		</div>
+		<h1>You are not authenticated</h1>
+		<div class="error-code">Error 401 - No Access</div>
+		<p>Just like cleaning a house requires a key to get in, you need to log in to access this page.</p>
+		<a th:href="@{/user/login}" class="home-button"><i class="fas fa-key"></i> Login</a>
+		<div class="tips-box">
+			<div class="tip-title">Tips:</div>
+			Please make sure you are logged in before accessing our special features.
+		</div>
+	</div>
+</body>
+
+</html>

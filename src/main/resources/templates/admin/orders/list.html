@@ -55,57 +55,66 @@
 		<!-- HEADER -->
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 		<div class="mx-3 mt-5">
-			<div class="col-12">
-				<h2 class="mb-4">Order List</h2>
-				<div class="table-responsive border-1">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Order By</th>
-								<th>Price</th>
-								<th>Start Date</th>
-								<th>Staff Assigned</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${orders}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.fullname}"></td>
-								<td th:text="${item.price + '$'}"></td>
-								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.staff_username != null} ? ${item.staff_username} : 'No staff assigned'"></td>
-								<td th:text="${item.status}"></td>
-								<td>
-									<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
-										th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign</a>
-
-									<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
-										class="btn btn-warning" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
-										Replace
-									</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<nav class="mt-5" th:if="${pv.totalPage > 1}">
-						<ul class="pagination justify-content-center">
-							<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/admin/orders/list(cp=${pv.pageCurrent - 1})}">Previous</a>
-							</li>
-							<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
-								th:classappend="${page == pv.pageCurrent} ? 'active'">
-								<a class="page-link" th:href="@{/admin/orders/list(cp=${page})}" th:text="${page}"></a>
-							</li>
-							<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
-								<a class="page-link" th:href="@{/admin/orders/list(cp=${pv.pageCurrent + 1})}">Next</a>
-							</li>
-						</ul>
-					</nav>
+			<div class="d-flex row">
+				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Order List</h2>
+				<div class="col-lg-6 col-md-12 col-sm-12">
+					<form th:action="@{/admin/orders/list}" method="get" class="d-flex">
+						<input type="text" name="search" class="form-control me-2" placeholder="Search..."
+							th:value="${search}">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
 				</div>
+			</div>
+			<div class="table-responsive border-1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Order By</th>
+							<th>Phone</th>
+							<th>Price</th>
+							<th>Start Date</th>
+							<th>Staff Assigned</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${orders}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.fullname}"></td>
+							<td th:text="${item.phone}"></td>
+							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
+							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${item.staff_username != null} ? ${item.staff_username} : 'No staff assigned'">
+							</td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
+									th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign</a>
+
+								<a th:if="${(item.status == 'pending' || item.status == 'confirmed') && item.hasAssignedStaff == 1}"
+									class="btn btn-warning" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
+									Replace
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<nav class="mt-5" th:if="${pv.totalPage > 1}">
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:classappend="${pv.pageCurrent == 1} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/orders/list(cp=${pv.pageCurrent - 1})}">Previous</a>
+						</li>
+						<li class="page-item" th:each="page : ${#numbers.sequence(1, pv.totalPage)}"
+							th:classappend="${page == pv.pageCurrent} ? 'active'">
+							<a class="page-link" th:href="@{/admin/orders/list(cp=${page})}" th:text="${page}"></a>
+						</li>
+						<li class="page-item" th:classappend="${pv.pageCurrent == pv.totalPage} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/orders/list(cp=${pv.pageCurrent + 1})}">Next</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</main>

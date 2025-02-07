@@ -45,59 +45,68 @@
 		<!-- HEADER -->
 		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
 		<div class="mx-3 mt-5">
-			<div class="col-12">
-				<h2 class="mb-4">Request List</h2>
-				<div class="table-responsive border-1">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Service Name</th>
-								<th>Request By</th>
-								<th>Price</th>
-								<th>Start Date</th>
-								<th>Create Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${requests}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.service_name}"></td>
-								<td th:text="${item.fullname}"></td>
-								<td th:text="${item.price + '$'}"></td>
-								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.status}"></td>
-								<td>
-									<a class="btn btn-warning" onclick="showPopup(event)" th:attr="urdId=${item.id}">
-										Edit
-									</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+			<div class="d-flex row">
+				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Request List</h2>
+				<div class="col-lg-6 col-md-12 col-sm-12">
+					<form th:action="@{/staff/request/list}" method="get" class="d-flex">
+						<input type="text" name="search" class="form-control me-2" placeholder="Search..."
+							th:value="${search}">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
 				</div>
+			</div>
+			<div class="table-responsive border-1 mt-3">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Service Name</th>
+							<th>Request By</th>
+							<th>Phone</th>
+							<th>Price</th>
+							<th>Start Date</th>
+							<th>Create Date</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${requests}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.service_name}"></td>
+							<td th:text="${item.fullname}"></td>
+							<td th:text="${item.phone}"></td>
+							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
+							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a class="btn btn-warning" onclick="showPopup(event)" th:attr="urdId=${item.id}">
+									Edit
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-				<!-- Popup Modal -->
-				<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Edit Request</h5>
+			<!-- Popup Modal -->
+			<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Edit Request</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="form-control mb-4" type="text" pattern="^[0-9]*\" id="price"
+									placeholder="Price" required />
+								<input class="form-control" type="date" id="startDate" required />
 							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<input class="form-control mb-4" type="text" pattern="^[0-9]*\.?[0-9]+$" id="price"
-										placeholder="Price" required />
-									<input class="form-control" type="date" id="startDate" required />
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
-								<button class="btn btn-success" onclick="confirm()">Confirm</button>
-							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+							<button class="btn btn-success" onclick="confirm()">Confirm</button>
 						</div>
 					</div>
 				</div>

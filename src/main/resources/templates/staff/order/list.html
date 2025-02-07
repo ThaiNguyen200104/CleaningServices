@@ -110,107 +110,115 @@
 		<!-- HEADER -->
 		<header th:replace="~{staff/fragment/header::staffHeader}"></header>
 		<div class="mx-3 mt-5">
-			<div class="col-12">
-				<h2 class="mb-4">Order List</h2>
-				<div class="table-responsive border-1">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th>Service Name</th>
-								<th>Request By</th>
-								<th>Price</th>
-								<th>Start Date</th>
-								<th>Create Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item : ${orders}">
-								<td th:text="${item.id}"></td>
-								<td th:text="${item.service_name}"></td>
-								<td th:text="${item.fullname}"></td>
-								<td th:text="${item.price + '$'}"></td>
-								<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
-								<td th:text="${item.status}"></td>
-								<td>
-									<a class="btn btn-info" onclick="showDatePopup(event)"
-										th:attr="scheId=${item.scheId}"
-										th:if="${item.status == 'confirmed' && item.showReschedule}">Reschedule</a>
-									<a class="btn btn-danger" onclick="showCancelPopup(event)"
-										th:attr="scheId=${item.scheId}"
-										th:if="${item.status == 'confirmed' && item.showCancel}">Cancel</a>
-									<a class="btn btn-warning" th:if="${item.status == 'progressing'}"
-										onclick="showCompletePopup(event)" th:attr="detailId=${item.id}">Complete</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+			<div class="d-flex row">
+				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Order List</h2>
+				<div class="col-lg-6 col-md-12 col-sm-12">
+					<form th:action="@{/staff/order/list}" method="get" class="d-flex">
+						<input type="text" name="search" class="form-control me-2" placeholder="Search..."
+							th:value="${search}">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
 				</div>
+			</div>
+			<div class="table-responsive border-1 mt-3">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Service Name</th>
+							<th>Request By</th>
+							<th>Phone</th>
+							<th>Price</th>
+							<th>Start Date</th>
+							<th>Create Date</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${orders}">
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.service_name}"></td>
+							<td th:text="${item.fullname}"></td>
+							<td th:text="${item.phone}"></td>
+							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
+							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+							<td th:text="${item.status}"></td>
+							<td>
+								<a class="btn btn-info" onclick="showDatePopup(event)" th:attr="scheId=${item.scheId}"
+									th:if="${item.status == 'confirmed' && item.showReschedule}">Reschedule</a>
+								<a class="btn btn-danger" onclick="showCancelPopup(event)"
+									th:attr="scheId=${item.scheId}"
+									th:if="${item.status == 'confirmed' && item.showCancel}">Cancel</a>
+								<a class="btn btn-warning" th:if="${item.status == 'progressing'}"
+									onclick="showCompletePopup(event)" th:attr="detailId=${item.id}">Complete</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-				<!-- Reschedule Modal -->
-				<div class="modal" id="DateModal" tabindex="-1" role="dialog" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Adjust Date</h5>
+			<!-- Reschedule Modal -->
+			<div class="modal" id="DateModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Adjust Date</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="form-control mb-4" type="date" id="date" required />
+								<input class="form-control" type="text" id="reasonForDate"
+									placeholder="Enter your reason:" required />
 							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<input class="form-control mb-4" type="date" id="date" required />
-									<input class="form-control" type="text" id="reasonForDate"
-										placeholder="Enter your reason:" required />
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-success" onclick="confirmDate()">Confirm</button>
-							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-success" onclick="confirmDate()">Confirm</button>
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<!-- Cancel Modal -->
-				<div class="modal" id="CancelModal" tabindex="-1" role="dialog" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Cancel Order</h5>
+			<!-- Cancel Modal -->
+			<div class="modal" id="CancelModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Cancel Order</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="form-control" type="text" id="reasonForCancel"
+									placeholder="Enter your reason:" required />
 							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<input class="form-control" type="text" id="reasonForCancel"
-										placeholder="Enter your reason:" required />
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-success" onclick="confirmCancel()">Confirm</button>
-							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-success" onclick="confirmCancel()">Confirm</button>
 						</div>
 					</div>
 				</div>
+			</div>
 
-				<!-- Complete Modal -->
-				<div class="modal" id="CompleteModal" tabindex="-1" role="dialog" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Upload Images</h5>
+			<!-- Complete Modal -->
+			<div class="modal" id="CompleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Upload Images</h5>
+						</div>
+						<div class="modal-body row">
+							<div class="form-group col-lg-6 col-md-6 col-sm-6">
+								<label>Reviewing Image</label>
+								<input class="form-control my-4" type="file" id="beforeImg" required />
 							</div>
-							<div class="modal-body row">
-								<div class="form-group col-lg-6 col-md-6 col-sm-6">
-									<label>Reviewing Image</label>
-									<input class="form-control my-4" type="file" id="beforeImg" required />
-								</div>
-								<div class="form-group col-lg-6 col-md-6 col-sm-6">
-									<label>Cleaned Image</label>
-									<input class="form-control my-4" type="file" id="afterImg" required />
-								</div>
+							<div class="form-group col-lg-6 col-md-6 col-sm-6">
+								<label>Cleaned Image</label>
+								<input class="form-control my-4" type="file" id="afterImg" required />
 							</div>
-							<div class="modal-footer">
-								<button class="btn btn-success" onclick="Complete()">Complete the Order</button>
-							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-success" onclick="Complete()">Complete the Order</button>
 						</div>
 					</div>
 				</div>
