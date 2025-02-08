@@ -34,7 +34,8 @@
 			}
 		}
 
-		.table tbody tr td a {
+		.table tbody tr td a,
+		.table tbody tr td button {
 			transition: 0.25s;
 
 			@media(max-width: 768px) {
@@ -59,7 +60,7 @@
 		<header th:replace="~{admin/fragment/header::adminHeader}"></header>
 		<div class="mx-3 mt-5">
 			<div class="d-flex row">
-				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Request List</h2>
+				<h2 class="flex-grow-1 col-lg-6 col-md-12 col-sm-12 mb-3">Staff's Request List</h2>
 				<div class="col-lg-6 col-md-12 col-sm-12">
 					<form th:action="@{/admin/orders/request}" method="get" class="d-flex">
 						<input type="text" name="search" class="form-control me-2" placeholder="Search..."
@@ -79,7 +80,7 @@
 							<th>Expected Start Date</th>
 							<th>New Date</th>
 							<th>Reason</th>
-							<th>Create Date</th>
+							<th>Request Date</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
@@ -87,12 +88,20 @@
 					<tbody>
 						<tr th:each="item : ${requests}">
 							<td th:text="${item.schrId}"></td>
-							<td th:text="${item.fullname}"></td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Name" class="btn btn-outline-info"
+									th:data-bs-content="${item.fullname}">
+									Name
+								</button>
+							</td>
+
 							<td th:text="${item.phone}"></td>
 							<td th:text="${item.type}"></td>
 							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-							<td th:text="${#dates.format(item.date_adjust, 'dd-MM-yyyy')}"
-								th:if="${item.date_adjust != null}"></td>
+
+							<td th:if="${item.date_adjust != null}"
+								th:text="${#dates.format(item.date_adjust, 'dd-MM-yyyy')}"></td>
 							<td th:if="${item.date_adjust == null}">None</td>
 
 							<td>
@@ -112,6 +121,7 @@
 
 							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
 							<td th:text="${item.schrStatus}"></td>
+
 							<td>
 								<a class="btn btn-info" onclick="approve(event)" th:if="${item.type == 'adjustDate'}"
 									th:attr="schrId=${item.schrId}, scheId=${item.schedule_id},

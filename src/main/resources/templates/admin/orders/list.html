@@ -81,11 +81,34 @@
 					<tbody>
 						<tr th:each="item : ${orders}">
 							<td th:text="${item.id}"></td>
-							<td th:text="${item.fullname}"></td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Name" class="btn btn-outline-info"
+									th:data-bs-content="${item.fullname}">Name
+								</button>
+							</td>
+
 							<td th:text="${item.phone}"></td>
 							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
-							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Start Date"
+									class="btn btn-outline-info changeSize"
+									th:data-bs-content="${#dates.format(item.create_date, 'dd-MM-yyyy')}">
+									Date
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover" title="Start Date"
+									th:data-bs-content="${#dates.format(item.create_date, 'dd-MM-yyyy')}">
+									<svg data-name="Layer 1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 19a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0-4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm-5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm7-12h-1V2a1 1 0 0 0-2 0v1H8V2a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9h16Zm0-11H4V6a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V5h8v1a1 1 0 0 0 2 0V5h1a1 1 0 0 1 1 1ZM7 15a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0 4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
+								</button>
+							</td>
+
 							<td th:text="${item.status}"></td>
+
 							<td>
 								<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
 									th:if="${item.hasAssignedStaff == 0 && staffs?.size() > 0}">Assign</a>
@@ -97,7 +120,6 @@
 								<p th:if="${!( (item.hasAssignedStaff == 0 && staffs?.size() > 0) || ((item.status == 'pending' || 
 									item.status == 'confirmed') && item.hasAssignedStaff == 1) )}">None
 								</p>
-
 							</td>
 						</tr>
 					</tbody>

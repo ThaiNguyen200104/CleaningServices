@@ -20,15 +20,49 @@ public class StaffRepository {
 	JdbcTemplate db;
 
 	/***
+	 * calculate staff's salary based on staff's year_experience from table staffs &
+	 * price from table order_details
+	 * 
+	 * @return staff's salary
+	 */
+	private double calculateSalary(int staffId, int yearExperience) {
+		try {
+			String query = String.format(
+					"SELECT COALESCE(SUM(od.price), 0) FROM %s od JOIN %s sch ON od.id = sch.%s WHERE sch.%s = ? AND od.%s = 'completed'",
+					Views.TBL_ORDER_DETAIL, Views.TBL_SCHEDULES, Views.COL_SCHEDULES_DETAIL_ID,
+					Views.COL_SCHEDULES_STAFF_ID, Views.COL_ORDER_DETAIL_STATUS);
+
+			Double totalEarnings = db.queryForObject(query, Double.class, staffId);
+			if (totalEarnings == null)
+				totalEarnings = 0.0;
+
+			double percentage = (yearExperience >= 4) ? 0.15
+					: (yearExperience == 3) ? 0.13 : (yearExperience == 2) ? 0.11 : 0.10;
+
+			return totalEarnings * percentage;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	/***
 	 * fetch staff by id from table staffs
 	 * 
 	 * @return specific staff
 	 */
 	public Staff findStaffById(int id) {
 		try {
-			String str_query = String.format("SELECT * FROM %s WHERE  %s = ?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
-			return db.queryForObject(str_query, new Staff_mapper(), new Object[] { id });
+			String query = String.format("SELECT * FROM %s WHERE %s = ?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
+			Staff staff = db.queryForObject(query, new Staff_mapper(), id);
+
+			if (staff != null) {
+				staff.setSalary(calculateSalary(staff.getId(), staff.getYearExp()));
+			}
+
+			return staff;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -113,7 +147,7 @@ public class StaffRepository {
 			return "Error: " + e.getMessage();
 		}
 	}
-	
+
 	// -------------------- CLIENT'S REQUEST -------------------- //
 
 	/***

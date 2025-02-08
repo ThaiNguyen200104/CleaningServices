@@ -25,7 +25,7 @@
 		<div class="container py-4">
 			<article th:each="item : ${blogDetails}">
 				<div class="post-content">
-					<span class="date" th:text="${item.createDate}"></span>
+					<span class="date" th:text="${#dates.format(item.createDate, 'dd-MM-yyyy')}"></span>
 					<h1 class="title" th:text="${item.title}"></h1>
 					<div class="details">
 						<img loading="lazy" th:if="${item.image != null}" th:src="'/upload/'+${item.image}"
