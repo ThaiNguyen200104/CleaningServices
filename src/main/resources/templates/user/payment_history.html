@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<title>Cleanex - Payment History</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" />
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link href="../../front/img/favicon.ico" rel="icon" />
+	<link href="../../front/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+	<link href="../../front/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+	<link href="../../front/css/style.css" rel="stylesheet" />
+
+	<style>
+		.notification {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			padding: 15px;
+			border-radius: 4px;
+			color: white;
+			font-weight: bold;
+			z-index: 9999;
+		}
+
+		.success {
+			background-color: #4CAF50;
+			z-index: 10000;
+		}
+
+		.error {
+			background-color: #f44336;
+			z-index: 10000;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Header -->
+	<div th:replace="~{user/fragments/header::userHeader}"></div>
+
+	<div class="mx-3">
+		<div th:unless="${#lists.isEmpty(payments)}" class="section-header mb-5">
+			<h2>Order Details</h2>
+		</div>
+
+		<div th:if="${#lists.isEmpty(payments)}" class="section-header mb-5">
+			<h2>Something went wrong, please try again later.</h2>
+		</div>
+
+		<div th:unless="${#lists.isEmpty(payments)}" class="table-container">
+			<div th:if="${error}" th:text="${error}" style="color: red; font-weight: 500;"></div>
+			<table class="booking-table">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Amount</th>
+						<th>Bank</th>
+						<th>Paid For</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${payments}">
+						<td th:text="${item.payment_date}"></td>
+						<td th:text="${item.amount}"></td>
+						<td th:text="${item.bank_code}"></td>
+						<td th:text="${item.service_name}"></td>
+						<td th:text="${item.status}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- BACK TO TOP -->
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+	<!-- Footer -->
+	<div th:replace="~{user/fragments/footer::userFooter}"></div>
+
+	<script src="../../front/lib/easing/easing.min.js"></script>
+	<script src="../../front/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../../front/lib/isotope/isotope.pkgd.min.js"></script>
+	<script src="../../front/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../../front/js/main.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+
+	</script>
+</body>
+
+</html>

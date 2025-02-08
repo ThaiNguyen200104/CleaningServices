@@ -65,6 +65,7 @@ public class Views {
 	public static String USER_SEE_MORE = "user/see_more";
 	public static String USER_BROWSE_MORE = "user/browse_more";
 	public static String USER_CHANGE_SERVICE = "user/change_service";
+	public static String USER_PAYMENTS = "user/payment_history";
 
 	// -------------------- HOMEPAGE -------------------- //
 

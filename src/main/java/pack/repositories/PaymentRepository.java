@@ -53,10 +53,10 @@ public class PaymentRepository {
 		String sql = "UPDATE order_details SET status = ? "
 				+ "WHERE order_id = ? AND (status = 'verifying' OR status = 'paying')";
 		String str_query = "update order_details set complete_date = GETDATE() where order_id = ?";
-		
+
 		int updatedRows = db.update(sql, new Object[] { status, orderId });
-		db.update(str_query, new Object[] {orderId});
-		
+		db.update(str_query, new Object[] { orderId });
+
 		if (updatedRows == 0) {
 			System.out.println("No order detail updated for orderId: " + orderId);
 		}
@@ -85,6 +85,17 @@ public class PaymentRepository {
 			String sql = "UPDATE staffs SET status = 'available' WHERE id IN ("
 					+ String.join(",", Collections.nCopies(staffIds.size(), "?")) + ")";
 			db.update(sql, staffIds.toArray());
+		}
+	}
+
+	public List<Map<String, Object>> getPaymentHistory(int userId) {
+		try {
+			String sql = "select p.*, s.service_name from payments p join order_details ord on p.order_detail_id = ord.id "
+					+ "join services s on ord.service_id = s.id where p.user_id = ?";
+			return db.queryForList(sql, new Object[] {userId});
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }
