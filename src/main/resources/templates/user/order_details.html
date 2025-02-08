@@ -67,9 +67,14 @@
 						</td>
 						<td th:text="${item.status}"></td>
 						<td>
-							<a class="btn btn-success" th:if="${item.status == 'verifying'}" th:href="@{/user/banking(id=${item.id})}">Pay</a>
+							<a class="btn btn-success" th:if="${item.status == 'verifying'}"
+								th:href="@{/user/banking(id=${item.id})}">Pay</a>
 							<a class="btn btn-danger" th:if="${item.status == 'verifying'}"
 								th:href="@{/user/orderDecline(id=${item.id})}">Decline</a>
+							<p style="margin-top: 15px;"
+								th:if="${item.status != 'verifying' || item.status != 'confirmed' && item.status == 'completed'}">
+								None
+							</p>
 						</td>
 					</tr>
 				</tbody>

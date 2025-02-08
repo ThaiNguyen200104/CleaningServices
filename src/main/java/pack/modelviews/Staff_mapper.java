@@ -12,6 +12,7 @@ public class Staff_mapper implements RowMapper<Staff> {
 	@Override
 	public Staff mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Staff item = new Staff();
+
 		item.setId(rs.getInt(Views.COL_STAFFS_ID));
 		item.setFullname(rs.getString(Views.COL_STAFFS_FULLNAME));
 		item.setUsername(rs.getString(Views.COL_STAFFS_USERNAME));
@@ -19,8 +20,11 @@ public class Staff_mapper implements RowMapper<Staff> {
 		item.setEmail(rs.getString(Views.COL_STAFFS_EMAIL));
 		item.setPhone(rs.getString(Views.COL_STAFFS_PHONE));
 		item.setImage(rs.getString(Views.COL_STAFFS_IMAGES));
+		item.setSalary(rs.getDouble(Views.COL_STAFFS_SALARY));
+		item.setYearExp(rs.getInt(Views.COL_STAFFS_YEAR_EXP));
 		item.setCreateDate(rs.getDate(Views.COL_STAFFS_CREATEDATE));
 		item.setStatus(rs.getString(Views.COL_STAFFS_STATUS));
+
 		return item;
 	}
 }

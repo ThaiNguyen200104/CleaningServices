@@ -231,8 +231,6 @@ public class StaffController {
 	public ResponseEntity<String> newDate(@RequestParam int scheId, @RequestParam Date date,
 			@RequestParam String reason) {
 		try {
-			String result = rep.AdjustDate(scheId, date, reason);
-
 			Date currentDate = new Date(System.currentTimeMillis());
 			if (date.before(currentDate)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Start date cannot be in the past.");
@@ -246,6 +244,8 @@ public class StaffController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body("Start date cannot be more than 2 years from now.");
 			}
+
+			String result = rep.AdjustDate(scheId, date, reason);
 
 			if (result.equals("success")) {
 				return ResponseEntity.ok("Succeed");

@@ -89,6 +89,7 @@
 							<th>Username</th>
 							<th>Email</th>
 							<th>Phone</th>
+							<th>Salary</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
@@ -111,9 +112,10 @@
 									</svg>
 								</button>
 							</td>
-							<td th:text="${item.phone}"></td>
 
-							<!-- STATUS -->
+							<td th:text="${item.phone}"></td>
+							<td th:text="${#numbers.formatInteger(item.salary, 0, 'COMMA') + ' vnd'}"></td>
+
 							<td th:if="${item.status == 'available'}">
 								<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path
@@ -162,7 +164,6 @@
 					</ul>
 				</nav>
 			</div>
-		</div>
 		</div>
 	</main>
 

@@ -104,7 +104,7 @@ p {
 	}
 }
 
-/* ========== cart style ========== */
+/* ========== Card Style ========== */
 .card-style {
 	background: #fff;
 	box-sizing: border-box;
@@ -1889,6 +1889,12 @@ h6, .h6 {
 @media ( max-width : 767px) {
 	.table td.min-width {
 		min-width: 150px;
+	}
+	.table th {
+		padding: 20px 8px 6px 8px;
+	}
+	.table td {
+		padding: 0px 8px 6px 8px;
 	}
 }
 
