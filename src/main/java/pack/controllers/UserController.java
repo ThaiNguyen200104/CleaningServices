@@ -477,4 +477,10 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("/payment-history")
+	public String paymentHis(@RequestParam int userId, Model model) {
+		model.addAttribute("payments", paymentRepository.getPaymentHistory(userId));
+		return Views.USER_PAYMENTS;
+	}
+	
 }

@@ -773,8 +773,10 @@ public class AdminRepository {
 	 * @return list of available staffs
 	 */
 	public List<Staff> getAvailableStaffToReplace(int orderId, int excludeStaffId) {
-		String query = "SELECT * FROM staffs WHERE id != ? AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?) "
-				+ "and id not in (select staff_id from user_request_details where staff_id is not null)";
+		String query = "SELECT * FROM staffs WHERE id != ? "
+				+ "AND id NOT IN (SELECT staff_id FROM schedules WHERE detail_id = ?) "
+				+ "AND id NOT IN (select staff_id from user_request_details where staff_id is not null) "
+				+ "AND status = 'available'";
 		return db.query(query, new Staff_mapper(), new Object[] { excludeStaffId, orderId });
 	}
 

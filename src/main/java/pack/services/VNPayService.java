@@ -103,10 +103,8 @@ public class VNPayService {
 			fieldsCopy.remove("vnp_SecureHash");
 
 			String signValue = hashAllFields(fieldsCopy);
-			System.out.println("Calculated SecureHash: " + signValue);
 
 			boolean isValid = signValue.equals(vnp_SecureHash);
-			System.out.println("Validation result: " + isValid);
 
 			return isValid;
 		} catch (Exception e) {
