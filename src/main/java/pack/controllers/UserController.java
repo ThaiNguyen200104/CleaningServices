@@ -2,7 +2,6 @@ package pack.controllers;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -152,6 +151,8 @@ public class UserController {
 	@GetMapping("/accounts/seeMore")
 	public String see_more(@RequestParam int id, Model model) {
 		model.addAttribute("seeMore", rep.getOrderDetailsForAccount(id));
+		model.addAttribute("currentPage", "accounts");
+
 		return Views.USER_SEE_MORE;
 	}
 
@@ -273,19 +274,25 @@ public class UserController {
 			HttpServletRequest req, Model model) {
 		String email = req.getSession().getAttribute("email").toString();
 		User user = rep.checkEmailExists(email);
+
 		if (!password.equals(confirmPassword)) {
 			model.addAttribute("error", "Confirm Password does not match the password");
 			return Views.USER_CHANGE_PASSWORD;
 		}
+
 		if (SecurityUtility.compareBcrypt(user.getPassword(), password)) {
 			model.addAttribute("error", "Your new password matches your old password");
 			return Views.USER_CHANGE_PASSWORD;
 		}
-		String result = rep.changePass(req.getSession().getAttribute("username").toString(), password);
+
+		String username = req.getSession().getAttribute("username").toString();
+		String result = rep.changePass(username, password);
 		if (result.equals("success")) {
 			return "redirect:/user/login";
 		}
+
 		model.addAttribute("error", "Fail to implement action, please try again later.");
+
 		return Views.USER_CHANGE_PASSWORD;
 	}
 

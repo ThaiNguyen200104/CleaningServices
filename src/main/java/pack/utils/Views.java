@@ -98,6 +98,7 @@ public class Views {
 	public static String COL_USER_ADDRESS = "address";
 	public static String COL_USER_IMAGES = "image";
 	public static String COL_USER_CREATEDATE = "create_date";
+	public static String COL_USER_IS_VERIFIED = "is_verified";
 
 	// BLOGS
 	public static String TBL_BLOG = "blogs";
@@ -144,10 +145,10 @@ public class Views {
 	// USER_REQUEST_DETAILS
 	public static String TBL_USER_REQUEST_DETAILS = "user_request_details";
 	public static String COL_URD_ID = "id";
+	public static String COL_URD_USRREQID = "usrReq_id";
 	public static String COL_URD_USRID = "user_id";
 	public static String COL_URD_STAFFID = "staff_id";
 	public static String COL_URD_SERID = "service_id";
-	public static String COL_URD_USRREQID = "usrReq_id";
 	public static String COL_URD_PRICE = "price";
 	public static String COL_URD_STARTDATE = "start_date";
 	public static String COL_URD_CREATEDATE = "create_date";
@@ -187,8 +188,15 @@ public class Views {
 	// PAYMENTS
 	public static String TBL_PAYMENTS = "payments";
 	public static String COL_PAYMENTS_ID = "id";
-	public static String COL_PAYMENTS_PAYACC_ID = "payAcc_id";
-	public static String COL_PAYMENTS_ORDER_ID = "order_id";
+	public static String COL_PAYMENTS_ORDER_DETAIL_ID = "order_detail_id";
+	public static String COL_PAYMENTS_USR_ID = "user_id";
 	public static String COL_PAYMENTS_AMOUNT = "amount";
-	public static String COL_PAYMENTS_PAID_DATE = "paid_date";
+	public static String COL_PAYMENTS_TRANSACTION_NO = "transaction_no";
+	public static String COL_PAYMENTS_BANK_CODE = "bank_code";
+	public static String COL_PAYMENTS_STATUS = "status";
+	public static String COL_PAYMENTS_TRANSACTION_STATUS = "transaction_status";
+	public static String COL_PAYMENTS_RESPONSE_CODE = "response_code";
+	public static String COL_PAYMENTS_PAYMENT_DATE = "payment_date";
+	public static String COL_PAYMENTS_CREATEDATE = "create_date";
+
 }

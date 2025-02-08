@@ -48,7 +48,10 @@
 							</div>
 							<div class="service-content">
 								<h3 th:text="${item.serName}"></h3>
-								<p>Price: <span th:text="${item.basePrice} + '$'"></span></p>
+								<p>Price:
+									<span
+										th:text="${#numbers.formatInteger(item.basePrice, 0, 'COMMA') + ' vnd'}"></span>
+								</p>
 								<p th:text="${item.description}"></p>
 								<a class="btn justify-content-end"
 									th:href="@{/user/ServiceChange(oldSerId=${oldServiceId}, newSerId=${item.id})}">

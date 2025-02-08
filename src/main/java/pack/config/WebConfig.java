@@ -23,17 +23,18 @@ public class WebConfig implements WebMvcConfigurer {
 		// USER INTERCEPTOR
 		registry.addInterceptor(new UserInterceptor()).addPathPatterns("/user/**").excludePathPatterns("/user/login",
 				"/user/checkLogin", "/user/logout", "/user/signup", "/user/newUser", "/user/forgotPassword",
-				"/user/getOtp", "/user/validateOtp", "/user/verification", "/user/verify");
+				"/user/getOtp", "/user/validateOtp", "/user/verification", "/user/verify", "/user/changePassword",
+				"/user/changePassAction");
 
 		// ADMIN INTERCEPTOR
 		registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/admin/**").excludePathPatterns("/admin/login",
 				"/admin/checkLogin", "/admin/forgotPassword", "/admin/getOtp", "/admin/validateOtp",
-				"/admin/verification");
+				"/admin/verification", "/admin/changePassword", "/admin/changePassAction");
 
 		// STAFF INTERCEPTOR
 		registry.addInterceptor(new StaffInterceptor()).addPathPatterns("/staff/**").excludePathPatterns("/staff/login",
 				"/staff/checkLogin", "/staff/forgotPassword", "/staff/getOtp", "/staff/validateOtp",
-				"/staff/verification");
+				"/staff/verification", "/staff/changePassword", "/staff/changePassAction");
 
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}

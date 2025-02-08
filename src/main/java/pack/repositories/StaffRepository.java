@@ -19,6 +19,11 @@ public class StaffRepository {
 	@Autowired
 	JdbcTemplate db;
 
+	/***
+	 * fetch staff by id from table staffs
+	 * 
+	 * @return specific staff
+	 */
 	public Staff findStaffById(int id) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE  %s = ?", Views.TBL_STAFFS, Views.COL_STAFFS_ID);
@@ -28,6 +33,11 @@ public class StaffRepository {
 		}
 	}
 
+	/***
+	 * fetch staff by username or phone from table staffs
+	 * 
+	 * @return specific staff
+	 */
 	public Staff getStaffByUsernameOrPhone(String acc) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE  %s = ? or %s = ?", Views.TBL_STAFFS,
@@ -38,6 +48,11 @@ public class StaffRepository {
 		}
 	}
 
+	/***
+	 * fetch staff's email from table staffs
+	 * 
+	 * @return specific staff's email
+	 */
 	public Staff checkEmailExists(String email) {
 		try {
 			String str_query = String.format("SELECT * FROM %s WHERE  %s = ?", Views.TBL_STAFFS,
@@ -49,7 +64,7 @@ public class StaffRepository {
 	}
 
 	/***
-	 * update account in table staffs
+	 * update account from table staffs
 	 * 
 	 * @return updated staff's account
 	 */
@@ -98,8 +113,16 @@ public class StaffRepository {
 			return "Error: " + e.getMessage();
 		}
 	}
+	
+	// -------------------- CLIENT'S REQUEST -------------------- //
 
-	// REQUEST
+	/***
+	 * fetch specific staff been assigned from table user_request_details
+	 * 
+	 * enable to search for a record
+	 * 
+	 * @return specific staff
+	 */
 	public List<Map<String, Object>> getStaffAssignedRequest(int staffId, String search) {
 		try {
 			List<Object> params = new ArrayList<>();
@@ -127,6 +150,11 @@ public class StaffRepository {
 		}
 	}
 
+	/***
+	 * update price/start_date of an user's request from table user_request_details
+	 * 
+	 * @return updated price/start_date
+	 */
 	public String editRequest(double price, Date startDate, int urdId) {
 		try {
 			String str_query = String.format("UPDATE %s SET %s = ?, %s = ? WHERE  %s = ?",
@@ -139,7 +167,15 @@ public class StaffRepository {
 		}
 	}
 
-	// ORDER
+	// -------------------- CLIENT'S ORDERS -------------------- //
+
+	/***
+	 * fetch specific staff being assigned from table schedules
+	 * 
+	 * enable to search for a record
+	 * 
+	 * @return specific staff
+	 */
 	public List<Map<String, Object>> getAssignedOrders(int staffId, String search) {
 		try {
 			List<Object> params = new ArrayList<>();
@@ -169,6 +205,11 @@ public class StaffRepository {
 		}
 	}
 
+	/***
+	 * insert into table schedule_requests with type adjustDate
+	 * 
+	 * @return new schedule_request
+	 */
 	public String AdjustDate(int scheId, Date date, String reason) {
 		try {
 			String str_query = String.format("INSERT INTO %s(schedule_id, date_adjust, type, reason) VALUES (?,?,?,?)",
@@ -181,6 +222,11 @@ public class StaffRepository {
 		}
 	}
 
+	/***
+	 * insert into table schedule_requests with type cancel
+	 * 
+	 * @return new schedule_request
+	 */
 	public String cancelOrder(int scheId, String reason) {
 		try {
 			String str_query = String.format("INSERT INTO %s(schedule_id, type, reason) VALUES (?,?,?)",
@@ -193,17 +239,11 @@ public class StaffRepository {
 		}
 	}
 
-	public boolean hasScheduleRequestByType(int scheId, String type) {
-		try {
-			String str_query = "SELECT COUNT(*) FROM schedule_requests WHERE schedule_id = ? AND type = ? AND status = 'pending'";
-			int count = db.queryForObject(str_query, Integer.class, new Object[] { scheId, type });
-			return count > 0;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
+	/***
+	 * insert into table order_details
+	 * 
+	 * @return new schedule_request
+	 */
 	public String completeOrder(int detailId, String beforeImg, String afterImg) {
 		try {
 			String str_query = "UPDATE order_details SET status = 'verifying', beforeImage = ?, afterImage = ? WHERE id = ?";
@@ -212,6 +252,22 @@ public class StaffRepository {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "failed";
+		}
+	}
+
+	/***
+	 * fetch request from table schedule_requests
+	 * 
+	 * @return specific schedule_requests
+	 */
+	public boolean hasScheduleRequestByType(int scheId, String type) {
+		try {
+			String str_query = "SELECT COUNT(*) FROM schedule_requests WHERE schedule_id = ? AND type = ? AND status = 'pending'";
+			int count = db.queryForObject(str_query, Integer.class, new Object[] { scheId, type });
+			return count > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

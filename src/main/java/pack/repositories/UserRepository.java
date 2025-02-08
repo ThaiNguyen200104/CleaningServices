@@ -117,6 +117,11 @@ public class UserRepository {
 		}
 	}
 
+	/***
+	 * verify email with is_verified = 1
+	 * 
+	 * @return verified email
+	 */
 	public boolean verifyUser(String token) {
 		try {
 			TokenRecord tokenRecord = tokenService.findUserToken(token);
@@ -139,7 +144,27 @@ public class UserRepository {
 	}
 
 	/***
-	 * update account in table users
+	 * update password from table users
+	 * 
+	 * @return updated password
+	 */
+	public String changePass(String username, String password) {
+		try {
+			String str_query = String.format("UPDATE %s SET %s = ? WHERE %s = ?", Views.TBL_USER,
+					Views.COL_USER_PASSWORD, Views.COL_USER_USERNAME);
+			String hashPass = SecurityUtility.encryptBcrypt(password);
+
+			int rowaccepted = db.update(str_query, new Object[] { hashPass, username });
+
+			return rowaccepted == 1 ? "success" : "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	/***
+	 * UPDATE account from table users
 	 * 
 	 * @return updated user's account
 	 */
@@ -231,9 +256,9 @@ public class UserRepository {
 	public List<OrderDetail> getOrdersForAccount(int usrId) {
 		try {
 			String str_query = String.format(
-					"SELECT top 5 ord.*, s.service_name FROM %s ord " + "join %s o on ord.order_id = o.id "
-							+ "join user_requests ur on o.usrReq_id = ur.id " + "join %s s on ord.service_id = s.id "
-							+ "WHERE ur.user_id = ? " + "order by ord.create_date desc",
+					"SELECT top 5 ord.*, s.service_name FROM %s ord JOIN %s o ON ord.order_id = o.id "
+							+ "JOIN user_requests ur ON o.usrReq_id = ur.id JOIN %s s ON ord.service_id = s.id "
+							+ "WHERE ur.user_id = ? ORDER BY ord.create_date DESC",
 					Views.TBL_ORDER_DETAIL, Views.TBL_ORDER, Views.TBL_SERVICES);
 			return db.query(str_query, new OrderDetail_mapper(), new Object[] { usrId });
 		} catch (Exception e) {
@@ -276,7 +301,7 @@ public class UserRepository {
 	 */
 	public List<Map<String, Object>> getOrderDetailsForAccount(int id) {
 		try {
-			String str_query = "select ord.*, s.service_name from order_details ord join services s on ord.service_id = s.id where ord.id = ?";
+			String str_query = "select ord.*, s.service_name from order_details ord JOIN services s ON ord.service_id = s.id WHERE ord.id = ?";
 			return db.queryForList(str_query, new Object[] { id });
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -364,7 +389,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table user_request_details
+	 * update status from table user_request_details
 	 * 
 	 * @return updated status = 'canceled'
 	 */
@@ -380,7 +405,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table user_request_details
+	 * update status from table user_request_details
 	 * 
 	 * @return updated status = 'confirmed'
 	 */
@@ -397,7 +422,7 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status in table staffs
+	 * update status from table staffs
 	 * 
 	 * @return updated status = 'available'
 	 */
@@ -419,8 +444,10 @@ public class UserRepository {
 	 * @return a specific service
 	 */
 	public boolean isServiceInRequest(int userId, int serId) {
-		String str_query = String.format("SELECT count(*) FROM %s WHERE %s = ? and %s = ? and %s != 'canceled' and %s != 'confirmed'",
-				Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_USRID, Views.COL_URD_SERID, Views.COL_URD_STATUS, Views.COL_URD_STATUS);
+		String str_query = String.format(
+				"SELECT count(*) FROM %s WHERE %s = ? AND %s = ? AND %s != 'canceled' AND %s != 'confirmed'",
+				Views.TBL_USER_REQUEST_DETAILS, Views.COL_URD_USRID, Views.COL_URD_SERID, Views.COL_URD_STATUS,
+				Views.COL_URD_STATUS);
 		Integer count = db.queryForObject(str_query, Integer.class, new Object[] { userId, serId });
 		return count != null && count > 0;
 	}
@@ -454,13 +481,36 @@ public class UserRepository {
 	}
 
 	/***
-	 * update status = 'progressing' in table order_details
+	 * update status = 'completed' from table order_details update status =
+	 * 'available'in table staffs
+	 * 
+	 * @return updated order_details & staffs status
+	 */
+	public String orderApprove(int detailId) {
+		try {
+			String str_query = "UPDATE order_details SET status = 'completed' WHERE id = ?";
+			String staffs_query = "UPDATE staffs SET status = 'available' WHERE id in (select s.staff_id from schedules s WHERE s.detail_id = ?)";
+
+			int rowaccepted = db.update(str_query, new Object[] { detailId });
+			if (rowaccepted == 1) {
+				db.update(staffs_query, new Object[] { detailId });
+				return "success";
+			}
+			return "failed";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "failed";
+		}
+	}
+
+	/***
+	 * update status = 'progressing' from table order_details
 	 * 
 	 * @return updated order_details status
 	 */
 	public String orderDecline(int detailId) {
 		try {
-			int rowaccepted = db.update("update order_details set status = 'progressing' where id = ?",
+			int rowaccepted = db.update("UPDATE order_details SET status = 'progressing' WHERE id = ?",
 					new Object[] { detailId });
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
@@ -469,10 +519,15 @@ public class UserRepository {
 		}
 	}
 
+	/***
+	 * fetch all specific data from table services
+	 * 
+	 * @return all specific services
+	 */
 	public List<Service> serviceListForChange(int userId) {
 		try {
 			String str_query = String.format(
-					"select * from %s where id not in (SELECT service_id FROM %s WHERE user_id = ? and status != 'canceled' ) and status != 'disabled'",
+					"select * from %s WHERE id not in (SELECT service_id FROM %s WHERE user_id = ? AND status != 'canceled' ) AND status != 'disabled'",
 					Views.TBL_SERVICES, Views.TBL_USER_REQUEST_DETAILS);
 			return db.query(str_query, new Service_mapper(), new Object[] { userId });
 		} catch (Exception e) {
@@ -481,9 +536,14 @@ public class UserRepository {
 		}
 	}
 
+	/***
+	 * update service_id from table user_request_details
+	 * 
+	 * @return changed service
+	 */
 	public String changeService(int oldSerId, int newSerId, int userId) {
 		try {
-			String str_query = "update user_request_details set service_id = ? where user_id = ? and service_id = ? and status = 'pending'";
+			String str_query = "UPDATE user_request_details SET service_id = ? WHERE user_id = ? AND service_id = ? AND status = 'pending'";
 			int rowaccepted = db.update(str_query, new Object[] { newSerId, userId, oldSerId });
 			return rowaccepted == 1 ? "success" : "failed";
 		} catch (Exception e) {
@@ -492,15 +552,4 @@ public class UserRepository {
 		}
 	}
 
-	public String changePass(String username, String password) {
-		try {
-			String str_query = "update users set password = ? where username = ?";
-			String hashPass = SecurityUtility.encryptBcrypt(password);
-			int rowaccepted = db.update(str_query, new Object[] { hashPass, username });
-			return rowaccepted == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "failed";
-		}
-	}
 }
