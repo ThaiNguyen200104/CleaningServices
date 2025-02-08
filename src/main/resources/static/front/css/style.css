@@ -890,8 +890,6 @@ body.no-scroll {
     text-align: center;
     border-radius: 8px;
     margin-bottom: 15px;
-  	background: -webkit-linear-gradient(270deg, #ffc107, #ffd350, #ffe9a7);
-	background: linear-gradient(270deg, #ffc107, #ffd350, #ffe9a7);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -909,6 +907,8 @@ body.no-scroll {
 }
 
 .team .team-content {
+	background: -webkit-linear-gradient(180deg, #ffc107, #ffd350, #ffe9a7);
+	background: linear-gradient(180deg, #ffc107, #ffd350, #ffe9a7);
     padding: 12px 10px;
 }
 
@@ -922,7 +922,7 @@ body.no-scroll {
 
 .team .team-content .phone {
     font-size: 14px;
-    color: var(--white);
+    color: var(--black);
     margin: 0;
     padding: 0 0 8px 0;
 }

@@ -24,7 +24,7 @@
 	<!-- Team -->
 	<div class="team">
 		<div class="container">
-			<div th:if="${!#lists.isEmpty(staffs)}" class="section-header">
+			<div th:unless="${#lists.isEmpty(staffs)}" class="section-header">
 				<p>Team Member</p>
 				<h2>Meet Our Expert Cleaners</h2>
 			</div>
@@ -33,14 +33,14 @@
 				<h2>There are currently no staff available</h2>
 			</div>
 
-			<div class="mt-5 mb-3">
+			<div th:unless="${#lists.isEmpty(staffs)}" class="mt-5 mb-3">
 				<div class="search-container">
 					<input type="text" name="search" class="search-input" placeholder="Search staff..."
 						th:value="${search}">
 				</div>
 			</div>
 
-			<div class="team-grid" th:if="${!#lists.isEmpty(staffs)}">
+			<div class="team-grid" th:unless="${#lists.isEmpty(staffs)}">
 				<div class="row" id="teamContainer">
 					<div class="col-lg-3 col-md-6 pb-4 team-item-wrapper" th:each="member, iterStat : ${staffs}"
 						th:if="${member.status != 'disabled'}" th:classappend="${iterStat.index >= 8} ? 'hidden-team'">
@@ -257,7 +257,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- BACK TO TOP -->
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 

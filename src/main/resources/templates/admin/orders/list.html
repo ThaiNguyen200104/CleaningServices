@@ -74,7 +74,6 @@
 							<th>Phone</th>
 							<th>Price</th>
 							<th>Start Date</th>
-							<th>Staff Assigned</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
@@ -86,8 +85,6 @@
 							<td th:text="${item.phone}"></td>
 							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
 							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-							<td th:text="${item.staff_username != null} ? ${item.staff_username} : 'No staff assigned'">
-							</td>
 							<td th:text="${item.status}"></td>
 							<td>
 								<a class="btn btn-success" th:href="@{/admin/orders/assignStaff(id=${item.id})}"
@@ -97,6 +94,10 @@
 									class="btn btn-warning" th:href="@{/admin/orders/replaceStaff(id=${item.id})}">
 									Replace
 								</a>
+								<p th:if="${!( (item.hasAssignedStaff == 0 && staffs?.size() > 0) || ((item.status == 'pending' || 
+									item.status == 'confirmed') && item.hasAssignedStaff == 1) )}">None
+								</p>
+
 							</td>
 						</tr>
 					</tbody>

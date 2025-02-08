@@ -91,23 +91,6 @@ public class AdminRepository {
 	}
 
 	/***
-	 * update admin's password from table admin
-	 * 
-	 * @return updated admin's password
-	 */
-	public String changePass(String password) {
-		try {
-			String str_query = String.format("UPDATE %s SET %s = ? WHERE %s = ?", Views.TBL_ADMIN,
-					Views.COL_ADMIN_PASSWORD, Views.COL_ADMIN_ID);
-			String hashpassword = SecurityUtility.encryptBcrypt(password);
-			int rowaccept = db.update(str_query, new Object[] { hashpassword });
-			return rowaccept == 1 ? "success" : "failed";
-		} catch (Exception e) {
-			return e.getMessage();
-		}
-	}
-
-	/***
 	 * update account from table admin
 	 * 
 	 * @return updated admin's account

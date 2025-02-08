@@ -140,6 +140,9 @@
 								<a class="btn btn-danger" th:attr="id=${item.id}" onclick="Deactivate(event)"
 									th:if="${item.status != 'disabled' && item.status != 'unavailable'}">Disable
 								</a>
+								<p th:if="${item.status == 'disabled' || item.status == 'unavailable'}">
+									None
+								</p>
 							</td>
 						</tr>
 					</tbody>
