@@ -161,7 +161,7 @@
 									onclick="showCompletePopup(event)" th:attr="detailId=${item.id}">Complete</a>
 
 								<p
-									th:if="${item.status != 'confirmed' && item.status != 'progressing' && item.status == 'completed'}">
+									th:if="${item.status != 'confirmed' && item.status != 'progressing' || item.status == 'verifying' && item.status == 'completed'}">
 									None
 								</p>
 							</td>

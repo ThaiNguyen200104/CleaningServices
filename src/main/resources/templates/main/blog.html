@@ -46,7 +46,8 @@
 						</div>
 						<div class="col-md-6 blog-content">
 							<div class="blog-meta my-2">
-								Pulish date: &nbsp; <span th:text="${item.createDate}"></span>
+								Pulish date: &nbsp;
+								<span th:text="${#dates.format(item.createDate, 'dd-MM-yyyy')}"></span>
 							</div>
 							<a th:href="@{/blogDetail(id=${item.id})}" class="blog-title">
 								<h1 class="title-h1" th:text="${item.title}"></h1>

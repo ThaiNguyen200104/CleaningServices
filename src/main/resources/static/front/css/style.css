@@ -924,6 +924,12 @@ body.no-scroll {
     font-size: 14px;
     color: var(--black);
     margin: 0;
+}
+
+.team .team-content .year {
+    font-size: 14px;
+    color: var(--black);
+    margin: 0;
     padding: 0 0 8px 0;
 }
 
@@ -1010,6 +1016,12 @@ body.no-scroll {
 
 .member-content .phone {
 	display: inline-flex;
+	font-size: 20px;
+	color: var(--primary-color);
+	letter-spacing: 2px;
+}
+
+.member-content .year {
 	font-size: 20px;
 	color: var(--primary-color);
 	letter-spacing: 2px;
@@ -2223,6 +2235,9 @@ body.no-scroll {
 	    font-size: 20px;
 	}
 	.team .team-content .phone {
+	    font-size: 18px;
+	}
+	.team .team-content .year {
 	    font-size: 18px;
 	}
 	.team-inner {
