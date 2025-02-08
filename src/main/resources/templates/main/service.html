@@ -24,7 +24,7 @@
 	<!-- Service -->
 	<div class="service">
 		<div class="container">
-			<div th:if="${!#lists.isEmpty(services)}" class="section-header mb-5">
+			<div th:unless="${#lists.isEmpty(services)}" class="section-header mb-5">
 				<p>Our Services</p>
 				<h2>Commit to Making Your Home Fresher</h2>
 			</div>
@@ -33,7 +33,14 @@
 				<h2>There are currently no services available.</h2>
 			</div>
 
-			<div th:if="${!#lists.isEmpty(services)}" class="service-grid">
+			<div class="mt-5 mb-3" th:unless="${#lists.isEmpty(services)}">
+				<div class="search-container">
+					<input type="text" name="search" class="search-input" placeholder="Search services..."
+						th:value="${search}">
+				</div>
+			</div>
+
+			<div th:unless="${#lists.isEmpty(services)}" class="service-grid">
 				<div class="row" id="serviceContainer">
 					<div class="col-lg-3 col-md-6 pb-4 service-item-wrapper" th:each="item, iterStat : ${services}"
 						th:if="${item.status != 'disabled'}" th:classappend="${iterStat.index >= 8} ? 'hidden-service'">
@@ -46,9 +53,9 @@
 							</div>
 							<div class="service-content">
 								<h3 th:text="${item.serName}"></h3>
-								<p>
-									Price: 
-									<span th:text="${#numbers.formatInteger(item.basePrice, 0, 'COMMA') + ' vnd'}"></span>
+								<p>Price:
+									<span
+										th:text="${#numbers.formatInteger(item.basePrice, 0, 'COMMA') + ' vnd'}"></span>
 								</p>
 								<p th:text="${item.description}"></p>
 								<a class="btn justify-content-end" href="javascript:void(0);"
@@ -98,95 +105,7 @@
 	<!-- Footer -->
 	<div th:replace="~{main/fragments/footer::mainFooter}"></div>
 
-	<script>
-		let selectedServiceId = null;
-		let UserId = null;
-		let price = null;
-
-		// Initialize date restrictions on page load
-		document.addEventListener('DOMContentLoaded', function () {
-			const inputDate = document.getElementById("serviceDate");
-			const currentYear = new Date().getFullYear();
-			// Set maximum date to 2 years from now
-			inputDate.max = `${currentYear + 2}-12-31`;
-			// Set minimum date to today
-			const today = new Date().toISOString().split('T')[0];
-			inputDate.min = today;
-		});
-
-		// Show booking modal
-		function showBookingPopup(event) {
-			const item = event.currentTarget;
-			selectedServiceId = item.getAttribute("serId");
-			UserId = item.getAttribute("userId");
-			price = item.getAttribute("serPrice");
-
-			$('#bookingModal').modal('show');
-			document.body.classList.add("no-scroll");
-		}
-
-		// Close booking modal
-		function closePopup() {
-			$('#bookingModal').modal('hide');
-			document.body.classList.remove("no-scroll");
-		}
-
-		// Handle booking confirmation
-		function confirmBooking() {
-			const date = document.getElementById("serviceDate").value;
-
-			if (!date) {
-				showNotification("Please select a date.", "warning");
-				return;
-			}
-
-			if (UserId == null) {
-				window.location.href = '/user/login';
-				return;
-			}
-
-			$.ajax({
-				url: '/user/bookService',
-				type: 'POST',
-				data: {
-					userId: UserId,
-					serviceId: selectedServiceId,
-					startDate: date,
-					price: price
-				},
-				success: function (response, textStatus, xhr) {
-					if (xhr.status === 200) {
-						showNotification(response, "success");
-						closePopup();
-					} else {
-						showNotification("Failed to create order: " + response, "error");
-					}
-				},
-				error: function (xhr) {
-					if (xhr.status === 409) {
-						showNotification("Service is already booked.", "warning");
-					} else {
-						console.error('Error:', xhr.responseText);
-						showNotification("Error: " + xhr.responseText, "error");
-					}
-				}
-			});
-		}
-
-		// Notification
-		function showNotification(message, type) {
-			var notification = $('<div class="notification ' + type + '">' + message + '</div>');
-			$('body').append(notification);
-			notification.fadeIn('slow').delay(3000).fadeOut('slow', function () {
-				$(this).remove();
-			});
-		}
-
-		// Handle modal events
-		$('#bookingModal').on('hidden.bs.modal', function () {
-			document.body.classList.remove("no-scroll");
-		});
-	</script>
+	<script src="../front/js/services.js"></script>
 </body>
 
 </html>
