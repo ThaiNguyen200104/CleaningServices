@@ -163,6 +163,8 @@ public class Views {
 	public static String COL_STAFFS_EMAIL = "email";
 	public static String COL_STAFFS_PHONE = "phone";
 	public static String COL_STAFFS_IMAGES = "image";
+	public static String COL_STAFFS_SALARY = "salary";
+	public static String COL_STAFFS_YEAR_EXP = "year_experience";
 	public static String COL_STAFFS_CREATEDATE = "create_date";
 	public static String COL_STAFFS_STATUS = "status";
 

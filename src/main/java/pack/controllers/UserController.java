@@ -56,7 +56,7 @@ public class UserController {
 	private VNPayService vnPayService;
 
 	@Autowired
-	PaymentRepository paymentRepository;
+	PaymentRepository payRep;
 
 	// -------------------- INDEX -------------------- //
 
@@ -430,11 +430,17 @@ public class UserController {
 		return Views.USER_CHANGE_SERVICE;
 	}
 
-// PAYMENT SECTION
+	// -------------------- PAYMENT -------------------- //
+	@GetMapping("/payment-history")
+	public String paymentHis(@RequestParam int userId, Model model) {
+		model.addAttribute("payments", payRep.getPaymentHistory(userId));
+		return Views.USER_PAYMENTS;
+	}
+
 	@GetMapping("/banking")
 	public String processBankingPayment(@RequestParam("id") int orderDetailId) {
 		try {
-			Map<String, Object> orderDetail = paymentRepository.getOrderDetailWithUser(orderDetailId);
+			Map<String, Object> orderDetail = payRep.getOrderDetailWithUser(orderDetailId);
 
 			double price = Double.parseDouble(orderDetail.get("price").toString());
 			int amount = (int) price;
@@ -467,7 +473,7 @@ public class UserController {
 
 			if ("00".equals(vnp_ResponseCode)) {
 				int orderId = Integer.parseInt(vnp_TxnRef);
-				Map<String, Object> orderDetail = paymentRepository.getOrderDetailByOrderId(orderId);
+				Map<String, Object> orderDetail = payRep.getOrderDetailByOrderId(orderId);
 
 				if (orderDetail == null) {
 					return "redirect:/user/error";
@@ -484,10 +490,4 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/payment-history")
-	public String paymentHis(@RequestParam int userId, Model model) {
-		model.addAttribute("payments", paymentRepository.getPaymentHistory(userId));
-		return Views.USER_PAYMENTS;
-	}
-	
 }

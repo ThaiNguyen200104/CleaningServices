@@ -130,7 +130,6 @@
 							<th>Phone</th>
 							<th>Price</th>
 							<th>Start Date</th>
-							<th>Create Date</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
@@ -139,12 +138,19 @@
 						<tr th:each="item : ${orders}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.service_name}"></td>
-							<td th:text="${item.fullname}"></td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Name" class="btn btn-outline-info"
+									th:data-bs-content="${item.fullname}">
+									Name
+								</button>
+							</td>
+
 							<td th:text="${item.phone}"></td>
 							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
-							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
 							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
 							<td th:text="${item.status}"></td>
+
 							<td>
 								<a class="btn btn-info" onclick="showDatePopup(event)" th:attr="scheId=${item.scheId}"
 									th:if="${item.status == 'confirmed' && item.showReschedule}">Reschedule</a>
@@ -153,6 +159,11 @@
 									th:if="${item.status == 'confirmed' && item.showCancel}">Cancel</a>
 								<a class="btn btn-warning" th:if="${item.status == 'progressing'}"
 									onclick="showCompletePopup(event)" th:attr="detailId=${item.id}">Complete</a>
+
+								<p
+									th:if="${item.status != 'confirmed' && item.status != 'progressing' || item.status == 'verifying' && item.status == 'completed'}">
+									None
+								</p>
 							</td>
 						</tr>
 					</tbody>

@@ -377,6 +377,7 @@ public class AdminRepository {
 		try {
 			StringBuilder queryBuilder = new StringBuilder("UPDATE blogs SET ");
 			List<Object> params = new ArrayList<>();
+
 			if (blog.getTitle() != null && !blog.getTitle().isEmpty()) {
 				queryBuilder.append("title = ?, ");
 				params.add(blog.getTitle());
@@ -392,7 +393,9 @@ public class AdminRepository {
 				params.add(blog.getImage());
 			}
 
-			queryBuilder.append("update_date = GETDATE(), ");
+			queryBuilder.append("update_date = ?, ");
+			params.add(new java.sql.Timestamp(System.currentTimeMillis()));
+
 			if (queryBuilder.toString().endsWith(", ")) {
 				queryBuilder.setLength(queryBuilder.length() - 2);
 			}
@@ -428,6 +431,33 @@ public class AdminRepository {
 	// -------------------- STAFFS -------------------- //
 
 	/***
+	 * calculate staff's salary based on staff's year_experience from table staffs &
+	 * price from table order_details
+	 * 
+	 * @return staff's salary
+	 */
+	private double calculateSalary(int staffId, int yearExperience) {
+		try {
+			String query = String.format(
+					"SELECT COALESCE(SUM(od.price), 0) FROM %s od JOIN %s sch ON od.id = sch.%s WHERE sch.%s = ? AND od.%s = 'completed'",
+					Views.TBL_ORDER_DETAIL, Views.TBL_SCHEDULES, Views.COL_SCHEDULES_DETAIL_ID,
+					Views.COL_SCHEDULES_STAFF_ID, Views.COL_ORDER_DETAIL_STATUS);
+
+			Double totalEarnings = db.queryForObject(query, Double.class, staffId);
+			if (totalEarnings == null)
+				totalEarnings = 0.0;
+
+			double percentage = (yearExperience >= 4) ? 0.15
+					: (yearExperience == 3) ? 0.13 : (yearExperience == 2) ? 0.11 : 0.10;
+
+			return totalEarnings * percentage;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	/***
 	 * fetch specific staff by status == 'available' from table staffs
 	 * 
 	 * @return a specific available staff
@@ -449,13 +479,11 @@ public class AdminRepository {
 					Views.COL_STAFFS_STATUS, searchQuery);
 
 			int count = db.queryForObject(countQuery, Integer.class, params.toArray());
-
 			int totalPage = Math.max(1, (int) Math.ceil((double) count / pageItem.getPageSize()));
 			pageItem.setTotalPage(totalPage);
 
 			int currentPage = Math.min(Math.max(1, pageItem.getPageCurrent()), totalPage);
 			pageItem.setPageCurrent(currentPage);
-
 			int offset = Math.max(0, (currentPage - 1) * pageItem.getPageSize());
 
 			String query = String.format(
@@ -465,7 +493,14 @@ public class AdminRepository {
 			params.add(offset);
 			params.add(pageItem.getPageSize());
 
-			return db.query(query, new Staff_mapper(), params.toArray());
+			List<Staff> staffList = db.query(query, new Staff_mapper(), params.toArray());
+
+			for (Staff staff : staffList) {
+				double salary = calculateSalary(staff.getId(), staff.getYearExp());
+				staff.setSalary(salary);
+			}
+
+			return staffList;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

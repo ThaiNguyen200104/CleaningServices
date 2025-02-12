@@ -89,12 +89,22 @@
 					<div class="col-lg-9 col-md-9 col-sm-9 right-info">
 						<h2 class="mb-4">Profile</h2>
 						<dl class="row">
-							<dt class="col-3">Username:</dt>
-							<dd class="col-9" th:text="${staff.username}"></dd>
-							<dt class="col-3">Email:</dt>
-							<dd class="col-9" th:text="${staff.email}"></dd>
-							<dt class="col-3">Phone:</dt>
-							<dd class="col-9" th:text="${staff.phone}"></dd>
+							<dt class="col-lg-4 col-md-4 col-sm-5">Username:</dt>
+							<dd class="col-lg-8 col-md-8 col-sm-7" th:text="${staff.username}"></dd>
+							<dt class="col-lg-4 col-md-4 col-sm-5">Email:</dt>
+							<dd class="col-lg-8 col-md-8 col-sm-7" th:text="${staff.email}"></dd>
+							<dt class="col-lg-4 col-md-4 col-sm-5">Phone:</dt>
+							<dd class="col-lg-8 col-md-8 col-sm-7" th:text="${staff.phone}"></dd>
+							
+							<dt class="col-lg-4 col-md-4 col-sm-5">Experience:</dt>
+							<dd class="col-lg-8 col-md-8 col-sm-7" th:if="${staff.yearExp == 1}"
+								th:text="${staff.yearExp + ' year'}"></dd>
+							<dd class="col-lg-8 col-md-8 col-sm-7" th:if="${staff.yearExp > 1}"
+								th:text="${staff.yearExp + ' years'}"></dd>
+								
+							<dt class="col-lg-4 col-md-4 col-sm-5">This month salary:</dt>
+							<dd class="col-lg-8 col-md-8 col-sm-7"
+								th:text="${#numbers.formatInteger(staff.salary, 0, 'COMMA') + ' vnd'}"></dd>
 						</dl>
 					</div>
 				</div>

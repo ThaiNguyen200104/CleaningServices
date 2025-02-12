@@ -246,7 +246,7 @@ public class StaffController {
 			}
 
 			String result = rep.AdjustDate(scheId, date, reason);
-			
+
 			if (result.equals("success")) {
 				return ResponseEntity.ok("Succeed");
 			} else {

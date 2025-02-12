@@ -10,6 +10,8 @@ public class Staff {
 	private String email;
 	private String phone;
 	private String image;
+	private double salary;
+	private int yearExp;
 	private Date createDate;
 	private String status;
 
@@ -17,7 +19,7 @@ public class Staff {
 	}
 
 	public Staff(int id, String fullname, String username, String password, String email, String phone, String image,
-			Date createDate, String status) {
+			double salary, int yearExp, Date createDate, String status) {
 		this.id = id;
 		this.fullname = fullname;
 		this.username = username;
@@ -25,6 +27,8 @@ public class Staff {
 		this.email = email;
 		this.phone = phone;
 		this.image = image;
+		this.salary = salary;
+		this.yearExp = yearExp;
 		this.createDate = createDate;
 		this.status = status;
 	}
@@ -83,6 +87,22 @@ public class Staff {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+
+	public int getYearExp() {
+		return yearExp;
+	}
+
+	public void setYearExp(int yearExp) {
+		this.yearExp = yearExp;
 	}
 
 	public Date getCreateDate() {

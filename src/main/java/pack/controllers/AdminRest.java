@@ -35,6 +35,7 @@ public class AdminRest {
 	@Value("${app.admin.api-key}")
 	private String apiKey;
 
+	// This function helps you to create admin account quicker and more convenience
 	@CrossOrigin
 	@GetMapping("/generateAdmin")
 	// http://localhost:8080/api/generateAdmin?email=YourEmail@gmail.com&apikey=7ed9b7ef600ce7544841cd061cf27b2493b7da5c78644ebe7920ef02c76939d9

@@ -72,3 +72,11 @@ document.getElementById('description').addEventListener('input', function() {
 	const messageLength = this.value.length;
 	document.getElementById('charCount').innerText = `${messageLength}/255`;
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+	var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl);
+	});
+});
+

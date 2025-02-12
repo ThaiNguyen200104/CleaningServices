@@ -41,7 +41,8 @@
 			}
 		}
 
-		.table tbody tr td a {
+		.table tbody tr td a,
+		.table tbody tr td button {
 			transition: 0.25s;
 
 			@media(max-width: 768px) {
@@ -85,7 +86,7 @@
 							<th>Phone</th>
 							<th>Price</th>
 							<th>Start Date</th>
-							<th>Create Date</th>
+							<th>Request Date</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
@@ -94,13 +95,51 @@
 						<tr th:each="item : ${requests}">
 							<td th:text="${item.id}"></td>
 							<td th:text="${item.service_name}"></td>
-							<td th:text="${item.fullname}"></td>
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Name" class="btn btn-outline-info"
+									th:data-bs-content="${item.fullname}">
+									Name
+								</button>
+							</td>
+
 							<td th:text="${item.phone}"></td>
 							<td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' vnd'}"></td>
-							<td th:text="${#dates.format(item.start_date, 'dd-MM-yyyy')}"></td>
-							<td th:text="${#dates.format(item.create_date, 'dd-MM-yyyy')}"></td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Start Date"
+									class="btn btn-outline-info changeSize"
+									th:data-bs-content="${#dates.format(item.start_date, 'dd-MM-yyyy')}">
+									Date
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover" title="Start Date"
+									th:data-bs-content="${#dates.format(item.start_date, 'dd-MM-yyyy')}">
+									<svg data-name="Layer 1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 19a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0-4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm-5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm7-12h-1V2a1 1 0 0 0-2 0v1H8V2a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9h16Zm0-11H4V6a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V5h8v1a1 1 0 0 0 2 0V5h1a1 1 0 0 1 1 1ZM7 15a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0 4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
+								</button>
+							</td>
+
+							<td>
+								<button type="button" data-bs-toggle="popover" title="Request's Sent Date"
+									class="btn btn-outline-info changeSize"
+									th:data-bs-content="${#dates.format(item.create_date, 'dd-MM-yyyy')}">
+									Date
+								</button>
+								<button class="svg-icon" type="button" data-bs-toggle="popover"
+									title="Request's Sent Date"
+									th:data-bs-content="${#dates.format(item.create_date, 'dd-MM-yyyy')}">
+									<svg data-name="Layer 1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M12 19a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0-4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm-5 0a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm7-12h-1V2a1 1 0 0 0-2 0v1H8V2a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3Zm1 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9h16Zm0-11H4V6a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V5h8v1a1 1 0 0 0 2 0V5h1a1 1 0 0 1 1 1ZM7 15a1 1 0 1 0-1-1 1 1 0 0 0 1 1Zm0 4a1 1 0 1 0-1-1 1 1 0 0 0 1 1Z"
+											fill="#56d7f5" class="fill-6563ff"></path>
+									</svg>
+								</button>
+							</td>
 
 							<td th:text="${item.status}"></td>
+
 							<td>
 								<a class="btn btn-primary" th:if="${item.staff_id == null && staffCheck > 0}"
 									th:href="@{/admin/request/staffsForAssign(urdId=${item.id})}">Assign Staff
